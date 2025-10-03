@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>GPT-5 Personas Chat — Vanilla v2</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <div class="header">
+          <div class="row">
+            <span id="chipA" class="chip a"><span id="chipAEmoji">🅰️</span> <span id="chipAName">Persona A</span></span>
+            <span class="muted">vs</span>
+            <span id="chipB" class="chip b"><span id="chipBEmoji">🅱️</span> <span id="chipBName">Persona B</span></span>
+          </div>
+          <div class="row">
+            <button id="btnSetup" class="btn light">Setup</button>
+            <button id="btnChat" class="btn light">Chat</button>
+          </div>
+        </div>
+
+        <!-- SETUP VIEW -->
+        <div id="viewSetup" class="view active">
+          <div class="pad">
+            <div class="grid2">
+              <!-- API -->
+              <div class="card">
+                <div class="pad-lg">
+                  <div class="label">API Key</div>
+                  <div class="row-stretch">
+                    <textarea id="apiKey" rows="1" placeholder="Enter your OpenAI API key"></textarea>
+                    <button id="btnPaste" class="btn dark">📋 Paste</button>
+                  </div>
+                  <label class="row" style="margin-top:8px"><input id="rememberKey" type="checkbox"> <span class="muted">Remember key locally</span></label>
+                </div>
+              </div>
+
+              <!-- Settings -->
+              <div class="card">
+                <div class="pad-lg">
+                  <div class="label">Conversation Settings</div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="label">Exchanges (A↔B pairs)</div>
+                      <input id="exchanges" type="number" min="1" value="3">
+                    </div>
+                    <div class="col">
+                      <div class="label">Temperature: <span id="tempVal">0.7</span></div>
+                      <input id="temperature" type="range" min="0" max="2" step="0.1" value="0.7" style="width:100%">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-top:8px">
+                    <div class="col">
+                      <div class="label">Model</div>
+                      <select id="model">
+                        <option value="gpt-5">gpt-5</option>
+                        <option value="gpt-5-mini">gpt-5-mini</option>
+                        <option value="gpt-5-chat-latest">gpt-5-chat-latest</option>
+                        <option value="custom">Custom…</option>
+                      </select>
+                    </div>
+                    <div class="col">
+                      <div class="label">Custom model (if selected)</div>
+                      <input id="customModel" type="text" placeholder="model name">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-top:10px">
+                    <button id="startBtn" class="btn primary">Start Chat</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Personas -->
+            <div class="grid2" style="margin-top:12px">
+              <div class="card">
+                <div class="section-title">Persona A •</div>
+                <div class="pad">
+                  <div class="row">
+                    <div class="col">
+                      <div class="label">Name</div>
+                      <input id="nameA" type="text" value="Persona A">
+                    </div>
+                    <div style="width:100px">
+                      <div class="label">Emoji</div>
+                      <input id="emojiA" type="text" placeholder="😀" value="😀">
+                    </div>
+                    <div style="width:130px">
+                      <div class="label">Bubble color</div>
+                      <input id="colorA" type="color" value="#ffffff" title="Background color for Persona A messages">
+                    </div>
+                  </div>
+                  <div class="label" style="margin-top:8px">Prompt</div>
+                  <textarea id="promptA" rows="3" placeholder="Describe Persona A behaviour">You are an Analyst. Provide clear, data-backed insights in a concise and engaging manner.</textarea>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="section-title">Persona B •</div>
+                <div class="pad">
+                  <div class="row">
+                    <div class="col">
+                      <div class="label">Name</div>
+                      <input id="nameB" type="text" value="Persona B">
+                    </div>
+                    <div style="width:100px">
+                      <div class="label">Emoji</div>
+                      <input id="emojiB" type="text" placeholder="🧠" value="🧠">
+                    </div>
+                    <div style="width:130px">
+                      <div class="label">Bubble color</div>
+                      <input id="colorB" type="color" value="#ffffff" title="Background color for Persona B messages">
+                    </div>
+                  </div>
+                  <div class="label" style="margin-top:8px">Prompt</div>
+                  <textarea id="promptB" rows="3" placeholder="Describe Persona B behaviour">You are a Creative Strategist. Offer imaginative ideas and strategic insights with flair.</textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- History -->
+            <div class="card" style="margin-top:12px">
+              <div class="section-title">Conversation Memory</div>
+              <div class="pad">
+                <div class="row">
+                  <button id="refreshHistory" class="btn light">Refresh</button>
+                  <button id="clearHistory" class="btn warn">Clear All</button>
+                </div>
+                <div id="historyList" class="history-list"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CHAT VIEW -->
+        <div id="viewChat" class="view">
+          <div class="pad">
+            <div class="card">
+              <div class="section-title">Conversation</div>
+              <div id="conv" class="conv"></div>
+              <div class="pad">
+                <div class="row">
+                  <div class="col">
+                    <div class="label">Moderator message (optional)</div>
+                    <input id="moderatorMsg" type="text" placeholder="Add direction for the next segment…">
+                  </div>
+                  <div style="width:150px">
+                    <div class="label">Add exchanges</div>
+                    <input id="extendCount" type="number" min="1" value="2">
+                  </div>
+                </div>
+                <div class="row" style="margin-top:8px">
+                  <button id="extendBtn" class="btn primary">Extend Discussion</button>
+                  <button id="newBtn" class="btn light">New Chat</button>
+                  <button id="saveBtn" class="btn dark">Save Conversation</button>
+                  <button id="copyBtn" class="btn light" disabled>Copy Transcript</button>
+                  <button id="backToSetup" class="btn light">Back to Setup</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
