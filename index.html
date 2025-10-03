@@ -96,6 +96,11 @@
                   </div>
                   <div class="label" style="margin-top:8px">Prompt</div>
                   <textarea id="promptA" rows="3" placeholder="Describe Persona A behaviour">You are an Analyst. Provide clear, data-backed insights in a concise and engaging manner.</textarea>
+                  <div class="label" style="margin-top:8px">Load sample persona</div>
+                  <div class="row">
+                    <select id="presetA"></select>
+                    <button id="applyPresetA" class="btn light" style="margin-left:8px">Load</button>
+                  </div>
                 </div>
               </div>
 
@@ -118,7 +123,28 @@
                   </div>
                   <div class="label" style="margin-top:8px">Prompt</div>
                   <textarea id="promptB" rows="3" placeholder="Describe Persona B behaviour">You are a Creative Strategist. Offer imaginative ideas and strategic insights with flair.</textarea>
+                  <div class="label" style="margin-top:8px">Load sample persona</div>
+                  <div class="row">
+                    <select id="presetB"></select>
+                    <button id="applyPresetB" class="btn light" style="margin-left:8px">Load</button>
+                  </div>
                 </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:12px">
+              <div class="section-title">Persona &amp; Topic Generator</div>
+              <div class="pad">
+                <div class="label">Describe a theme, role, or mood</div>
+                <input id="generatorSeed" type="text" placeholder="e.g. optimistic marine biologist, or &quot;collaborative AI policy&quot;">
+                <div class="row" style="margin-top:8px">
+                  <button id="generateForA" class="btn primary">Generate for Persona A</button>
+                  <button id="generateForB" class="btn primary">Generate for Persona B</button>
+                  <button id="swapGeneratorSeed" class="btn light">Swap Personas</button>
+                </div>
+                <div id="generatorStatus" class="muted" style="margin-top:8px"></div>
+                <div class="label" style="margin-top:12px">Suggested discussion topics</div>
+                <textarea id="generatorTopics" rows="3" readonly placeholder="Generated topics will appear here"></textarea>
               </div>
             </div>
 
@@ -169,6 +195,7 @@
       </div>
     </div>
 
+    <script src="personas-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
