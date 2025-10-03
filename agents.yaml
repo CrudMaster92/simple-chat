@@ -1,0 +1,18 @@
+project:
+  name: "GPT-5 Personas Chat"
+  version: "2.0"
+  overview: >
+    A no-dependency (vanilla HTML+JS) two-persona debate/sandbox that alternates turns,
+    supports moderator-directed extensions, conversation memory, and per-persona styling.
+
+  primary_objectives:
+    - Maintain a robust, dependency-free build that runs in mobile browsers.
+    - Provide an ergonomic Setup screen and a clean Chat screen.
+    - Ensure reliable OpenAI API calls with guardrails for temperature and errors.
+    - Persist conversations and settings locally without a backend.
+
+  success_criteria:
+    - Openable on Android/iOS/desktop directly from local storage/downloads.
+    - No console errors in Chrome/Edge/Safari mobile and desktop.
+    - Conversations can be saved/loaded/deleted; visual state remains consistent.
+    - Moderator “Extend Discussion” executes exactly N new exchanges (A↔B) with guidance applied.
