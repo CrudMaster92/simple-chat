@@ -37,6 +37,7 @@
   const extendBtn = el('extendBtn');
   const extendCountEl = el('extendCount');
   const moderatorMsgEl = el('moderatorMsg');
+  const moderatorPrepromptEl = el('moderatorPreprompt');
   const newBtn = el('newBtn');
   const saveBtn = el('saveBtn');
   const copyBtn = el('copyBtn');
@@ -187,8 +188,9 @@
     const temp = clampTemp(temperatureEl.value);
 
     const otherName = isA ? (nameBEl.value || 'Persona B') : (nameAEl.value || 'Persona A');
+    const setupNote = moderatorPrepromptEl.value && moderatorPrepromptEl.value.trim() ? `Moderator setup note: ${moderatorPrepromptEl.value.trim()}\n\n` : '';
     const modLine = moderatorNote && moderatorNote.trim() ? `Moderator note: ${moderatorNote.trim()}\n\n` : '';
-    const userContent = `${modLine}Context transcript so far:\n${transcript()}\n\nYou are ${name}${emoji ? ' ('+emoji+')' : ''}. Reply briefly to ${otherName}.`;
+    const userContent = `${setupNote}${modLine}Context transcript so far:\n${transcript()}\n\nYou are ${name}${emoji ? ' ('+emoji+')' : ''}. Reply briefly to ${otherName}.`;
 
     try{
       const res = await fetch('https://api.openai.com/v1/chat/completions',{
@@ -279,7 +281,8 @@
       b: { name: nameBEl.value, emoji: emojiBEl.value, prompt: promptBEl.value, color: colorBEl.value },
       model: (modelEl.value==='custom' ? (customModelEl.value || 'gpt-5') : modelEl.value),
       temperature: clampTemp(temperatureEl.value),
-      messages
+      messages,
+      moderatorPreprompt: moderatorPrepromptEl.value
     };
     currentSessionId = rec.id;
     const all = getMemory();
@@ -351,6 +354,7 @@
       else{ modelEl.value='custom'; customModelEl.value=rec.model; }
     }
     temperatureEl.value = rec.temperature ?? 0.7; updateTemp();
+    moderatorPrepromptEl.value = rec.moderatorPreprompt || '';
     syncChips();
 
     // Load messages
