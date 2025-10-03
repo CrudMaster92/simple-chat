@@ -42,6 +42,18 @@
   const saveBtn = el('saveBtn');
   const copyBtn = el('copyBtn');
 
+  const presetAEl = el('presetA');
+  const presetBEl = el('presetB');
+  const applyPresetABtn = el('applyPresetA');
+  const applyPresetBBtn = el('applyPresetB');
+
+  const generatorSeedEl = el('generatorSeed');
+  const generateForABtn = el('generateForA');
+  const generateForBBtn = el('generateForB');
+  const swapGeneratorSeedBtn = el('swapGeneratorSeed');
+  const generatorStatusEl = el('generatorStatus');
+  const generatorTopicsEl = el('generatorTopics');
+
   const historyList = el('historyList');
   const refreshHistoryBtn = el('refreshHistory');
   const clearHistoryBtn = el('clearHistory');
@@ -81,6 +93,154 @@
   emojiBEl.addEventListener('input', syncChips);
   syncChips();
 
+  const samplePersonas = Array.isArray(window.samplePersonas) ? window.samplePersonas : [];
+
+  function populatePresetSelects(){
+    const selects = [presetAEl, presetBEl];
+    selects.forEach(select=>{
+      if(!select) return;
+      select.innerHTML = '';
+      const blank = document.createElement('option');
+      blank.value = '';
+      blank.textContent = samplePersonas.length ? 'Choose a sample persona…' : 'No sample personas available';
+      select.appendChild(blank);
+      samplePersonas.forEach(p=>{
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.label || p.name || p.id;
+        select.appendChild(opt);
+      });
+      select.disabled = samplePersonas.length===0;
+    });
+    if(applyPresetABtn) applyPresetABtn.disabled = samplePersonas.length===0;
+    if(applyPresetBBtn) applyPresetBBtn.disabled = samplePersonas.length===0;
+  }
+
+  populatePresetSelects();
+
+  function applyPreset(side){
+    const select = side==='A' ? presetAEl : presetBEl;
+    const button = side==='A' ? applyPresetABtn : applyPresetBBtn;
+    if(!select || !button) return;
+    const id = select.value;
+    if(!id){
+      alert('Pick a sample persona to load.');
+      return;
+    }
+    const persona = samplePersonas.find(p=>p.id===id);
+    if(!persona){
+      alert('Sample persona not found.');
+      return;
+    }
+    if(side==='A'){
+      nameAEl.value = persona.name || '';
+      emojiAEl.value = persona.emoji || '';
+      promptAEl.value = persona.prompt || '';
+      if(persona.bubbleColor) colorAEl.value = persona.bubbleColor;
+    }else{
+      nameBEl.value = persona.name || '';
+      emojiBEl.value = persona.emoji || '';
+      promptBEl.value = persona.prompt || '';
+      if(persona.bubbleColor) colorBEl.value = persona.bubbleColor;
+    }
+    syncChips();
+    setGeneratorStatus(`Loaded sample persona "${persona.label || persona.name || persona.id}" for Persona ${side}.`, false);
+  }
+
+  if(applyPresetABtn) applyPresetABtn.addEventListener('click', ()=>applyPreset('A'));
+  if(applyPresetBBtn) applyPresetBBtn.addEventListener('click', ()=>applyPreset('B'));
+
+  function swapPersonas(){
+    const nameA = nameAEl.value, nameB = nameBEl.value;
+    const emojiA = emojiAEl.value, emojiB = emojiBEl.value;
+    const promptA = promptAEl.value, promptB = promptBEl.value;
+    const colorA = colorAEl.value, colorB = colorBEl.value;
+
+    nameAEl.value = nameB;
+    nameBEl.value = nameA;
+    emojiAEl.value = emojiB;
+    emojiBEl.value = emojiA;
+    promptAEl.value = promptB;
+    promptBEl.value = promptA;
+    colorAEl.value = colorB;
+    colorBEl.value = colorA;
+    syncChips();
+  }
+
+  if(swapGeneratorSeedBtn) swapGeneratorSeedBtn.addEventListener('click', ()=>{
+    swapPersonas();
+    setGeneratorStatus('Personas swapped.', false);
+  });
+
+  function setGeneratorBusy(flag){
+    const targets = [generateForABtn, generateForBBtn, swapGeneratorSeedBtn];
+    targets.forEach(btn=>{ if(btn) btn.disabled = flag; });
+    if(generatorSeedEl) generatorSeedEl.disabled = flag;
+  }
+
+  function setGeneratorStatus(message, isError){
+    if(!generatorStatusEl) return;
+    generatorStatusEl.textContent = message;
+    generatorStatusEl.style.color = isError ? '#b91c1c' : '';
+  }
+
+  function assignGeneratedPersona(side, data){
+    const name = data.name || '';
+    const emoji = data.emoji || '';
+    const prompt = data.prompt || '';
+    const bubble = data.bubbleColor || data.color || '';
+    const topics = Array.isArray(data.topics) ? data.topics : [];
+    if(side==='A'){
+      if(name) nameAEl.value = name;
+      if(emoji) emojiAEl.value = emoji;
+      if(prompt) promptAEl.value = prompt;
+      if(bubble && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(bubble.trim())) colorAEl.value = bubble.trim();
+    }else{
+      if(name) nameBEl.value = name;
+      if(emoji) emojiBEl.value = emoji;
+      if(prompt) promptBEl.value = prompt;
+      if(bubble && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(bubble.trim())) colorBEl.value = bubble.trim();
+    }
+    if(generatorTopicsEl){
+      generatorTopicsEl.value = topics.length ? topics.join('\n') : '';
+    }
+    syncChips();
+  }
+
+  async function generatePersona(side){
+    if(!apiKeyEl.value){ alert('Please enter your API key in Setup.'); return; }
+    const seed = (generatorSeedEl && generatorSeedEl.value ? generatorSeedEl.value.trim() : '');
+    if(!seed){ alert('Describe a theme, role, or mood to generate a persona.'); return; }
+    setGeneratorBusy(true);
+    setGeneratorStatus('Step 1/2: Drafting persona blueprint…', false);
+    if(generatorTopicsEl) generatorTopicsEl.value = '';
+    try{
+      const blueprintText = await chatCompletion([
+        { role:'system', content:'You are a persona concept architect. Respond ONLY with valid JSON.' },
+        { role:'user', content:`Seed idea: ${seed}\n\nReturn a JSON object with the following keys:\n- name: imaginative persona name\n- roleTagline: a short role or mission statement\n- emoji: a single emoji that matches the vibe\n- toneDescriptors: array of 3 short adjectives for the tone\n- signatureOpinions: array of 3 bold opinions the persona holds\n- communicationStyle: 2 sentences describing how they speak\n- suggestedColor: a hex color (e.g. #34d399) that fits the vibe.` }
+      ], 0.6);
+      const blueprint = extractJSON(blueprintText);
+      if(!blueprint){ throw new Error('Could not parse persona blueprint response.'); }
+      setGeneratorStatus('Step 2/2: Expanding tone, opinions, and topics…', false);
+      const detailText = await chatCompletion([
+        { role:'system', content:'You turn persona blueprints into detailed chat persona prompts. Respond ONLY with valid JSON.' },
+        { role:'user', content:`Blueprint data:\n${JSON.stringify(blueprint, null, 2)}\n\nReturn JSON with keys:\n- name\n- emoji\n- bubbleColor (hex, fallback to ${side==='A'?colorAEl.value:colorBEl.value})\n- prompt (concise instructions that include persona background, tone descriptors, signature opinions, and explicit guidance on response style)\n- topics (array of 3-5 specific conversation topics related to the persona).\nThe prompt should describe how the persona responds, mention the tone, cite their core opinions, and explain how they engage with others.` }
+      ], 0.65);
+      const detail = extractJSON(detailText);
+      if(!detail){ throw new Error('Could not parse persona detail response.'); }
+      assignGeneratedPersona(side, detail);
+      setGeneratorStatus(`Generated persona applied to Persona ${side}.`, false);
+    }catch(err){
+      console.error(err);
+      setGeneratorStatus(`Generator error: ${err.message}`, true);
+    }finally{
+      setGeneratorBusy(false);
+    }
+  }
+
+  if(generateForABtn) generateForABtn.addEventListener('click', ()=>generatePersona('A'));
+  if(generateForBBtn) generateForBBtn.addEventListener('click', ()=>generatePersona('B'));
+
   // Conversation state
   let running = false;
   let messages = []; // { who:'A'|'B', text:string }
@@ -91,6 +251,34 @@
     const n = parseFloat(v);
     if(!isFinite(n)) return 0.7;
     return Math.min(2, Math.max(0, n));
+  }
+
+  async function chatCompletion(messages, tempOverride){
+    const chosenModel = (modelEl.value==='custom' ? (customModelEl.value || 'gpt-5') : modelEl.value);
+    const temperature = clampTemp(tempOverride ?? temperatureEl.value);
+    const res = await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',
+      headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+apiKeyEl.value.trim() },
+      body: JSON.stringify({ model: chosenModel, messages, temperature })
+    });
+    if(!res.ok){
+      const t = await res.text();
+      throw new Error(t);
+    }
+    const data = await res.json();
+    const reply = ((data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'').trim();
+    return reply;
+  }
+
+  function extractJSON(text){
+    if(!text) return null;
+    const trimmed = text.trim();
+    try{ return JSON.parse(trimmed); }catch(_){ }
+    const match = trimmed.match(/\{[\s\S]*\}/);
+    if(match){
+      try{ return JSON.parse(match[0]); }catch(_){ }
+    }
+    return null;
   }
   function transcript(){
     return messages.map(m=>{
@@ -184,7 +372,6 @@
     const emoji = isA ? emojiAEl.value : emojiBEl.value;
 
     const typingRow = showTyping(current, name, emoji);
-    const chosenModel = (modelEl.value==='custom' ? (customModelEl.value || 'gpt-5') : modelEl.value);
     const temp = clampTemp(temperatureEl.value);
 
     const otherName = isA ? (nameBEl.value || 'Persona B') : (nameAEl.value || 'Persona A');
@@ -193,24 +380,10 @@
     const userContent = `${setupNote}${modLine}Context transcript so far:\n${transcript()}\n\nYou are ${name}${emoji ? ' ('+emoji+')' : ''}. Reply briefly to ${otherName}.`;
 
     try{
-      const res = await fetch('https://api.openai.com/v1/chat/completions',{
-        method:'POST',
-        headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+apiKeyEl.value.trim() },
-        body: JSON.stringify({
-          model: chosenModel,
-          messages: [
-            { role:'system', content: personaPrompt },
-            { role:'user', content: userContent }
-          ],
-          temperature: temp
-        })
-      });
-      if(!res.ok){
-        const t = await res.text();
-        throw new Error(t);
-      }
-      const data = await res.json();
-      const reply = ((data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'').trim();
+      const reply = await chatCompletion([
+        { role:'system', content: personaPrompt },
+        { role:'user', content: userContent }
+      ], temp);
       removeTyping(typingRow);
       appendMessage(current, name, emoji, reply);
       messages.push({ who: current, text: reply });
