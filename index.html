@@ -24,147 +24,205 @@
         <!-- SETUP VIEW -->
         <div id="viewSetup" class="view active">
           <div class="pad">
-            <div class="grid2">
-              <!-- API -->
-              <div class="card">
-                <div class="pad-lg">
-                  <div class="label">API Key</div>
-                  <div class="row-stretch">
-                    <textarea id="apiKey" rows="1" placeholder="Enter your OpenAI API key"></textarea>
-                    <button id="btnPaste" class="btn dark">📋 Paste</button>
+            <div class="accordion" id="setupAccordion">
+              <section class="accordion-item open" data-accordion-item>
+                <button class="accordion-header" type="button" aria-expanded="true">
+                  <span class="accordion-title">Connection &amp; Run Settings</span>
+                  <span class="accordion-icon" aria-hidden="true">▾</span>
+                </button>
+                <div class="accordion-body">
+                  <div class="section-stack">
+                    <div class="panel">
+                      <div class="panel-title">API Access</div>
+                      <div class="label">API Key</div>
+                      <div class="row-stretch">
+                        <textarea id="apiKey" rows="1" placeholder="Enter your OpenAI API key"></textarea>
+                        <button id="btnPaste" class="btn dark">📋 Paste</button>
+                      </div>
+                      <label class="row" style="margin-top:8px"><input id="rememberKey" type="checkbox"> <span class="muted">Remember key locally</span></label>
+                    </div>
+                    <div class="panel">
+                      <div class="panel-title">Conversation Defaults</div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="label">Exchanges (A↔B pairs)</div>
+                          <input id="exchanges" type="number" min="1" value="3">
+                        </div>
+                        <div class="col">
+                          <div class="label">Temperature: <span id="tempVal">0.7</span></div>
+                          <input id="temperature" type="range" min="0" max="2" step="0.1" value="0.7" style="width:100%">
+                        </div>
+                      </div>
+                      <div class="row" style="margin-top:8px">
+                        <div class="col">
+                          <div class="label">Model</div>
+                          <select id="model">
+                            <option value="gpt-5">gpt-5</option>
+                            <option value="gpt-5-mini">gpt-5-mini</option>
+                            <option value="gpt-5-chat-latest">gpt-5-chat-latest</option>
+                            <option value="custom">Custom…</option>
+                          </select>
+                        </div>
+                        <div class="col">
+                          <div class="label">Custom model (if selected)</div>
+                          <input id="customModel" type="text" placeholder="model name">
+                        </div>
+                      </div>
+                      <div class="label" style="margin-top:12px">Moderator preprompt</div>
+                      <div class="row" style="margin-top:6px">
+                        <select id="presetScenario"></select>
+                        <button id="applyScenario" class="btn light">Load scenario</button>
+                      </div>
+                      <textarea id="scenarioPreview" rows="3" readonly placeholder="Selected scenario preview appears here"></textarea>
+                      <textarea id="moderatorPreprompt" rows="3" placeholder="Define the debate rules or initial discussion guidance"></textarea>
+                    </div>
                   </div>
-                  <label class="row" style="margin-top:8px"><input id="rememberKey" type="checkbox"> <span class="muted">Remember key locally</span></label>
                 </div>
-              </div>
+              </section>
 
-              <!-- Settings -->
-              <div class="card">
-                <div class="pad-lg">
-                  <div class="label">Conversation Settings</div>
-                  <div class="row">
-                    <div class="col">
-                      <div class="label">Exchanges (A↔B pairs)</div>
-                      <input id="exchanges" type="number" min="1" value="3">
+              <section class="accordion-item" data-accordion-item>
+                <button class="accordion-header" type="button" aria-expanded="false">
+                  <span class="accordion-title">Persona Studio</span>
+                  <span class="accordion-icon" aria-hidden="true">▾</span>
+                </button>
+                <div class="accordion-body">
+                  <div class="persona-wizard">
+                    <div class="wizard-progress" role="tablist">
+                      <button type="button" class="wizard-step-btn active" data-step="1" aria-current="step">1. Persona A</button>
+                      <button type="button" class="wizard-step-btn" data-step="2">2. Persona B</button>
+                      <button type="button" class="wizard-step-btn" data-step="3">3. Review</button>
                     </div>
-                    <div class="col">
-                      <div class="label">Temperature: <span id="tempVal">0.7</span></div>
-                      <input id="temperature" type="range" min="0" max="2" step="0.1" value="0.7" style="width:100%">
+                    <div class="wizard-panels">
+                      <div class="wizard-panel active" data-step="1" role="tabpanel">
+                        <div class="panel">
+                          <div class="panel-title">Persona A</div>
+                          <div class="row">
+                            <div class="col">
+                              <div class="label">Name</div>
+                              <input id="nameA" type="text" value="Persona A">
+                            </div>
+                            <div style="width:100px">
+                              <div class="label">Emoji</div>
+                              <input id="emojiA" type="text" placeholder="😀" value="😀">
+                            </div>
+                            <div style="width:130px">
+                              <div class="label">Bubble color</div>
+                              <input id="colorA" type="color" value="#ffffff" title="Background color for Persona A messages">
+                            </div>
+                          </div>
+                          <div class="label" style="margin-top:8px">Prompt</div>
+                          <textarea id="promptA" rows="3" placeholder="Describe Persona A behaviour">You are an Analyst. Provide clear, data-backed insights in a concise and engaging manner.</textarea>
+                          <div class="label" style="margin-top:8px">Load sample persona</div>
+                          <div class="row">
+                            <select id="presetA"></select>
+                            <button id="applyPresetA" class="btn light">Load</button>
+                          </div>
+                        </div>
+                        <div class="wizard-nav">
+                          <button type="button" class="btn primary wizard-next" data-goto="2">Next: Persona B</button>
+                        </div>
+                      </div>
+                      <div class="wizard-panel" data-step="2" role="tabpanel">
+                        <div class="panel">
+                          <div class="panel-title">Persona B</div>
+                          <div class="row">
+                            <div class="col">
+                              <div class="label">Name</div>
+                              <input id="nameB" type="text" value="Persona B">
+                            </div>
+                            <div style="width:100px">
+                              <div class="label">Emoji</div>
+                              <input id="emojiB" type="text" placeholder="🧠" value="🧠">
+                            </div>
+                            <div style="width:130px">
+                              <div class="label">Bubble color</div>
+                              <input id="colorB" type="color" value="#ffffff" title="Background color for Persona B messages">
+                            </div>
+                          </div>
+                          <div class="label" style="margin-top:8px">Prompt</div>
+                          <textarea id="promptB" rows="3" placeholder="Describe Persona B behaviour">You are a Creative Strategist. Offer imaginative ideas and strategic insights with flair.</textarea>
+                          <div class="label" style="margin-top:8px">Load sample persona</div>
+                          <div class="row">
+                            <select id="presetB"></select>
+                            <button id="applyPresetB" class="btn light">Load</button>
+                          </div>
+                        </div>
+                        <div class="wizard-nav">
+                          <button type="button" class="btn light wizard-prev" data-goto="1">Back</button>
+                          <button type="button" class="btn primary wizard-next" data-goto="3">Next: Review</button>
+                        </div>
+                      </div>
+                      <div class="wizard-panel" data-step="3" role="tabpanel">
+                        <div class="panel">
+                          <div class="panel-title">Review &amp; Launch</div>
+                          <div class="wizard-review">
+                            <div class="review-card">
+                              <div class="review-title">Persona A Snapshot</div>
+                              <div class="review-name" id="reviewAName">Persona A</div>
+                              <div class="review-detail" id="reviewAPrompt">No persona prompt provided yet.</div>
+                            </div>
+                            <div class="review-card">
+                              <div class="review-title">Persona B Snapshot</div>
+                              <div class="review-name" id="reviewBName">Persona B</div>
+                              <div class="review-detail" id="reviewBPrompt">No persona prompt provided yet.</div>
+                            </div>
+                            <div class="review-card">
+                              <div class="review-title">Moderator Focus</div>
+                              <div class="review-name" id="reviewTopic">No topic set</div>
+                              <div class="review-detail" id="reviewTopicDetail">Add a moderator preprompt to define the topic.</div>
+                            </div>
+                          </div>
+                          <div class="muted" style="margin-top:12px">Need to tweak something? Jump back with the step buttons above.</div>
+                          <div class="wizard-nav" style="margin-top:16px">
+                            <button type="button" class="btn light wizard-prev" data-goto="2">Back</button>
+                            <button id="startBtn" class="btn primary">Start Chat</button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="row" style="margin-top:8px">
-                    <div class="col">
-                      <div class="label">Model</div>
-                      <select id="model">
-                        <option value="gpt-5">gpt-5</option>
-                        <option value="gpt-5-mini">gpt-5-mini</option>
-                        <option value="gpt-5-chat-latest">gpt-5-chat-latest</option>
-                        <option value="custom">Custom…</option>
-                      </select>
-                    </div>
-                    <div class="col">
-                      <div class="label">Custom model (if selected)</div>
-                      <input id="customModel" type="text" placeholder="model name">
-                    </div>
-                  </div>
-                  <div class="label" style="margin-top:12px">Moderator preprompt</div>
-                  <div class="row" style="margin-top:6px">
-                    <select id="presetScenario"></select>
-                    <button id="applyScenario" class="btn light" style="margin-left:8px">Load scenario</button>
-                  </div>
-                  <textarea id="scenarioPreview" rows="3" readonly placeholder="Selected scenario preview appears here"></textarea>
-                  <textarea id="moderatorPreprompt" rows="3" placeholder="Define the debate rules or initial discussion guidance"></textarea>
-                  <div class="row" style="margin-top:10px">
-                    <button id="startBtn" class="btn primary">Start Chat</button>
                   </div>
                 </div>
-              </div>
+              </section>
+
+              <section class="accordion-item" data-accordion-item>
+                <button class="accordion-header" type="button" aria-expanded="false">
+                  <span class="accordion-title">Creative Extras</span>
+                  <span class="accordion-icon" aria-hidden="true">▾</span>
+                </button>
+                <div class="accordion-body">
+                  <div class="panel">
+                    <div class="panel-title">Persona &amp; Topic Generator</div>
+                    <div class="label">Describe a theme, role, or mood</div>
+                    <input id="generatorSeed" type="text" placeholder="e.g. optimistic marine biologist, or &quot;collaborative AI policy&quot;">
+                    <div class="row" style="margin-top:8px">
+                      <button id="generateForA" class="btn primary">Generate for Persona A</button>
+                      <button id="generateForB" class="btn primary">Generate for Persona B</button>
+                      <button id="swapGeneratorSeed" class="btn light">Swap Personas</button>
+                    </div>
+                    <div id="generatorStatus" class="muted" style="margin-top:8px"></div>
+                    <div class="label" style="margin-top:12px">Suggested discussion topics</div>
+                    <textarea id="generatorTopics" rows="3" readonly placeholder="Generated topics will appear here"></textarea>
+                  </div>
+                </div>
+              </section>
+
+              <section class="accordion-item" data-accordion-item>
+                <button class="accordion-header" type="button" aria-expanded="false">
+                  <span class="accordion-title">Conversation Memory</span>
+                  <span class="accordion-icon" aria-hidden="true">▾</span>
+                </button>
+                <div class="accordion-body">
+                  <div class="panel">
+                    <div class="panel-title">Saved Sessions</div>
+                    <div class="row">
+                      <button id="refreshHistory" class="btn light">Refresh</button>
+                      <button id="clearHistory" class="btn warn">Clear All</button>
+                    </div>
+                    <div id="historyList" class="history-list" style="margin-top:12px"></div>
+                  </div>
+                </div>
+              </section>
             </div>
-
-            <!-- Personas -->
-            <div class="grid2" style="margin-top:12px">
-              <div class="card">
-                <div class="section-title">Persona A •</div>
-                <div class="pad">
-                  <div class="row">
-                    <div class="col">
-                      <div class="label">Name</div>
-                      <input id="nameA" type="text" value="Persona A">
-                    </div>
-                    <div style="width:100px">
-                      <div class="label">Emoji</div>
-                      <input id="emojiA" type="text" placeholder="😀" value="😀">
-                    </div>
-                    <div style="width:130px">
-                      <div class="label">Bubble color</div>
-                      <input id="colorA" type="color" value="#ffffff" title="Background color for Persona A messages">
-                    </div>
-                  </div>
-                  <div class="label" style="margin-top:8px">Prompt</div>
-                  <textarea id="promptA" rows="3" placeholder="Describe Persona A behaviour">You are an Analyst. Provide clear, data-backed insights in a concise and engaging manner.</textarea>
-                  <div class="label" style="margin-top:8px">Load sample persona</div>
-                  <div class="row">
-                    <select id="presetA"></select>
-                    <button id="applyPresetA" class="btn light" style="margin-left:8px">Load</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="section-title">Persona B •</div>
-                <div class="pad">
-                  <div class="row">
-                    <div class="col">
-                      <div class="label">Name</div>
-                      <input id="nameB" type="text" value="Persona B">
-                    </div>
-                    <div style="width:100px">
-                      <div class="label">Emoji</div>
-                      <input id="emojiB" type="text" placeholder="🧠" value="🧠">
-                    </div>
-                    <div style="width:130px">
-                      <div class="label">Bubble color</div>
-                      <input id="colorB" type="color" value="#ffffff" title="Background color for Persona B messages">
-                    </div>
-                  </div>
-                  <div class="label" style="margin-top:8px">Prompt</div>
-                  <textarea id="promptB" rows="3" placeholder="Describe Persona B behaviour">You are a Creative Strategist. Offer imaginative ideas and strategic insights with flair.</textarea>
-                  <div class="label" style="margin-top:8px">Load sample persona</div>
-                  <div class="row">
-                    <select id="presetB"></select>
-                    <button id="applyPresetB" class="btn light" style="margin-left:8px">Load</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="card" style="margin-top:12px">
-              <div class="section-title">Persona &amp; Topic Generator</div>
-              <div class="pad">
-                <div class="label">Describe a theme, role, or mood</div>
-                <input id="generatorSeed" type="text" placeholder="e.g. optimistic marine biologist, or &quot;collaborative AI policy&quot;">
-                <div class="row" style="margin-top:8px">
-                  <button id="generateForA" class="btn primary">Generate for Persona A</button>
-                  <button id="generateForB" class="btn primary">Generate for Persona B</button>
-                  <button id="swapGeneratorSeed" class="btn light">Swap Personas</button>
-                </div>
-                <div id="generatorStatus" class="muted" style="margin-top:8px"></div>
-                <div class="label" style="margin-top:12px">Suggested discussion topics</div>
-                <textarea id="generatorTopics" rows="3" readonly placeholder="Generated topics will appear here"></textarea>
-              </div>
-            </div>
-
-            <!-- History -->
-            <div class="card" style="margin-top:12px">
-              <div class="section-title">Conversation Memory</div>
-              <div class="pad">
-                <div class="row">
-                  <button id="refreshHistory" class="btn light">Refresh</button>
-                  <button id="clearHistory" class="btn warn">Clear All</button>
-                </div>
-                <div id="historyList" class="history-list"></div>
-              </div>
-            </div>
-
           </div>
         </div>
 
