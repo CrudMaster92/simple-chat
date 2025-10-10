@@ -7,6 +7,74 @@
   const btnSetup = el('btnSetup');
   const btnChat = el('btnChat');
   const startBtn = el('startBtn');
+  const accordionItems = Array.from(document.querySelectorAll('[data-accordion-item]'));
+  accordionItems.forEach((item, idx)=>{
+    const header = item.querySelector('.accordion-header');
+    if(!header) return;
+    const isDefaultOpen = item.classList.contains('open') || idx===0;
+    if(isDefaultOpen){
+      item.classList.add('open');
+      header.setAttribute('aria-expanded','true');
+    }else{
+      header.setAttribute('aria-expanded','false');
+    }
+    header.addEventListener('click', ()=>{
+      const wasOpen = item.classList.contains('open');
+      accordionItems.forEach(other=>{
+        if(other===item) return;
+        other.classList.remove('open');
+        const h = other.querySelector('.accordion-header');
+        if(h) h.setAttribute('aria-expanded','false');
+      });
+      if(wasOpen){
+        item.classList.remove('open');
+        header.setAttribute('aria-expanded','false');
+      }else{
+        item.classList.add('open');
+        header.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+
+  const wizardStepButtons = Array.from(document.querySelectorAll('.wizard-step-btn'));
+  const wizardPanels = Array.from(document.querySelectorAll('.wizard-panel'));
+  const wizardNextButtons = Array.from(document.querySelectorAll('.wizard-next'));
+  const wizardPrevButtons = Array.from(document.querySelectorAll('.wizard-prev'));
+  function setWizardStep(step){
+    if(!wizardPanels.length) return;
+    const total = wizardPanels.length;
+    const clamped = Math.max(1, Math.min(total, step));
+    wizardPanels.forEach(panel=>{
+      const match = Number(panel.dataset.step) === clamped;
+      panel.classList.toggle('active', match);
+      panel.setAttribute('aria-hidden', match ? 'false' : 'true');
+    });
+    wizardStepButtons.forEach(btn=>{
+      const match = Number(btn.dataset.step) === clamped;
+      btn.classList.toggle('active', match);
+      btn.setAttribute('aria-current', match ? 'step' : 'false');
+    });
+  }
+  if(wizardPanels.length){
+    setWizardStep(1);
+    wizardStepButtons.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        setWizardStep(Number(btn.dataset.step)||1);
+      });
+    });
+    wizardNextButtons.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const target = Number(btn.dataset.goto);
+        setWizardStep(target || 1);
+      });
+    });
+    wizardPrevButtons.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const target = Number(btn.dataset.goto);
+        setWizardStep(target || 1);
+      });
+    });
+  }
   function showView(view){
     viewSetup.classList.toggle('active', view==='setup');
     viewChat.classList.toggle('active', view==='chat');
@@ -63,6 +131,12 @@
   const summaryADetail = el('summaryADetail'), summaryBDetail = el('summaryBDetail');
   const summaryTopicText = el('summaryTopicText');
   const summaryTopicDetail = el('summaryTopicDetail');
+  const reviewAName = el('reviewAName');
+  const reviewAPrompt = el('reviewAPrompt');
+  const reviewBName = el('reviewBName');
+  const reviewBPrompt = el('reviewBPrompt');
+  const reviewTopic = el('reviewTopic');
+  const reviewTopicDetail = el('reviewTopicDetail');
 
   // Local storage for key
   const savedKey = localStorage.getItem('openaiKey');
@@ -93,6 +167,8 @@
       summaryAName.textContent = name;
       if(summaryAEmoji) summaryAEmoji.textContent = emoji;
       if(summaryADetail) summaryADetail.textContent = promptAEl.value ? promptAEl.value : 'No persona prompt provided yet.';
+      if(reviewAName) reviewAName.textContent = name;
+      if(reviewAPrompt) reviewAPrompt.textContent = promptAEl.value ? promptAEl.value : 'No persona prompt provided yet.';
     }
     if(summaryBName){
       const name = nameBEl.value || 'Persona B';
@@ -100,15 +176,21 @@
       summaryBName.textContent = name;
       if(summaryBEmoji) summaryBEmoji.textContent = emoji;
       if(summaryBDetail) summaryBDetail.textContent = promptBEl.value ? promptBEl.value : 'No persona prompt provided yet.';
+      if(reviewBName) reviewBName.textContent = name;
+      if(reviewBPrompt) reviewBPrompt.textContent = promptBEl.value ? promptBEl.value : 'No persona prompt provided yet.';
     }
     if(summaryTopicText){
       const topic = (moderatorPrepromptEl && moderatorPrepromptEl.value ? moderatorPrepromptEl.value.trim() : '');
       if(topic){
         summaryTopicText.textContent = topic.length>80 ? topic.slice(0,80)+'…' : topic;
         if(summaryTopicDetail) summaryTopicDetail.textContent = topic;
+        if(reviewTopic) reviewTopic.textContent = topic.length>60 ? topic.slice(0,60)+'…' : topic;
+        if(reviewTopicDetail) reviewTopicDetail.textContent = topic;
       }else{
         summaryTopicText.textContent = 'No topic set';
         if(summaryTopicDetail) summaryTopicDetail.textContent = 'Add a moderator preprompt to define the topic.';
+        if(reviewTopic) reviewTopic.textContent = 'No topic set';
+        if(reviewTopicDetail) reviewTopicDetail.textContent = 'Add a moderator preprompt to define the topic.';
       }
     }
   }
