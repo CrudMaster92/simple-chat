@@ -274,14 +274,14 @@
       const blueprintText = await chatCompletion([
         { role:'system', content:'You are a persona concept architect. Respond ONLY with valid JSON.' },
         { role:'user', content:`Seed idea: ${seed}\n\nReturn a JSON object with the following keys:\n- name: imaginative persona name\n- roleTagline: a short role or mission statement\n- emoji: a single emoji that matches the vibe\n- toneDescriptors: array of 3 short adjectives for the tone\n- signatureOpinions: array of 3 bold opinions the persona holds\n- communicationStyle: 2 sentences describing how they speak\n- suggestedColor: a hex color (e.g. #34d399) that fits the vibe.` }
-      ], 0.6);
+      ], 1.0);
       const blueprint = extractJSON(blueprintText);
       if(!blueprint){ throw new Error('Could not parse persona blueprint response.'); }
       setGeneratorStatus('Step 2/2: Expanding tone, opinions, and topics…', false);
       const detailText = await chatCompletion([
         { role:'system', content:'You turn persona blueprints into detailed chat persona prompts. Respond ONLY with valid JSON.' },
         { role:'user', content:`Blueprint data:\n${JSON.stringify(blueprint, null, 2)}\n\nReturn JSON with keys:\n- name\n- emoji\n- bubbleColor (hex, fallback to ${side==='A'?colorAEl.value:colorBEl.value})\n- prompt (concise instructions that include persona background, tone descriptors, signature opinions, and explicit guidance on response style)\n- topics (array of 3-5 specific conversation topics related to the persona).\nThe prompt should describe how the persona responds, mention the tone, cite their core opinions, and explain how they engage with others.` }
-      ], 0.65);
+      ], 1.0);
       const detail = extractJSON(detailText);
       if(!detail){ throw new Error('Could not parse persona detail response.'); }
       assignGeneratedPersona(side, detail);
