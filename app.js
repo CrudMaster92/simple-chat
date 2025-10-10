@@ -92,6 +92,89 @@
   const customModelEl = el('customModel');
   const btnPaste = el('btnPaste');
 
+  // Audio feedback for new messages
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  let audioCtx;
+  function ensureAudioCtx(){
+    if(!AudioContextClass) return null;
+    if(!audioCtx){
+      try{ audioCtx = new AudioContextClass(); }
+      catch(_){ audioCtx = null; return null; }
+    }
+    return audioCtx;
+  }
+  function resumeAudioIfNeeded(ctx){
+    if(ctx && ctx.state === 'suspended'){
+      try{ return ctx.resume(); }
+      catch(_){ }
+    }
+    return null;
+  }
+  function primeAudio(){
+    const ctx = ensureAudioCtx();
+    if(!ctx) return;
+    const resumed = resumeAudioIfNeeded(ctx);
+    if(ctx.state === 'running'){
+      document.removeEventListener('pointerdown', primeAudio);
+      document.removeEventListener('keydown', primeAudio);
+    }else if(resumed && typeof resumed.then === 'function'){
+      resumed.then(()=>{
+        if(ctx.state === 'running'){
+          document.removeEventListener('pointerdown', primeAudio);
+          document.removeEventListener('keydown', primeAudio);
+        }
+      }).catch(()=>{});
+    }
+  }
+  if(AudioContextClass){
+    document.addEventListener('pointerdown', primeAudio, { passive:true });
+    document.addEventListener('keydown', primeAudio);
+  }
+  function playMessageSound(isA){
+    const ctx = ensureAudioCtx();
+    if(!ctx) return;
+    if(ctx.state !== 'running'){
+      const resumed = resumeAudioIfNeeded(ctx);
+      if(resumed && typeof resumed.then === 'function'){
+        resumed.then(()=>{
+          if(ctx.state === 'running') playMessageSound(isA);
+        }).catch(()=>{});
+      }
+      return;
+    }
+    try{
+      const now = ctx.currentTime;
+      const primary = ctx.createOscillator();
+      const primaryGain = ctx.createGain();
+      const base = isA ? 520 : 360;
+      const glideTarget = isA ? base * 1.32 : Math.max(120, base * 0.54);
+      primary.type = isA ? 'triangle' : 'sine';
+      primary.frequency.setValueAtTime(base, now);
+      primary.frequency.exponentialRampToValueAtTime(glideTarget, now + 0.32);
+      primaryGain.gain.setValueAtTime(0.0001, now);
+      primaryGain.gain.exponentialRampToValueAtTime(0.22, now + 0.02);
+      primaryGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.36);
+      primary.connect(primaryGain);
+      primaryGain.connect(ctx.destination);
+      primary.start(now);
+      primary.stop(now + 0.38);
+
+      const overtone = ctx.createOscillator();
+      const overtoneGain = ctx.createGain();
+      const overtoneBase = isA ? base * 2 : base * 0.82;
+      overtone.type = isA ? 'sine' : 'triangle';
+      overtone.frequency.setValueAtTime(overtoneBase, now);
+      overtone.frequency.exponentialRampToValueAtTime(isA ? overtoneBase * 1.18 : Math.max(90, overtoneBase * 0.6), now + 0.22);
+      overtoneGain.gain.setValueAtTime(0.0001, now);
+      overtoneGain.gain.exponentialRampToValueAtTime(isA ? 0.07 : 0.05, now + 0.03);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.26);
+      overtone.connect(overtoneGain);
+      overtoneGain.connect(ctx.destination);
+      overtone.start(now);
+      overtone.stop(now + 0.28);
+    }catch(_){ }
+  }
+
   const nameAEl = el('nameA'), nameBEl = el('nameB');
   const emojiAEl = el('emojiA'), emojiBEl = el('emojiB');
   const colorAEl = el('colorA'), colorBEl = el('colorB');
@@ -483,10 +566,11 @@
     b.appendChild(label); b.appendChild(body);
     return b;
   }
-  function appendMessage(who, name, emoji, text){
+  function appendMessage(who, name, emoji, text, options = {}){
     const row = document.createElement('div');
     const isA = who==='A';
     row.className = 'msg-row ' + (isA ? 'left' : 'right');
+    row.style.setProperty('--bubble-glow', isA ? 'rgba(59,130,246,0.32)' : 'rgba(16,185,129,0.32)');
     const bg = isA ? colorAEl.value : colorBEl.value;
     if(isA){
       row.appendChild(makeAvatar('a', emoji));
@@ -496,7 +580,15 @@
       row.appendChild(makeAvatar('b', emoji));
     }
     convEl.appendChild(row);
-    convEl.scrollTop = convEl.scrollHeight;
+    const scrollToBottom = ()=>{ convEl.scrollTop = convEl.scrollHeight; };
+    scrollToBottom();
+    requestAnimationFrame(()=>{
+      row.classList.add('animate-in');
+      scrollToBottom();
+    });
+    if(!options.silent){
+      playMessageSound(isA);
+    }
   }
   function showTyping(side, name, emoji){
     const row = document.createElement('div');
@@ -737,7 +829,7 @@
     messages.forEach(m=>{
       const name = m.who==='A'? nameAEl.value : nameBEl.value;
       const emoji = m.who==='A'? emojiAEl.value : emojiBEl.value;
-      appendMessage(m.who, name, emoji, m.text);
+      appendMessage(m.who, name, emoji, m.text, { silent:true });
     });
     renderHistory();
     showView('chat');
