@@ -171,26 +171,48 @@
         <!-- CHAT VIEW -->
         <div id="viewChat" class="view">
           <div class="pad">
-            <div class="card">
-              <div class="section-title">Conversation</div>
-              <div id="conv" class="conv"></div>
-              <div class="pad">
-                <div class="row">
-                  <div class="col">
-                    <div class="label">Moderator message (optional)</div>
-                    <input id="moderatorMsg" type="text" placeholder="Add direction for the next segment…">
+            <div class="chat-layout">
+              <aside class="memory-bar card">
+                <div class="memory-header">Conversation Memory</div>
+                <div id="chatHistoryList" class="memory-list"></div>
+              </aside>
+              <div class="chat-main">
+                <div class="card conversation-card">
+                  <div class="section-title">Conversation</div>
+                  <div class="conversation-summary">
+                    <div id="summaryAChip" class="summary-chip">
+                      <span id="summaryAEmoji" class="summary-emoji">🅰️</span>
+                      <span id="summaryAName" class="summary-name">Persona A</span>
+                      <div class="summary-detail" id="summaryADetail">No persona prompt provided yet.</div>
+                    </div>
+                    <div id="summaryTopicChip" class="summary-chip topic">
+                      <span class="summary-emoji">🧭</span>
+                      <span id="summaryTopicText" class="summary-name">No topic set</span>
+                      <div class="summary-detail" id="summaryTopicDetail">Add a moderator preprompt to define the topic.</div>
+                    </div>
+                    <div id="summaryBChip" class="summary-chip">
+                      <span id="summaryBEmoji" class="summary-emoji">🅱️</span>
+                      <span id="summaryBName" class="summary-name">Persona B</span>
+                      <div class="summary-detail" id="summaryBDetail">No persona prompt provided yet.</div>
+                    </div>
                   </div>
-                  <div style="width:150px">
-                    <div class="label">Add exchanges</div>
-                    <input id="extendCount" type="number" min="1" value="2">
+                  <div id="conv" class="conv"></div>
+                  <div class="pad">
+                    <div class="row">
+                      <div class="col">
+                        <div class="label">Moderator message (optional)</div>
+                        <input id="moderatorMsg" type="text" placeholder="Add direction for the next segment…">
+                      </div>
+                      <div style="width:150px">
+                        <div class="label">Add exchanges</div>
+                        <input id="extendCount" type="number" min="1" value="2">
+                      </div>
+                    </div>
+                    <div class="row" style="margin-top:8px">
+                      <button id="extendBtn" class="btn primary">Extend Discussion</button>
+                      <button id="newBtn" class="btn light">New Chat</button>
+                    </div>
                   </div>
-                </div>
-                <div class="row" style="margin-top:8px">
-                  <button id="extendBtn" class="btn primary">Extend Discussion</button>
-                  <button id="newBtn" class="btn light">New Chat</button>
-                  <button id="saveBtn" class="btn dark">Save Conversation</button>
-                  <button id="copyBtn" class="btn light" disabled>Copy Transcript</button>
-                  <button id="backToSetup" class="btn light">Back to Setup</button>
                 </div>
               </div>
             </div>

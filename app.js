@@ -7,14 +7,12 @@
   const btnSetup = el('btnSetup');
   const btnChat = el('btnChat');
   const startBtn = el('startBtn');
-  const backToSetup = el('backToSetup');
   function showView(view){
     viewSetup.classList.toggle('active', view==='setup');
     viewChat.classList.toggle('active', view==='chat');
   }
   btnSetup.addEventListener('click', ()=>showView('setup'));
   btnChat.addEventListener('click', ()=>showView('chat'));
-  backToSetup.addEventListener('click', ()=>showView('setup'));
 
   // Elements
   const apiKeyEl = el('apiKey');
@@ -42,8 +40,6 @@
   const applyScenarioBtn = el('applyScenario');
   const scenarioPreviewEl = el('scenarioPreview');
   const newBtn = el('newBtn');
-  const saveBtn = el('saveBtn');
-  const copyBtn = el('copyBtn');
 
   const presetAEl = el('presetA');
   const presetBEl = el('presetB');
@@ -60,6 +56,13 @@
   const historyList = el('historyList');
   const refreshHistoryBtn = el('refreshHistory');
   const clearHistoryBtn = el('clearHistory');
+  const chatHistoryList = el('chatHistoryList');
+
+  const summaryAName = el('summaryAName'), summaryBName = el('summaryBName');
+  const summaryAEmoji = el('summaryAEmoji'), summaryBEmoji = el('summaryBEmoji');
+  const summaryADetail = el('summaryADetail'), summaryBDetail = el('summaryBDetail');
+  const summaryTopicText = el('summaryTopicText');
+  const summaryTopicDetail = el('summaryTopicDetail');
 
   // Local storage for key
   const savedKey = localStorage.getItem('openaiKey');
@@ -83,18 +86,48 @@
   temperatureEl.addEventListener('input', updateTemp);
   updateTemp();
 
+  function updateSummary(){
+    if(summaryAName){
+      const name = nameAEl.value || 'Persona A';
+      const emoji = (emojiAEl.value && emojiAEl.value.trim()) ? emojiAEl.value.trim() : '🅰️';
+      summaryAName.textContent = name;
+      if(summaryAEmoji) summaryAEmoji.textContent = emoji;
+      if(summaryADetail) summaryADetail.textContent = promptAEl.value ? promptAEl.value : 'No persona prompt provided yet.';
+    }
+    if(summaryBName){
+      const name = nameBEl.value || 'Persona B';
+      const emoji = (emojiBEl.value && emojiBEl.value.trim()) ? emojiBEl.value.trim() : '🅱️';
+      summaryBName.textContent = name;
+      if(summaryBEmoji) summaryBEmoji.textContent = emoji;
+      if(summaryBDetail) summaryBDetail.textContent = promptBEl.value ? promptBEl.value : 'No persona prompt provided yet.';
+    }
+    if(summaryTopicText){
+      const topic = (moderatorPrepromptEl && moderatorPrepromptEl.value ? moderatorPrepromptEl.value.trim() : '');
+      if(topic){
+        summaryTopicText.textContent = topic.length>80 ? topic.slice(0,80)+'…' : topic;
+        if(summaryTopicDetail) summaryTopicDetail.textContent = topic;
+      }else{
+        summaryTopicText.textContent = 'No topic set';
+        if(summaryTopicDetail) summaryTopicDetail.textContent = 'Add a moderator preprompt to define the topic.';
+      }
+    }
+  }
+
   // Live chips + emojis (fix)
   function syncChips(){
     chipAName.textContent = nameAEl.value || 'Persona A';
     chipBName.textContent = nameBEl.value || 'Persona B';
     chipAEmoji.textContent = (emojiAEl.value && emojiAEl.value.trim()) ? emojiAEl.value : '🅰️';
     chipBEmoji.textContent = (emojiBEl.value && emojiBEl.value.trim()) ? emojiBEl.value : '🅱️';
+    updateSummary();
   }
   nameAEl.addEventListener('input', syncChips);
   nameBEl.addEventListener('input', syncChips);
   emojiAEl.addEventListener('input', syncChips);
   emojiBEl.addEventListener('input', syncChips);
   syncChips();
+  if(moderatorPrepromptEl) moderatorPrepromptEl.addEventListener('input', updateSummary);
+  updateSummary();
 
   const samplePersonas = Array.isArray(window.samplePersonas) ? window.samplePersonas : [];
   const sampleScenarios = Array.isArray(window.sampleScenarios) ? window.sampleScenarios : [];
@@ -170,6 +203,7 @@
     if(moderatorPrepromptEl) moderatorPrepromptEl.value = scenario.prompt || '';
     if(scenarioPreviewEl) scenarioPreviewEl.value = scenario.prompt || '';
     setGeneratorStatus(`Loaded sample scenario "${scenario.label || scenario.id}" into the moderator preprompt.`, false);
+    updateSummary();
   }
 
   if(applyScenarioBtn) applyScenarioBtn.addEventListener('click', applyScenario);
@@ -344,11 +378,6 @@
       return label + ': ' + m.text;
     }).join('\n');
   }
-  copyBtn.addEventListener('click', ()=>{
-    navigator.clipboard.writeText(transcript());
-    alert('Transcript copied.');
-  });
-
   // UI builders
   function makeAvatar(side, emoji){
     const av = document.createElement('div');
@@ -443,6 +472,7 @@
       removeTyping(typingRow);
       appendMessage(current, name, emoji, reply);
       messages.push({ who: current, text: reply });
+      persistSession();
       return true;
     }catch(err){
       console.error(err);
@@ -457,7 +487,6 @@
     if(!promptAEl.value || !promptBEl.value){ alert('Both personas need prompts.'); return; }
     if(running) return;
     running = true;
-    copyBtn.disabled = true;
 
     let current = (messages.length % 2 === 0) ? 'A' : 'B'; // alternate; start with A on fresh chat
     for(let i=0;i<pairs*2;i++){
@@ -467,7 +496,6 @@
     }
 
     running = false;
-    copyBtn.disabled = messages.length===0;
   }
 
   // Start Chat (new session)
@@ -475,6 +503,7 @@
     messages = [];
     convEl.innerHTML = '';
     currentSessionId = 'sess_'+Date.now();
+    renderHistory();
     showView('chat');
     const pairs = Math.max(1, parseInt(exchangesEl.value)||1);
     runSegment(pairs, '');
@@ -488,10 +517,11 @@
 
   // New chat (keep settings)
   newBtn.addEventListener('click', ()=>{
-    if(messages.length>0 && !confirm('Start a new chat? (Current conversation will remain unsaved unless you Save.)')) return;
+    if(messages.length>0 && !confirm('Start a new chat? Your current conversation is already saved automatically.')) return;
     messages = [];
     convEl.innerHTML = '';
     currentSessionId = 'sess_'+Date.now();
+    renderHistory();
   });
 
   // Save conversation to memory
@@ -501,67 +531,99 @@
   function setMemory(arr){
     localStorage.setItem('personaChat.sessions', JSON.stringify(arr));
   }
-  function saveCurrent(){
-    if(!messages.length){ alert('Nothing to save yet.'); return; }
-    const rec = {
-      id: currentSessionId || ('sess_'+Date.now()),
+  function ensureSessionId(){
+    if(!currentSessionId) currentSessionId = 'sess_'+Date.now();
+  }
+  function buildSessionRecord(){
+    ensureSessionId();
+    return {
+      id: currentSessionId,
       ts: Date.now(),
       a: { name: nameAEl.value, emoji: emojiAEl.value, prompt: promptAEl.value, color: colorAEl.value },
       b: { name: nameBEl.value, emoji: emojiBEl.value, prompt: promptBEl.value, color: colorBEl.value },
       model: (modelEl.value==='custom' ? (customModelEl.value || 'gpt-5') : modelEl.value),
       temperature: clampTemp(temperatureEl.value),
-      messages,
+      messages: messages.slice(),
       moderatorPreprompt: moderatorPrepromptEl.value
     };
-    currentSessionId = rec.id;
+  }
+  function persistSession(){
+    if(!messages.length) return;
+    const rec = buildSessionRecord();
     const all = getMemory();
     const idx = all.findIndex(s=>s.id===rec.id);
-    if(idx>=0) all[idx]=rec; else all.unshift(rec);
+    if(idx>=0){
+      all.splice(idx, 1);
+    }
+    all.unshift(rec);
     setMemory(all);
-    alert('Conversation saved.');
     renderHistory();
   }
-  saveBtn.addEventListener('click', saveCurrent);
+
+  function formatHistoryTitle(rec){
+    const aLabel = `${rec.a.emoji||''} ${rec.a.name||'Persona A'}`.trim();
+    const bLabel = `${rec.b.emoji||''} ${rec.b.name||'Persona B'}`.trim();
+    return `${aLabel} vs ${bLabel}`;
+  }
+
+  function renderHistoryList(container, records, variant){
+    if(!container) return;
+    container.innerHTML = '';
+    if(!records.length){
+      const empty = document.createElement('div');
+      empty.className = variant==='chat' ? 'memory-empty muted' : 'muted';
+      empty.textContent = 'No saved conversations yet.';
+      container.appendChild(empty);
+      return;
+    }
+    records.forEach(rec=>{
+      if(variant==='chat'){
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'memory-item' + (rec.id===currentSessionId ? ' active' : '');
+        const title = document.createElement('div');
+        title.className = 'memory-title';
+        title.textContent = formatHistoryTitle(rec);
+        const meta = document.createElement('div');
+        meta.className = 'memory-meta';
+        meta.textContent = new Date(rec.ts).toLocaleString();
+        btn.appendChild(title);
+        btn.appendChild(meta);
+        btn.addEventListener('click', ()=>loadSession(rec.id));
+        container.appendChild(btn);
+      }else{
+        const item = document.createElement('div');
+        item.className = 'hist-item' + (rec.id===currentSessionId ? ' active' : '');
+        const left = document.createElement('div');
+        left.className = 'hist-title';
+        left.textContent = `${new Date(rec.ts).toLocaleString()} — ${formatHistoryTitle(rec)}`;
+        const right = document.createElement('div');
+        right.className = 'row';
+        const btnLoad = document.createElement('button');
+        btnLoad.className = 'btn light';
+        btnLoad.textContent = 'Load';
+        btnLoad.addEventListener('click', ()=>loadSession(rec.id));
+        const btnDel = document.createElement('button');
+        btnDel.className = 'btn warn';
+        btnDel.textContent = 'Delete';
+        btnDel.addEventListener('click', ()=>{
+          if(!confirm('Delete this conversation?')) return;
+          const arr = getMemory().filter(x=>x.id!==rec.id);
+          setMemory(arr);
+          renderHistory();
+        });
+        right.appendChild(btnLoad); right.appendChild(btnDel);
+        item.appendChild(left); item.appendChild(right);
+        container.appendChild(item);
+      }
+    });
+  }
 
   // History list
   function renderHistory(){
     const all = getMemory();
-    historyList.innerHTML = '';
-    if(!all.length){
-      const p = document.createElement('div');
-      p.className = 'muted';
-      p.textContent = 'No saved conversations yet.';
-      historyList.appendChild(p);
-      return;
-    }
-    all.forEach(rec=>{
-      const item = document.createElement('div');
-      item.className = 'hist-item';
-      const left = document.createElement('div');
-      left.className = 'hist-title';
-      const d = new Date(rec.ts);
-      const aLabel = `${rec.a.emoji||''} ${rec.a.name||'Persona A'}`.trim();
-      const bLabel = `${rec.b.emoji||''} ${rec.b.name||'Persona B'}`.trim();
-      left.textContent = `${d.toLocaleString()} — ${aLabel} vs ${bLabel}`;
-      const right = document.createElement('div');
-      right.className = 'row';
-      const btnLoad = document.createElement('button');
-      btnLoad.className = 'btn light';
-      btnLoad.textContent = 'Load';
-      btnLoad.addEventListener('click', ()=>loadSession(rec.id));
-      const btnDel = document.createElement('button');
-      btnDel.className = 'btn warn';
-      btnDel.textContent = 'Delete';
-      btnDel.addEventListener('click', ()=>{
-        if(!confirm('Delete this conversation?')) return;
-        const arr = getMemory().filter(x=>x.id!==rec.id);
-        setMemory(arr);
-        renderHistory();
-      });
-      right.appendChild(btnLoad); right.appendChild(btnDel);
-      item.appendChild(left); item.appendChild(right);
-      historyList.appendChild(item);
-    });
+    renderHistoryList(historyList, all, 'setup');
+    renderHistoryList(chatHistoryList, all, 'chat');
   }
   function loadSession(id){
     const rec = getMemory().find(x=>x.id===id);
@@ -595,7 +657,7 @@
       const emoji = m.who==='A'? emojiAEl.value : emojiBEl.value;
       appendMessage(m.who, name, emoji, m.text);
     });
-    copyBtn.disabled = messages.length===0;
+    renderHistory();
     showView('chat');
   }
 
