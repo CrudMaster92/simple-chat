@@ -67,6 +67,11 @@
                     </div>
                   </div>
                   <div class="label" style="margin-top:12px">Moderator preprompt</div>
+                  <div class="row" style="margin-top:6px">
+                    <select id="presetScenario"></select>
+                    <button id="applyScenario" class="btn light" style="margin-left:8px">Load scenario</button>
+                  </div>
+                  <textarea id="scenarioPreview" rows="3" readonly placeholder="Selected scenario preview appears here"></textarea>
                   <textarea id="moderatorPreprompt" rows="3" placeholder="Define the debate rules or initial discussion guidance"></textarea>
                   <div class="row" style="margin-top:10px">
                     <button id="startBtn" class="btn primary">Start Chat</button>
@@ -196,6 +201,7 @@
     </div>
 
     <script src="personas-data.js"></script>
+    <script src="scenarios-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
