@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body class="scanlines-enabled">
     <main class="cracktro" role="presentation">
       <div class="cracktro__backdrop" aria-hidden="true">
         <div class="cracktro__grid"></div>
@@ -22,6 +22,20 @@
         <p class="cracktro__subtitle">Loading dreams from the demoscene underground.</p>
       </section>
 
+      <section class="cracktro__controls" aria-label="Demo controls">
+        <button id="startDemo" class="control-button control-button--primary">
+          Start Demo
+        </button>
+        <button id="stopDemo" class="control-button" disabled>
+          Stop Demo
+        </button>
+        <button id="toggleScanlines" class="control-button" aria-pressed="true">
+          Toggle Scanlines
+        </button>
+      </section>
+
+      <p class="cracktro__status" id="statusMessage" role="status" aria-live="polite"></p>
+
       <section class="cracktro__marquee" aria-live="polite">
         <div class="marquee__mask">
           <p class="marquee__text" id="marqueeText">
@@ -30,7 +44,7 @@
         </div>
       </section>
 
-      <section class="cracktro__banners">
+      <section class="cracktro__banners" aria-live="polite">
         <p class="cracktro__banner" data-delay="500">Boot sequence initialized...</p>
         <p class="cracktro__banner" data-delay="2200">Decrypting old-school swagger...</p>
         <p class="cracktro__banner" data-delay="3900">Syncing scroll texts and SID vibes...</p>
