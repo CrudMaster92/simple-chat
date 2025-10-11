@@ -1,0 +1,127 @@
+:root {
+  --bg: radial-gradient(circle at top, #1a1a2e, #050510 70%);
+  --accent: #00e0ff;
+  --accent-secondary: #ff00d4;
+  --text: #f2f4ff;
+  --scanline-color: rgba(255, 255, 255, 0.07);
+  --font: 'Orbitron', 'Courier New', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+.cracktro {
+  width: min(900px, 90vw);
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  box-shadow: 0 0 32px rgba(0, 224, 255, 0.2);
+}
+
+.cracktro__header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.cracktro__icon {
+  width: 72px;
+  height: 72px;
+}
+
+.cracktro__tagline {
+  margin-top: 0.5rem;
+  color: rgba(242, 244, 255, 0.75);
+}
+
+.cracktro__screen {
+  position: relative;
+  border: 2px solid var(--accent-secondary);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(5, 5, 16, 0.9);
+}
+
+.cracktro__screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 96%,
+    var(--scanline-color) 98%,
+    transparent 100%
+  );
+  background-size: 100% 4px;
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cracktro__screen--scanlines::after {
+  opacity: 1;
+}
+
+#rasterCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: linear-gradient(180deg, #32004f, #050510);
+}
+
+.cracktro__scroll {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-transform: uppercase;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cracktro__controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+button:hover,
+button:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(0, 224, 255, 0.4);
+  outline: none;
+}
+
+button:active {
+  transform: translateY(0);
+  background: rgba(0, 224, 255, 0.15);
+}

@@ -1,0 +1,12 @@
+{
+  "slug": "razor-cracktro",
+  "name": "Razor Cracktro",
+  "description": "Retro cracktro showcase with raster bars, scrolltext, and chiptune ambiance.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-10",
+  "tags": ["retro", "demo", "audio"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

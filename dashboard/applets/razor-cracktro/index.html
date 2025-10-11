@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Razor Cracktro</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="cracktro">
+      <header class="cracktro__header">
+        <img src="./assets/icon.svg" alt="Razor Cracktro logo" class="cracktro__icon" />
+        <h1>Razor Cracktro</h1>
+        <p class="cracktro__tagline">A tribute to the demoscene's golden intros.</p>
+      </header>
+      <section class="cracktro__screen">
+        <canvas id="rasterCanvas" width="640" height="360" aria-label="Raster bar animation"></canvas>
+        <div id="scrollText" class="cracktro__scroll">WELCOME TO THE RAZOR CRACKTRO SHOWCASE — PRESS START TO ROLL THE DEMO!</div>
+      </section>
+      <section class="cracktro__controls">
+        <button id="startButton" type="button">Start Demo</button>
+        <button id="stopButton" type="button">Stop Demo</button>
+        <button id="scanlineButton" type="button">Toggle Scanlines</button>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
