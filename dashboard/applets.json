@@ -1,3 +1,4 @@
 {
-  "simple-chat": "./applets/simple-chat/applet.json"
+  "simple-chat": "./applets/simple-chat/applet.json",
+  "razor-cracktro": "./applets/razor-cracktro/applet.json"
 }

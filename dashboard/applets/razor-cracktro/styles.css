@@ -42,6 +42,14 @@ body::before {
   opacity: 0.4;
 }
 
+body.scanlines-disabled::before {
+  opacity: 0;
+}
+
+body.scanlines-disabled .cracktro::after {
+  opacity: 0;
+}
+
 .cracktro {
   position: relative;
   width: min(960px, 92vw);
@@ -107,6 +115,66 @@ body::before {
   gap: 0.75rem;
   text-align: center;
   margin-bottom: 2.5rem;
+}
+
+.cracktro__controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.control-button {
+  position: relative;
+  padding: 0.65rem 1.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 0 12px rgba(22, 244, 255, 0.2);
+}
+
+.control-button:hover:not(:disabled),
+.control-button:focus-visible:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(249, 35, 255, 0.35);
+  outline: none;
+}
+
+.control-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.control-button--primary {
+  background: linear-gradient(90deg, rgba(22, 244, 255, 0.65), rgba(249, 35, 255, 0.6));
+  box-shadow: 0 0 18px rgba(22, 244, 255, 0.55);
+}
+
+.control-button[aria-pressed='false'] {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.control-button[aria-pressed='true'] {
+  background: linear-gradient(90deg, rgba(22, 244, 255, 0.35), rgba(249, 35, 255, 0.35));
+  box-shadow: 0 0 14px rgba(22, 244, 255, 0.3);
+}
+
+.cracktro__status {
+  min-height: 1.2em;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .cracktro__logo {

@@ -5,7 +5,7 @@
   "entry": "./index.html",
   "icon": "./assets/icon.svg",
   "version": "0.1.0",
-  "lastUpdated": "2024-05-10",
+  "lastUpdated": "2024-05-11",
   "tags": ["retro", "demo", "audio"],
   "author": "Simple Chat Contributors",
   "permissions": []
