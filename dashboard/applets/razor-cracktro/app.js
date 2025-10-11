@@ -1,140 +1,95 @@
-const canvas = document.getElementById('rasterCanvas');
-const ctx = canvas.getContext('2d');
-const scrollTextEl = document.getElementById('scrollText');
-const screen = document.querySelector('.cracktro__screen');
+const marqueeText = document.getElementById('marqueeText');
+const starfield = document.querySelector('.cracktro__starfield');
+const banners = Array.from(document.querySelectorAll('.cracktro__banner'));
+const loadingBar = document.getElementById('loadingBar');
+const loadingPercentage = document.getElementById('loadingPercentage');
 
-const startButton = document.getElementById('startButton');
-const stopButton = document.getElementById('stopButton');
-const scanlineButton = document.getElementById('scanlineButton');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const STAR_COUNT = prefersReducedMotion ? 20 : 80;
+const LOADING_DURATION = prefersReducedMotion ? 2500 : 6500;
+let ambientTimer = null;
+let stars = [];
 
-let animationFrameId = null;
-let scrollOffset = 0;
-let audioContext = null;
-let synthNodes = [];
-let running = false;
+function extendMarquee() {
+  if (!marqueeText) return;
+  const content = marqueeText.textContent.trim();
+  marqueeText.textContent = `${content} ${content}`;
+}
 
-const barColors = ['#00e0ff', '#ff00d4', '#ffe600', '#00ff94'];
-
-function drawRasterBars(time) {
-  const { width, height } = canvas;
-  ctx.clearRect(0, 0, width, height);
-
-  const barHeight = 18;
-  for (let y = 0; y < height + barHeight; y += barHeight) {
-    const t = (time / 200 + y) * 0.02;
-    const amplitude = Math.sin(t) * 20;
-    const offsetX = Math.cos(t * 0.7) * 30 + amplitude;
-
-    const gradient = ctx.createLinearGradient(0, y, width, y + barHeight);
-    const color = barColors[y / barHeight % barColors.length];
-    gradient.addColorStop(0, '#01010f');
-    gradient.addColorStop(0.5, color);
-    gradient.addColorStop(1, '#01010f');
-
-    ctx.save();
-    ctx.translate(offsetX, 0);
-    ctx.fillStyle = gradient;
-    ctx.fillRect(-40, y, width + 80, barHeight);
-    ctx.restore();
+function createStarfield() {
+  if (!starfield) return;
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < STAR_COUNT; i += 1) {
+    const star = document.createElement('span');
+    star.className = 'star';
+    const size = (Math.random() * 2.5 + 1).toFixed(2);
+    star.style.setProperty('--size', `${size}px`);
+    star.style.setProperty('--delay', `${Math.random() * 6}s`);
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+    fragment.appendChild(star);
+    stars.push(star);
   }
+  starfield.appendChild(fragment);
 }
 
-function updateScrollText() {
-  scrollOffset -= 2;
-  if (Math.abs(scrollOffset) > scrollTextEl.scrollWidth) {
-    scrollOffset = scrollTextEl.clientWidth;
-  }
-  scrollTextEl.style.transform = `translateX(${scrollOffset}px)`;
-}
-
-function loop(time) {
-  drawRasterBars(time);
-  updateScrollText();
-  animationFrameId = requestAnimationFrame(loop);
-}
-
-function startDemo() {
-  if (running) return;
-  running = true;
-  animationFrameId = requestAnimationFrame(loop);
-  startAudio();
-}
-
-function stopDemo() {
-  running = false;
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
-  }
-  stopAudio();
-}
-
-function startAudio() {
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  const now = audioContext.currentTime;
-
-  const bass = audioContext.createOscillator();
-  const bassGain = audioContext.createGain();
-  bass.type = 'sawtooth';
-  bass.frequency.setValueAtTime(55, now);
-  bassGain.gain.setValueAtTime(0.1, now);
-  bass.connect(bassGain).connect(audioContext.destination);
-  bass.start();
-
-  const lead = audioContext.createOscillator();
-  const leadGain = audioContext.createGain();
-  lead.type = 'square';
-  lead.frequency.setValueAtTime(440, now);
-  lead.frequency.linearRampToValueAtTime(880, now + 1.5);
-  lead.frequency.linearRampToValueAtTime(440, now + 3);
-  leadGain.gain.setValueAtTime(0.05, now);
-  lead.connect(leadGain).connect(audioContext.destination);
-  lead.start();
-
-  const lfo = audioContext.createOscillator();
-  const lfoGain = audioContext.createGain();
-  lfo.frequency.value = 4;
-  lfoGain.gain.value = 20;
-  lfo.connect(lfoGain);
-  lfoGain.connect(lead.frequency);
-  lfo.start();
-
-  synthNodes = [bass, lead, lfo, bassGain, leadGain, lfoGain];
-}
-
-function stopAudio() {
-  if (!audioContext) return;
-  const now = audioContext.currentTime;
-  synthNodes.forEach((node) => {
-    if (node.stop) {
-      try {
-        node.stop(now + 0.1);
-      } catch (error) {
-        console.warn('Node already stopped', error);
-      }
-    }
-    if (node.gain) {
-      node.gain.setTargetAtTime(0, now, 0.1);
-    }
-    if (node.disconnect) {
-      node.disconnect();
-    }
+function revealBanners() {
+  banners.forEach((banner) => {
+    const delay = Number(banner.dataset.delay) || 0;
+    setTimeout(() => {
+      banner.classList.add('is-visible');
+    }, delay);
   });
-  synthNodes = [];
 }
 
-function toggleScanlines() {
-  screen.classList.toggle('cracktro__screen--scanlines');
-}
+function animateLoadingBar() {
+  if (!loadingBar) return;
+  let startTime = null;
 
-startButton.addEventListener('click', startDemo);
-stopButton.addEventListener('click', stopDemo);
-scanlineButton.addEventListener('click', toggleScanlines);
+  function step(timestamp) {
+    if (startTime === null) {
+      startTime = timestamp;
+    }
+    const elapsed = timestamp - startTime;
+    const progress = Math.min(elapsed / LOADING_DURATION, 1);
+    const percent = Math.floor(progress * 100);
+    loadingBar.style.width = `${percent}%`;
+    if (loadingPercentage) {
+      loadingPercentage.textContent = `${percent}%`;
+    }
 
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    stopDemo();
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      loadingBar.style.width = '100%';
+      loadingBar.classList.add('is-complete');
+      if (loadingPercentage) {
+        loadingPercentage.textContent = '100%';
+      }
+      startAmbientLoop();
+    }
   }
-});
+
+  requestAnimationFrame(step);
+}
+
+function startAmbientLoop() {
+  if (ambientTimer || stars.length === 0) return;
+  ambientTimer = setInterval(() => {
+    const star = stars[Math.floor(Math.random() * stars.length)];
+    if (!star) {
+      return;
+    }
+    star.classList.add('twinkle');
+    setTimeout(() => star.classList.remove('twinkle'), 700);
+  }, prefersReducedMotion ? 1200 : 450);
+}
+
+function init() {
+  extendMarquee();
+  createStarfield();
+  revealBanners();
+  animateLoadingBar();
+}
+
+document.addEventListener('DOMContentLoaded', init);

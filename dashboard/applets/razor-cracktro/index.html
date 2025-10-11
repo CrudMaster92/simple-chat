@@ -8,22 +8,44 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="cracktro">
-      <header class="cracktro__header">
-        <img src="./assets/icon.svg" alt="Razor Cracktro logo" class="cracktro__icon" />
-        <h1>Razor Cracktro</h1>
-        <p class="cracktro__tagline">A tribute to the demoscene's golden intros.</p>
-      </header>
-      <section class="cracktro__screen">
-        <canvas id="rasterCanvas" width="640" height="360" aria-label="Raster bar animation"></canvas>
-        <div id="scrollText" class="cracktro__scroll">WELCOME TO THE RAZOR CRACKTRO SHOWCASE — PRESS START TO ROLL THE DEMO!</div>
+    <main class="cracktro" role="presentation">
+      <div class="cracktro__backdrop" aria-hidden="true">
+        <div class="cracktro__grid"></div>
+        <div class="cracktro__starfield"></div>
+      </div>
+
+      <section class="cracktro__hero" aria-labelledby="cracktro-title">
+        <div class="cracktro__logo">
+          <img src="./assets/icon.svg" alt="Razor crew logo" />
+        </div>
+        <h1 id="cracktro-title" class="cracktro__title">Razor Cracktro</h1>
+        <p class="cracktro__subtitle">Loading dreams from the demoscene underground.</p>
       </section>
-      <section class="cracktro__controls">
-        <button id="startButton" type="button">Start Demo</button>
-        <button id="stopButton" type="button">Stop Demo</button>
-        <button id="scanlineButton" type="button">Toggle Scanlines</button>
+
+      <section class="cracktro__marquee" aria-live="polite">
+        <div class="marquee__mask">
+          <p class="marquee__text" id="marqueeText">
+            * RAZOR PRESENTS * PURE NEON PIXEL MAGIC * CODED FOR THE HYPERSPACE BBS * GREETINGS TO ALL SCENERS *
+          </p>
+        </div>
+      </section>
+
+      <section class="cracktro__banners">
+        <p class="cracktro__banner" data-delay="500">Boot sequence initialized...</p>
+        <p class="cracktro__banner" data-delay="2200">Decrypting old-school swagger...</p>
+        <p class="cracktro__banner" data-delay="3900">Syncing scroll texts and SID vibes...</p>
+      </section>
+
+      <section class="cracktro__loading" aria-live="assertive">
+        <div class="loading__label">Transfer Progress</div>
+        <div class="loading__track">
+          <div class="loading__bar" id="loadingBar">
+            <span class="loading__glow"></span>
+          </div>
+        </div>
+        <div class="loading__percentage" id="loadingPercentage">0%</div>
       </section>
     </main>
-    <script src="./app.js"></script>
+    <script src="./app.js" defer></script>
   </body>
 </html>
