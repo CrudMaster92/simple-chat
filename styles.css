@@ -593,6 +593,22 @@ body[data-theme="dark"] .avatar.b{color:#0affda;}
   width:100%;
 }
 
+.persona-model-grid{
+  display:grid;
+  gap:14px;
+}
+@media (min-width:720px){
+  .persona-model-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-items:end;
+  }
+}
+.persona-model-block{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
 .api-status-row{
   display:flex;
   gap:12px;
