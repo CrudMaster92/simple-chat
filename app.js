@@ -257,7 +257,6 @@
   const moderatorPrepromptEl = el('moderatorPreprompt');
   const presetScenarioEl = el('presetScenario');
   const applyScenarioBtn = el('applyScenario');
-  const scenarioPreviewEl = el('scenarioPreview');
   const newBtn = el('newBtn');
 
   const presetAEl = el('presetA');
@@ -528,7 +527,6 @@
     }
     presetScenarioEl.disabled = !hasAny;
     if(applyScenarioBtn) applyScenarioBtn.disabled = !hasAny;
-    if(scenarioPreviewEl) scenarioPreviewEl.value = '';
   }
 
   populateScenarioSelect();
@@ -546,38 +544,26 @@
     return sampleScenarios.find(s=>s.id===value) || savedScenarios.find(s=>s.id===value) || null;
   }
 
-  function updateScenarioPreview(){
-    if(!scenarioPreviewEl) return;
-    const id = presetScenarioEl ? presetScenarioEl.value : '';
-    if(!id){
-      scenarioPreviewEl.value = '';
-      return;
-    }
-    const scenario = resolveScenarioByValue(id);
-    scenarioPreviewEl.value = scenario ? (scenario.prompt || '') : '';
-  }
-
-  if(presetScenarioEl) presetScenarioEl.addEventListener('change', updateScenarioPreview);
-
-  function applyScenario(){
+  function applyScenario(options){
+    const skipAlert = options && options.skipAlert;
     if(!presetScenarioEl) return;
     const id = presetScenarioEl.value;
     if(!id){
-      alert('Pick a scenario to load.');
+      if(!skipAlert) alert('Pick a scenario to load.');
       return;
     }
     const scenario = resolveScenarioByValue(id);
     if(!scenario){
-      alert('Scenario not found.');
+      if(!skipAlert) alert('Scenario not found.');
       return;
     }
     if(moderatorPrepromptEl) moderatorPrepromptEl.value = scenario.prompt || '';
-    if(scenarioPreviewEl) scenarioPreviewEl.value = scenario.prompt || '';
-    setGeneratorStatus(`Loaded scenario "${scenario.label || scenario.id}" into the moderator preprompt.`, false);
+    setGeneratorStatus(`Loaded scenario "${scenario.label || scenario.id}" into the moderator guidance.`, false);
     updateSummary();
   }
 
-  if(applyScenarioBtn) applyScenarioBtn.addEventListener('click', applyScenario);
+  if(applyScenarioBtn) applyScenarioBtn.addEventListener('click', ()=>applyScenario());
+  if(presetScenarioEl) presetScenarioEl.addEventListener('change', ()=>applyScenario({ skipAlert:true }));
 
   function applyPreset(side){
     const select = side==='A' ? presetAEl : presetBEl;
@@ -693,7 +679,6 @@
     populateScenarioSelect();
     if(presetScenarioEl){
       presetScenarioEl.value = 'saved:'+entry.id;
-      updateScenarioPreview();
     }
     setGeneratorStatus(`Saved scenario "${entry.label}" locally.`, false);
   }

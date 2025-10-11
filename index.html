@@ -35,61 +35,29 @@
             <div class="accordion" id="setupAccordion">
               <section class="accordion-item open" data-accordion-item>
                 <button class="accordion-header" type="button" aria-expanded="true">
-                  <span class="accordion-title">Connection &amp; Run Settings</span>
+                  <span class="accordion-title">Conversation Defaults</span>
                   <span class="accordion-icon" aria-hidden="true">▾</span>
                 </button>
                 <div class="accordion-body">
-                  <div class="section-stack">
-                    <div class="panel">
-                      <div class="panel-title">API Access</div>
-                      <div class="label">API Key</div>
-                      <div class="row-stretch">
-                        <textarea id="apiKey" rows="1" placeholder="Enter your OpenAI API key"></textarea>
-                        <button id="btnPaste" class="btn dark">📋 Paste</button>
+                  <div class="panel">
+                    <div class="panel-title">Conversation Defaults</div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="label">Exchanges (A↔B pairs)</div>
+                        <input id="exchanges" type="number" min="1" value="3">
                       </div>
-                      <label class="row" style="margin-top:8px"><input id="rememberKey" type="checkbox"> <span class="muted">Remember key locally</span></label>
                     </div>
-                    <div class="panel">
-                      <div class="panel-title">Conversation Defaults</div>
-                      <div class="row">
-                        <div class="col">
-                          <div class="label">Exchanges (A↔B pairs)</div>
-                          <input id="exchanges" type="number" min="1" value="3">
-                        </div>
-                        <div class="col">
-                          <div class="label">Temperature: <span id="tempVal">1.0</span></div>
-                          <input id="temperature" type="range" min="0" max="2" step="0.1" value="1.0" style="width:100%">
-                        </div>
-                      </div>
-                      <div class="row" style="margin-top:8px">
-                        <div class="col">
-                          <div class="label">Model</div>
-                          <select id="model">
-                            <option value="gpt-5">gpt-5</option>
-                            <option value="gpt-5-mini">gpt-5-mini</option>
-                            <option value="gpt-5-chat-latest">gpt-5-chat-latest</option>
-                            <option value="custom">Custom…</option>
-                          </select>
-                        </div>
-                        <div class="col">
-                          <div class="label">Custom model (if selected)</div>
-                          <input id="customModel" type="text" placeholder="model name">
-                        </div>
-                      </div>
-                      <div class="row" style="margin-top:8px; gap:8px; align-items:center;">
-                        <button id="refreshModels" class="btn light" type="button">Refresh models</button>
-                        <div id="modelStatus" class="muted" aria-live="polite"></div>
-                      </div>
-                      <div class="label" style="margin-top:12px">Moderator preprompt</div>
+                    <div>
+                      <div class="label">Scenario presets</div>
                       <div class="row" style="margin-top:6px">
                         <select id="presetScenario"></select>
                         <button id="applyScenario" class="btn light">Load scenario</button>
                       </div>
-                      <textarea id="scenarioPreview" rows="3" readonly placeholder="Selected scenario preview appears here"></textarea>
-                      <textarea id="moderatorPreprompt" rows="3" placeholder="Define the debate rules or initial discussion guidance"></textarea>
-                      <div class="row" style="margin-top:8px; gap:8px; align-items:center;">
-                        <button id="saveScenario" class="btn light" type="button">Save scenario</button>
-                      </div>
+                    </div>
+                    <div class="label" style="margin-top:12px">Moderator guidance</div>
+                    <textarea id="moderatorPreprompt" rows="4" placeholder="Define the debate rules or load a scenario to prefill guidance"></textarea>
+                    <div class="row" style="margin-top:8px; gap:8px; align-items:center;">
+                      <button id="saveScenario" class="btn light" type="button">Save scenario</button>
                     </div>
                   </div>
                 </div>
@@ -236,6 +204,49 @@
                       <button id="clearHistory" class="btn warn">Clear All</button>
                     </div>
                     <div id="historyList" class="history-list" style="margin-top:12px"></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="accordion-item" data-accordion-item>
+                <button class="accordion-header" type="button" aria-expanded="false">
+                  <span class="accordion-title">API &amp; Model Settings</span>
+                  <span class="accordion-icon" aria-hidden="true">▾</span>
+                </button>
+                <div class="accordion-body">
+                  <div class="panel api-access-panel">
+                    <div class="panel-head">
+                      <div class="panel-title">API &amp; Model Settings</div>
+                      <label class="remember-toggle"><input id="rememberKey" type="checkbox"> <span class="muted">Remember key locally</span></label>
+                    </div>
+                    <label class="label" for="apiKey">API Key</label>
+                    <div class="api-input-row">
+                      <textarea id="apiKey" rows="1" placeholder="Enter your OpenAI API key"></textarea>
+                      <button id="btnPaste" class="btn dark">📋 Paste</button>
+                    </div>
+                    <div class="api-settings-grid">
+                      <div>
+                        <div class="label">Temperature: <span id="tempVal">1.0</span></div>
+                        <input id="temperature" type="range" min="0" max="2" step="0.1" value="1.0">
+                      </div>
+                      <div>
+                        <div class="label">Model</div>
+                        <select id="model">
+                          <option value="gpt-5">gpt-5</option>
+                          <option value="gpt-5-mini">gpt-5-mini</option>
+                          <option value="gpt-5-chat-latest">gpt-5-chat-latest</option>
+                          <option value="custom">Custom…</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="label">Custom model (if selected)</div>
+                      <input id="customModel" type="text" placeholder="model name">
+                    </div>
+                    <div class="api-status-row">
+                      <button id="refreshModels" class="btn light" type="button">Refresh models</button>
+                      <div id="modelStatus" class="muted" aria-live="polite"></div>
+                    </div>
                   </div>
                 </div>
               </section>
