@@ -7,6 +7,71 @@
   const btnSetup = el('btnSetup');
   const btnChat = el('btnChat');
   const startBtn = el('startBtn');
+  const themeToggle = el('themeToggle');
+  const themeLabelEl = el('themeLabel');
+  const themeIconEl = el('themeIcon');
+  const THEME_KEY = 'cracktroThemeMode';
+  const prefersDarkMedia = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  let themeTransitionTimer = 0;
+  function applyThemeMode(mode,{store=true, animate=true}={}){
+    const normalized = mode === 'dark' ? 'dark' : 'light';
+    const bodyEl = document.body;
+    bodyEl.dataset.theme = normalized;
+    bodyEl.setAttribute('data-theme', normalized);
+    if(animate){
+      bodyEl.classList.add('theme-transition');
+      if(themeTransitionTimer) window.clearTimeout(themeTransitionTimer);
+      themeTransitionTimer = window.setTimeout(()=>{
+        bodyEl.classList.remove('theme-transition');
+      }, 650);
+    }else{
+      bodyEl.classList.remove('theme-transition');
+    }
+    if(store){
+      try{ localStorage.setItem(THEME_KEY, normalized); }
+      catch(_){ }
+    }
+    if(themeToggle){
+      const isDark = normalized === 'dark';
+      if(themeToggle.checked !== isDark) themeToggle.checked = isDark;
+      themeToggle.setAttribute('aria-checked', isDark ? 'true' : 'false');
+    }
+    if(themeLabelEl){
+      themeLabelEl.textContent = normalized === 'dark' ? 'Dark Mode' : 'Light Mode';
+    }
+    if(themeIconEl){
+      themeIconEl.textContent = normalized === 'dark' ? '🌙' : '🌞';
+    }
+  }
+  function getStoredTheme(){
+    try{ return localStorage.getItem(THEME_KEY); }
+    catch(_){ return null; }
+  }
+  const storedTheme = getStoredTheme();
+  const hasStoredTheme = storedTheme === 'dark' || storedTheme === 'light';
+  const prefersDark = prefersDarkMedia && prefersDarkMedia.matches;
+  const fallbackTheme = document.body.dataset.theme === 'dark' ? 'dark' : 'light';
+  const initialTheme = hasStoredTheme ? storedTheme : (prefersDark ? 'dark' : fallbackTheme);
+  applyThemeMode(initialTheme, { store: hasStoredTheme, animate:false });
+  if(themeToggle){
+    themeToggle.checked = initialTheme === 'dark';
+    themeToggle.setAttribute('aria-checked', themeToggle.checked ? 'true' : 'false');
+    themeToggle.addEventListener('change', ()=>{
+      applyThemeMode(themeToggle.checked ? 'dark' : 'light');
+    });
+  }
+  if(prefersDarkMedia){
+    const handlePrefChange = evt => {
+      const storedPref = getStoredTheme();
+      if(storedPref === 'dark' || storedPref === 'light') return;
+      applyThemeMode(evt.matches ? 'dark' : 'light', { store:false });
+    };
+    if(typeof prefersDarkMedia.addEventListener === 'function'){
+      prefersDarkMedia.addEventListener('change', handlePrefChange);
+    }else if(typeof prefersDarkMedia.addListener === 'function'){
+      prefersDarkMedia.addListener(handlePrefChange);
+    }
+  }
   const accordionItems = Array.from(document.querySelectorAll('[data-accordion-item]'));
   accordionItems.forEach((item, idx)=>{
     const header = item.querySelector('.accordion-header');
