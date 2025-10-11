@@ -1,10 +1,13 @@
 :root {
-  --bg: radial-gradient(circle at top, #1a1a2e, #050510 70%);
-  --accent: #00e0ff;
-  --accent-secondary: #ff00d4;
-  --text: #f2f4ff;
-  --scanline-color: rgba(255, 255, 255, 0.07);
-  --font: 'Orbitron', 'Courier New', monospace;
+  --bg-primary: #040009;
+  --bg-secondary: #120433;
+  --neon-cyan: #16f4ff;
+  --neon-magenta: #f923ff;
+  --neon-yellow: #ffe600;
+  --text-color: #f8faff;
+  --text-muted: rgba(248, 250, 255, 0.7);
+  --scanline-color: rgba(255, 255, 255, 0.05);
+  --font-main: 'Courier New', 'Lucida Console', monospace;
 }
 
 * {
@@ -14,114 +17,379 @@
 body {
   margin: 0;
   min-height: 100vh;
-  display: grid;
-  place-items: center;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 20% 20%, var(--bg-secondary), var(--bg-primary) 65%);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  letter-spacing: 0.08em;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.04) 0px,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: color-dodge;
+  opacity: 0.4;
 }
 
 .cracktro {
-  width: min(900px, 90vw);
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.6);
-  border: 2px solid var(--accent);
-  border-radius: 12px;
-  box-shadow: 0 0 32px rgba(0, 224, 255, 0.2);
-}
-
-.cracktro__header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.cracktro__icon {
-  width: 72px;
-  height: 72px;
-}
-
-.cracktro__tagline {
-  margin-top: 0.5rem;
-  color: rgba(242, 244, 255, 0.75);
-}
-
-.cracktro__screen {
   position: relative;
-  border: 2px solid var(--accent-secondary);
-  border-radius: 8px;
+  width: min(960px, 92vw);
+  padding: 3rem 3.5rem;
+  border-radius: 18px;
   overflow: hidden;
-  background: rgba(5, 5, 16, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, rgba(12, 12, 32, 0.85), rgba(2, 2, 24, 0.95));
+  box-shadow: 0 0 42px rgba(249, 35, 255, 0.25), 0 0 96px rgba(22, 244, 255, 0.2);
 }
 
-.cracktro__screen::after {
+.cracktro::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
   background-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    transparent 96%,
-    var(--scanline-color) 98%,
-    transparent 100%
-  );
-  background-size: 100% 4px;
-  mix-blend-mode: screen;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 0 0, 0 0;
+  opacity: 0.05;
+  animation: scanlines 0.5s steps(2) infinite;
 }
 
-.cracktro__screen--scanlines::after {
-  opacity: 1;
-}
-
-#rasterCanvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  background: linear-gradient(180deg, #32004f, #050510);
-}
-
-.cracktro__scroll {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  letter-spacing: 0.1em;
-  white-space: nowrap;
+.cracktro__backdrop {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
-  text-transform: uppercase;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 0;
 }
 
-.cracktro__controls {
+.cracktro__grid {
+  position: absolute;
+  inset: -20%;
+  background-image: linear-gradient(
+      rgba(22, 244, 255, 0.08) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(249, 35, 255, 0.08) 1px, transparent 1px);
+  background-size: 160px 160px;
+  transform: perspective(800px) rotateX(65deg);
+  filter: blur(0.6px);
+  animation: grid-pan 18s linear infinite;
+  opacity: 0.45;
+}
+
+.cracktro__starfield {
+  position: absolute;
+  inset: 0;
+}
+
+.cracktro > *:not(.cracktro__backdrop) {
+  position: relative;
+  z-index: 1;
+}
+
+.cracktro__hero {
   display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  margin-bottom: 2.5rem;
 }
 
-button {
-  padding: 0.75rem 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--text);
-  font-family: inherit;
-  font-size: 0.95rem;
-  letter-spacing: 0.08em;
+.cracktro__logo {
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(249, 35, 255, 0.85), rgba(22, 244, 255, 0.25));
+  box-shadow: 0 0 24px rgba(22, 244, 255, 0.7), 0 0 64px rgba(249, 35, 255, 0.45);
+  animation: logo-shimmer 4.5s ease-in-out infinite;
+}
+
+.cracktro__logo img {
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+}
+
+.cracktro__title {
+  margin: 0;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
   text-transform: uppercase;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-shadow: 0 0 8px rgba(22, 244, 255, 0.75), 0 0 18px rgba(249, 35, 255, 0.7);
+  letter-spacing: 0.25em;
 }
 
-button:hover,
-button:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: 0 0 18px rgba(0, 224, 255, 0.4);
-  outline: none;
+.cracktro__subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
 }
 
-button:active {
+.cracktro__marquee {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  background: linear-gradient(90deg, rgba(4, 0, 40, 0.6), rgba(0, 0, 20, 0.9));
+  box-shadow: inset 0 0 22px rgba(22, 244, 255, 0.2);
+  overflow: hidden;
+}
+
+.marquee__mask {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.marquee__mask::after,
+.marquee__mask::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 30px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marquee__mask::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--bg-primary), transparent);
+}
+
+.marquee__mask::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--bg-primary), transparent);
+}
+
+.marquee__text {
+  display: inline-block;
+  padding: 0.75rem 0;
+  white-space: nowrap;
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  animation: marquee-scroll 18s linear infinite;
+}
+
+.cracktro__banners {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.cracktro__banner {
+  margin: 0;
+  padding: 0.65rem 1.2rem;
+  border-left: 4px solid var(--neon-cyan);
+  background: linear-gradient(90deg, rgba(22, 244, 255, 0.12), transparent);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.cracktro__banner.is-visible {
+  opacity: 1;
   transform: translateY(0);
-  background: rgba(0, 224, 255, 0.15);
+  color: var(--text-color);
+}
+
+.cracktro__loading {
+  display: grid;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.loading__label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.3em;
+}
+
+.loading__track {
+  position: relative;
+  width: min(560px, 100%);
+  height: 18px;
+  margin: 0 auto;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: linear-gradient(90deg, rgba(4, 0, 30, 0.7), rgba(0, 0, 0, 0.9));
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(249, 35, 255, 0.3);
+}
+
+.loading__bar {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--neon-yellow));
+  background-size: 220% 100%;
+  transform-origin: left center;
+  animation: bar-flow 2.4s linear infinite;
+  box-shadow: 0 0 20px rgba(22, 244, 255, 0.5);
+}
+
+.loading__bar.is-complete {
+  box-shadow: 0 0 26px rgba(249, 35, 255, 0.8), 0 0 36px rgba(22, 244, 255, 0.6);
+  animation: bar-flow 1.6s linear infinite, bar-pulse 2s ease-in-out infinite;
+}
+
+.loading__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0.4;
+}
+
+.loading__percentage {
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  text-shadow: 0 0 8px rgba(22, 244, 255, 0.7);
+}
+
+.star {
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+  opacity: 0.7;
+  transform: translate(-50%, -50%);
+  animation: star-flicker 6s linear infinite;
+  animation-delay: var(--delay);
+}
+
+.star.twinkle {
+  animation: star-twinkle 0.9s ease-in-out;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes logo-shimmer {
+  0%,
+  100% {
+    box-shadow: 0 0 24px rgba(22, 244, 255, 0.6), 0 0 60px rgba(249, 35, 255, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(249, 35, 255, 0.75), 0 0 80px rgba(22, 244, 255, 0.55);
+  }
+}
+
+@keyframes grid-pan {
+  0% {
+    transform: perspective(800px) rotateX(65deg) translateY(0);
+  }
+  100% {
+    transform: perspective(800px) rotateX(65deg) translateY(160px);
+  }
+}
+
+@keyframes bar-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes bar-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(22, 244, 255, 0.8));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(249, 35, 255, 0.9));
+  }
+}
+
+@keyframes star-flicker {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes star-twinkle {
+  0% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.6);
+  }
+  100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes scanlines {
+  0% {
+    background-size: 0 0, 0 0;
+  }
+  50% {
+    background-size: 100% 2px, 2px 100%;
+  }
+  100% {
+    background-size: 0 0, 0 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .cracktro {
+    padding: 2rem 1.75rem;
+  }
+
+  .cracktro__title {
+    letter-spacing: 0.18em;
+  }
+
+  .marquee__text {
+    letter-spacing: 0.18em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
