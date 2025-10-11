@@ -57,8 +57,8 @@
                           <input id="exchanges" type="number" min="1" value="3">
                         </div>
                         <div class="col">
-                          <div class="label">Temperature: <span id="tempVal">0.7</span></div>
-                          <input id="temperature" type="range" min="0" max="2" step="0.1" value="0.7" style="width:100%">
+                          <div class="label">Temperature: <span id="tempVal">1.0</span></div>
+                          <input id="temperature" type="range" min="0" max="2" step="0.1" value="1.0" style="width:100%">
                         </div>
                       </div>
                       <div class="row" style="margin-top:8px">
@@ -76,6 +76,10 @@
                           <input id="customModel" type="text" placeholder="model name">
                         </div>
                       </div>
+                      <div class="row" style="margin-top:8px; gap:8px; align-items:center;">
+                        <button id="refreshModels" class="btn light" type="button">Refresh models</button>
+                        <div id="modelStatus" class="muted" aria-live="polite"></div>
+                      </div>
                       <div class="label" style="margin-top:12px">Moderator preprompt</div>
                       <div class="row" style="margin-top:6px">
                         <select id="presetScenario"></select>
@@ -83,6 +87,9 @@
                       </div>
                       <textarea id="scenarioPreview" rows="3" readonly placeholder="Selected scenario preview appears here"></textarea>
                       <textarea id="moderatorPreprompt" rows="3" placeholder="Define the debate rules or initial discussion guidance"></textarea>
+                      <div class="row" style="margin-top:8px; gap:8px; align-items:center;">
+                        <button id="saveScenario" class="btn light" type="button">Save scenario</button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -120,10 +127,11 @@
                           </div>
                           <div class="label" style="margin-top:8px">Prompt</div>
                           <textarea id="promptA" rows="3" placeholder="Describe Persona A behaviour">You are an Analyst. Provide clear, data-backed insights in a concise and engaging manner.</textarea>
-                          <div class="label" style="margin-top:8px">Load sample persona</div>
+                          <div class="label" style="margin-top:8px">Load persona</div>
                           <div class="row">
                             <select id="presetA"></select>
                             <button id="applyPresetA" class="btn light">Load</button>
+                            <button id="savePersonaA" class="btn light" type="button">Save</button>
                           </div>
                         </div>
                         <div class="wizard-nav">
@@ -149,10 +157,11 @@
                           </div>
                           <div class="label" style="margin-top:8px">Prompt</div>
                           <textarea id="promptB" rows="3" placeholder="Describe Persona B behaviour">You are a Creative Strategist. Offer imaginative ideas and strategic insights with flair.</textarea>
-                          <div class="label" style="margin-top:8px">Load sample persona</div>
+                          <div class="label" style="margin-top:8px">Load persona</div>
                           <div class="row">
                             <select id="presetB"></select>
                             <button id="applyPresetB" class="btn light">Load</button>
+                            <button id="savePersonaB" class="btn light" type="button">Save</button>
                           </div>
                         </div>
                         <div class="wizard-nav">

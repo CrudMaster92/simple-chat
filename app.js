@@ -156,6 +156,9 @@
   const modelEl = el('model');
   const customModelEl = el('customModel');
   const btnPaste = el('btnPaste');
+  const refreshModelsBtn = el('refreshModels');
+  const modelStatusEl = el('modelStatus');
+  const builtinModelOptions = modelEl ? Array.from(modelEl.options).map(opt=>({ value: opt.value, label: opt.textContent })) : [];
 
   // Audio feedback for new messages
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -261,6 +264,8 @@
   const presetBEl = el('presetB');
   const applyPresetABtn = el('applyPresetA');
   const applyPresetBBtn = el('applyPresetB');
+  const savePersonaABtn = el('savePersonaA');
+  const savePersonaBBtn = el('savePersonaB');
 
   const generatorSeedEl = el('generatorSeed');
   const generateForABtn = el('generateForA');
@@ -273,6 +278,7 @@
   const refreshHistoryBtn = el('refreshHistory');
   const clearHistoryBtn = el('clearHistory');
   const chatHistoryList = el('chatHistoryList');
+  const saveScenarioBtn = el('saveScenario');
 
   const summaryAName = el('summaryAName'), summaryBName = el('summaryBName');
   const summaryAEmoji = el('summaryAEmoji'), summaryBEmoji = el('summaryBEmoji');
@@ -302,6 +308,68 @@
       if(t){ apiKeyEl.value = t.trim().replace(/\s+/g,''); if(rememberKeyEl.checked){ localStorage.setItem('openaiKey', apiKeyEl.value); } }
     }catch(e){ alert('Clipboard blocked. Long-press, then Paste.'); }
   });
+
+  function setModelOptions(options, preserveValue){
+    if(!modelEl) return;
+    const previous = preserveValue !== undefined ? preserveValue : modelEl.value;
+    modelEl.innerHTML = '';
+    options.forEach(optData=>{
+      const opt = document.createElement('option');
+      opt.value = optData.value;
+      opt.textContent = optData.label;
+      modelEl.appendChild(opt);
+    });
+    const values = options.map(opt=>opt.value);
+    if(previous && values.includes(previous)){
+      modelEl.value = previous;
+    }else if(options.length){
+      modelEl.value = options[0].value;
+    }
+  }
+
+  async function refreshModelList(){
+    if(!refreshModelsBtn || !modelEl) return;
+    if(!apiKeyEl.value){
+      alert('Enter your API key before refreshing models.');
+      return;
+    }
+    refreshModelsBtn.disabled = true;
+    if(modelStatusEl) modelStatusEl.textContent = 'Fetching models…';
+    const previousValue = modelEl.value;
+    try{
+      const res = await fetch('https://api.openai.com/v1/models',{
+        headers:{ 'Authorization':'Bearer '+apiKeyEl.value.trim() }
+      });
+      if(!res.ok){
+        const text = await res.text();
+        throw new Error(text || res.statusText || 'Failed to fetch models');
+      }
+      const data = await res.json();
+      const ids = Array.isArray(data.data) ? data.data.map(item=>item.id).filter(Boolean) : [];
+      const uniqueIds = Array.from(new Set(ids)).filter(id=>typeof id==='string');
+      uniqueIds.sort();
+      if(uniqueIds.length){
+        const options = uniqueIds.map(id=>({ value:id, label:id }));
+        if(!options.some(opt=>opt.value==='custom')){
+          options.push({ value:'custom', label:'Custom…' });
+        }
+        setModelOptions(options, previousValue);
+        if(modelStatusEl) modelStatusEl.textContent = `Loaded ${uniqueIds.length} models.`;
+      }else{
+        setModelOptions(builtinModelOptions, previousValue);
+        if(modelStatusEl) modelStatusEl.textContent = 'No models returned; showing defaults.';
+      }
+    }catch(err){
+      console.error(err);
+      if(modelStatusEl) modelStatusEl.textContent = 'Model refresh failed.';
+      alert('Model refresh failed: '+err.message);
+      setModelOptions(builtinModelOptions, previousValue);
+    }finally{
+      refreshModelsBtn.disabled = false;
+    }
+  }
+
+  if(refreshModelsBtn) refreshModelsBtn.addEventListener('click', refreshModelList);
 
   // Temperature label
   const updateTemp = ()=> tempValEl.textContent = Number(temperatureEl.value).toFixed(1);
@@ -362,48 +430,121 @@
   const samplePersonas = Array.isArray(window.samplePersonas) ? window.samplePersonas : [];
   const sampleScenarios = Array.isArray(window.sampleScenarios) ? window.sampleScenarios : [];
 
+  const SAVED_PERSONAS_KEY = 'personaChat.savedPersonas';
+  const SAVED_SCENARIOS_KEY = 'personaChat.savedScenarios';
+
+  function loadSavedList(key){
+    try{
+      const raw = localStorage.getItem(key);
+      if(!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    }catch(_){
+      return [];
+    }
+  }
+
+  let savedPersonas = loadSavedList(SAVED_PERSONAS_KEY);
+  let savedScenarios = loadSavedList(SAVED_SCENARIOS_KEY);
+
+  function persistSavedPersonas(){
+    try{ localStorage.setItem(SAVED_PERSONAS_KEY, JSON.stringify(savedPersonas)); }
+    catch(_){ }
+  }
+  function persistSavedScenarios(){
+    try{ localStorage.setItem(SAVED_SCENARIOS_KEY, JSON.stringify(savedScenarios)); }
+    catch(_){ }
+  }
+
   function populatePresetSelects(){
     const selects = [presetAEl, presetBEl];
+    const hasAny = (samplePersonas.length + savedPersonas.length) > 0;
     selects.forEach(select=>{
       if(!select) return;
       select.innerHTML = '';
       const blank = document.createElement('option');
       blank.value = '';
-      blank.textContent = samplePersonas.length ? 'Choose a sample persona…' : 'No sample personas available';
+      blank.textContent = hasAny ? 'Choose a persona…' : 'No personas available';
       select.appendChild(blank);
-      samplePersonas.forEach(p=>{
-        const opt = document.createElement('option');
-        opt.value = p.id;
-        opt.textContent = p.label || p.name || p.id;
-        select.appendChild(opt);
-      });
-      select.disabled = samplePersonas.length===0;
+      if(savedPersonas.length){
+        const group = document.createElement('optgroup');
+        group.label = 'Saved personas';
+        savedPersonas.forEach(p=>{
+          const opt = document.createElement('option');
+          opt.value = 'saved:'+p.id;
+          opt.textContent = p.label || p.name || 'Untitled persona';
+          group.appendChild(opt);
+        });
+        select.appendChild(group);
+      }
+      if(samplePersonas.length){
+        const group = document.createElement('optgroup');
+        group.label = 'Sample personas';
+        samplePersonas.forEach(p=>{
+          const opt = document.createElement('option');
+          opt.value = 'sample:'+p.id;
+          opt.textContent = p.label || p.name || p.id;
+          group.appendChild(opt);
+        });
+        select.appendChild(group);
+      }
+      select.disabled = !hasAny;
     });
-    if(applyPresetABtn) applyPresetABtn.disabled = samplePersonas.length===0;
-    if(applyPresetBBtn) applyPresetBBtn.disabled = samplePersonas.length===0;
+    if(applyPresetABtn) applyPresetABtn.disabled = !hasAny;
+    if(applyPresetBBtn) applyPresetBBtn.disabled = !hasAny;
   }
 
   populatePresetSelects();
 
   function populateScenarioSelect(){
     if(!presetScenarioEl) return;
+    const hasAny = (sampleScenarios.length + savedScenarios.length) > 0;
     presetScenarioEl.innerHTML = '';
     const blank = document.createElement('option');
     blank.value = '';
-    blank.textContent = sampleScenarios.length ? 'Choose a sample scenario…' : 'No sample scenarios available';
+    blank.textContent = hasAny ? 'Choose a scenario…' : 'No scenarios available';
     presetScenarioEl.appendChild(blank);
-    sampleScenarios.forEach(s=>{
-      const opt = document.createElement('option');
-      opt.value = s.id;
-      opt.textContent = s.label || s.id;
-      presetScenarioEl.appendChild(opt);
-    });
-    presetScenarioEl.disabled = sampleScenarios.length===0;
-    if(applyScenarioBtn) applyScenarioBtn.disabled = sampleScenarios.length===0;
+    if(savedScenarios.length){
+      const group = document.createElement('optgroup');
+      group.label = 'Saved scenarios';
+      savedScenarios.forEach(s=>{
+        const opt = document.createElement('option');
+        opt.value = 'saved:'+s.id;
+        opt.textContent = s.label || 'Untitled scenario';
+        group.appendChild(opt);
+      });
+      presetScenarioEl.appendChild(group);
+    }
+    if(sampleScenarios.length){
+      const group = document.createElement('optgroup');
+      group.label = 'Sample scenarios';
+      sampleScenarios.forEach(s=>{
+        const opt = document.createElement('option');
+        opt.value = 'sample:'+s.id;
+        opt.textContent = s.label || s.id;
+        group.appendChild(opt);
+      });
+      presetScenarioEl.appendChild(group);
+    }
+    presetScenarioEl.disabled = !hasAny;
+    if(applyScenarioBtn) applyScenarioBtn.disabled = !hasAny;
     if(scenarioPreviewEl) scenarioPreviewEl.value = '';
   }
 
   populateScenarioSelect();
+
+  function resolveScenarioByValue(value){
+    if(!value) return null;
+    if(value.startsWith('saved:')){
+      const id = value.slice(6);
+      return savedScenarios.find(s=>s.id===id) || null;
+    }
+    if(value.startsWith('sample:')){
+      const id = value.slice(7);
+      return sampleScenarios.find(s=>s.id===id) || null;
+    }
+    return sampleScenarios.find(s=>s.id===value) || savedScenarios.find(s=>s.id===value) || null;
+  }
 
   function updateScenarioPreview(){
     if(!scenarioPreviewEl) return;
@@ -412,7 +553,7 @@
       scenarioPreviewEl.value = '';
       return;
     }
-    const scenario = sampleScenarios.find(s=>s.id===id);
+    const scenario = resolveScenarioByValue(id);
     scenarioPreviewEl.value = scenario ? (scenario.prompt || '') : '';
   }
 
@@ -422,17 +563,17 @@
     if(!presetScenarioEl) return;
     const id = presetScenarioEl.value;
     if(!id){
-      alert('Pick a sample scenario to load.');
+      alert('Pick a scenario to load.');
       return;
     }
-    const scenario = sampleScenarios.find(s=>s.id===id);
+    const scenario = resolveScenarioByValue(id);
     if(!scenario){
-      alert('Sample scenario not found.');
+      alert('Scenario not found.');
       return;
     }
     if(moderatorPrepromptEl) moderatorPrepromptEl.value = scenario.prompt || '';
     if(scenarioPreviewEl) scenarioPreviewEl.value = scenario.prompt || '';
-    setGeneratorStatus(`Loaded sample scenario "${scenario.label || scenario.id}" into the moderator preprompt.`, false);
+    setGeneratorStatus(`Loaded scenario "${scenario.label || scenario.id}" into the moderator preprompt.`, false);
     updateSummary();
   }
 
@@ -440,16 +581,27 @@
 
   function applyPreset(side){
     const select = side==='A' ? presetAEl : presetBEl;
-    const button = side==='A' ? applyPresetABtn : applyPresetBBtn;
-    if(!select || !button) return;
+    if(!select) return;
     const id = select.value;
     if(!id){
-      alert('Pick a sample persona to load.');
+      alert('Pick a persona to load.');
       return;
     }
-    const persona = samplePersonas.find(p=>p.id===id);
+    let persona = null;
+    let source = 'persona';
+    if(id.startsWith('saved:')){
+      const lookup = id.slice(6);
+      persona = savedPersonas.find(p=>p.id===lookup) || null;
+      source = 'saved persona';
+    }else if(id.startsWith('sample:')){
+      const lookup = id.slice(7);
+      persona = samplePersonas.find(p=>p.id===lookup) || null;
+      source = 'sample persona';
+    }else{
+      persona = samplePersonas.find(p=>p.id===id) || savedPersonas.find(p=>p.id===id) || null;
+    }
     if(!persona){
-      alert('Sample persona not found.');
+      alert('Persona not found.');
       return;
     }
     if(side==='A'){
@@ -464,11 +616,89 @@
       if(persona.bubbleColor) colorBEl.value = persona.bubbleColor;
     }
     syncChips();
-    setGeneratorStatus(`Loaded sample persona "${persona.label || persona.name || persona.id}" for Persona ${side}.`, false);
+    setGeneratorStatus(`Loaded ${source} "${persona.label || persona.name || persona.id}" for Persona ${side}.`, false);
   }
 
   if(applyPresetABtn) applyPresetABtn.addEventListener('click', ()=>applyPreset('A'));
   if(applyPresetBBtn) applyPresetBBtn.addEventListener('click', ()=>applyPreset('B'));
+
+  function savePersonaLocal(side){
+    const isA = side==='A';
+    const nameField = isA ? nameAEl : nameBEl;
+    const emojiField = isA ? emojiAEl : emojiBEl;
+    const promptField = isA ? promptAEl : promptBEl;
+    const colorField = isA ? colorAEl : colorBEl;
+    if(!promptField){ return; }
+    const promptValue = promptField.value;
+    const trimmedPrompt = promptValue.trim();
+    if(!trimmedPrompt){
+      alert('Add a persona prompt before saving.');
+      return;
+    }
+    const nameValue = nameField ? nameField.value.trim() : '';
+    const emojiValue = emojiField ? emojiField.value.trim() : '';
+    const bubbleValue = colorField ? colorField.value : '';
+    const defaultLabel = nameValue || `Persona ${side}`;
+    const labelInput = window.prompt('Label this saved persona', defaultLabel);
+    if(!labelInput) return;
+    const label = labelInput.trim();
+    if(!label){
+      alert('Persona label cannot be empty.');
+      return;
+    }
+    const entry = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,8),
+      label,
+      name: nameValue,
+      emoji: emojiValue,
+      prompt: trimmedPrompt,
+      bubbleColor: bubbleValue
+    };
+    savedPersonas.push(entry);
+    persistSavedPersonas();
+    populatePresetSelects();
+    const select = isA ? presetAEl : presetBEl;
+    if(select){
+      select.value = 'saved:'+entry.id;
+    }
+    setGeneratorStatus(`Saved persona "${entry.label}" for Persona ${side}.`, false);
+  }
+
+  if(savePersonaABtn) savePersonaABtn.addEventListener('click', ()=>savePersonaLocal('A'));
+  if(savePersonaBBtn) savePersonaBBtn.addEventListener('click', ()=>savePersonaLocal('B'));
+
+  function saveScenarioLocal(){
+    if(!moderatorPrepromptEl) return;
+    const promptValue = moderatorPrepromptEl.value;
+    const trimmed = promptValue.trim();
+    if(!trimmed){
+      alert('Add moderator guidance before saving a scenario.');
+      return;
+    }
+    const defaultLabel = trimmed.length>60 ? trimmed.slice(0,60)+'…' : trimmed;
+    const labelInput = window.prompt('Label this scenario', defaultLabel || 'Scenario');
+    if(!labelInput) return;
+    const label = labelInput.trim();
+    if(!label){
+      alert('Scenario label cannot be empty.');
+      return;
+    }
+    const entry = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,8),
+      label,
+      prompt: trimmed
+    };
+    savedScenarios.push(entry);
+    persistSavedScenarios();
+    populateScenarioSelect();
+    if(presetScenarioEl){
+      presetScenarioEl.value = 'saved:'+entry.id;
+      updateScenarioPreview();
+    }
+    setGeneratorStatus(`Saved scenario "${entry.label}" locally.`, false);
+  }
+
+  if(saveScenarioBtn) saveScenarioBtn.addEventListener('click', saveScenarioLocal);
 
   function swapPersonas(){
     const nameA = nameAEl.value, nameB = nameBEl.value;
@@ -544,10 +774,24 @@
       setGeneratorStatus('Step 2/2: Expanding tone, opinions, and topics…', false);
       const detailText = await chatCompletion([
         { role:'system', content:'You turn persona blueprints into detailed chat persona prompts. Respond ONLY with valid JSON.' },
-        { role:'user', content:`Seed request: ${seed}\nBlueprint data:\n${JSON.stringify(blueprint, null, 2)}\n\nReturn JSON with keys:\n- name\n- emoji\n- bubbleColor (hex, fallback to ${side==='A'?colorAEl.value:colorBEl.value})\n- prompt (concise instructions that include persona background, tone descriptors, signature opinions, and explicit guidance on response style)\n- topics (array of 3-5 specific conversation topics related to the persona).\nThe prompt must explicitly instruct the assistant to speak in the voice that matches the seed (e.g. if asked for Homer Simpson, the prompt should make the assistant respond exactly like Homer Simpson with canon-consistent references).\nIf the seed named an existing character or person, ensure the name and characterization match that identity precisely, without substituting another persona.` }
+        { role:'user', content:`Seed request: ${seed}\nBlueprint data:\n${JSON.stringify(blueprint, null, 2)}\n\nReturn JSON with keys:\n- name\n- emoji\n- bubbleColor (hex, fallback to ${side==='A'?colorAEl.value:colorBEl.value})\n- prompt (concise instructions that include persona background, tone descriptors, signature opinions, and explicit guidance on response style. Make sure the prompt contains a clear line noting that the conversation partner already understands this is a playful portrayal and commanding the persona to stay fully in-character without ever volunteering disclaimers about not being the real individual.)\n- topics (array of 3-5 specific conversation topics related to the persona).\nThe prompt must explicitly instruct the assistant to speak in the voice that matches the seed (e.g. if asked for Homer Simpson, the prompt should make the assistant respond exactly like Homer Simpson with canon-consistent references).\nDo not include any statements about the assistant not being the real person.\nIf the seed named an existing character or person, ensure the name and characterization match that identity precisely, without substituting another persona.` }
       ], 1.0);
       const detail = extractJSON(detailText);
       if(!detail){ throw new Error('Could not parse persona detail response.'); }
+      const reinforcementLine = 'The user already understands this is a playful portrayal; stay fully in-character and never mention you are not the real individual.';
+      if(typeof detail.prompt === 'string'){
+        const trimmedPrompt = detail.prompt.trim();
+        const normalized = trimmedPrompt.toLowerCase();
+        if(trimmedPrompt && (!normalized.includes('playful portrayal') || !normalized.includes('never mention you are not the real individual'))){
+          detail.prompt = trimmedPrompt + '\n\n' + reinforcementLine;
+        }else if(!trimmedPrompt){
+          detail.prompt = reinforcementLine;
+        }else{
+          detail.prompt = trimmedPrompt;
+        }
+      }else{
+        detail.prompt = reinforcementLine;
+      }
       assignGeneratedPersona(side, detail);
       setGeneratorStatus(`Generated persona applied to Persona ${side}.`, false);
     }catch(err){
@@ -569,7 +813,7 @@
   // Helpers
   function clampTemp(v){
     const n = parseFloat(v);
-    if(!isFinite(n)) return 0.7;
+    if(!isFinite(n)) return 1.0;
     return Math.min(2, Math.max(0, n));
   }
 
@@ -883,7 +1127,7 @@
       if(opt){ modelEl.value = rec.model; customModelEl.value=''; }
       else{ modelEl.value='custom'; customModelEl.value=rec.model; }
     }
-    temperatureEl.value = rec.temperature ?? 0.7; updateTemp();
+    temperatureEl.value = rec.temperature ?? 1.0; updateTemp();
     moderatorPrepromptEl.value = rec.moderatorPreprompt || '';
     syncChips();
 
