@@ -148,8 +148,10 @@
   btnChat.addEventListener('click', ()=>showView('chat'));
 
   // Elements
-  const apiKeyEl = el('apiKey');
-  const rememberKeyEl = el('rememberKey');
+  const openaiKeyEl = el('openaiKey');
+  const geminiKeyEl = el('geminiKey');
+  const rememberOpenAIKeyEl = el('rememberOpenAIKey');
+  const rememberGeminiKeyEl = el('rememberGeminiKey');
   const exchangesEl = el('exchanges');
   const temperatureEl = el('temperature');
   const tempValEl = el('tempVal');
@@ -157,7 +159,10 @@
   const modelBEl = el('modelB');
   const customModelAEl = el('customModelA');
   const customModelBEl = el('customModelB');
-  const btnPaste = el('btnPaste');
+  const pasteOpenAIKeyBtn = el('pasteOpenAIKey');
+  const pasteGeminiKeyBtn = el('pasteGeminiKey');
+  const openaiKeyStatusEl = el('openaiKeyStatus');
+  const geminiKeyStatusEl = el('geminiKeyStatus');
   const refreshModelsBtn = el('refreshModels');
   const modelStatusEl = el('modelStatus');
   const modelSelects = [modelAEl, modelBEl].filter(Boolean);
@@ -298,22 +303,140 @@
   const reviewTopic = el('reviewTopic');
   const reviewTopicDetail = el('reviewTopicDetail');
 
-  // Local storage for key
-  const savedKey = localStorage.getItem('openaiKey');
-  if(savedKey){ apiKeyEl.value = savedKey; rememberKeyEl.checked = true; }
-  rememberKeyEl.addEventListener('change', ()=>{
-    if(rememberKeyEl.checked && apiKeyEl.value){ localStorage.setItem('openaiKey', apiKeyEl.value); }
-    else { localStorage.removeItem('openaiKey'); }
-  });
-  apiKeyEl.addEventListener('input', ()=>{
-    if(rememberKeyEl.checked){ localStorage.setItem('openaiKey', apiKeyEl.value); }
-  });
-  btnPaste.addEventListener('click', async ()=>{
+  // Local storage for provider keys
+  const PROVIDER_STORAGE_KEYS = {
+    openai: 'personaChat.openaiKey',
+    gemini: 'personaChat.geminiKey'
+  };
+
+  function safeStorageGet(key){
+    try{ return localStorage.getItem(key); }
+    catch(_){ return null; }
+  }
+  function safeStorageSet(key, value){
+    try{
+      if(value){
+        localStorage.setItem(key, value);
+      }else{
+        localStorage.removeItem(key);
+      }
+    }catch(_){ }
+  }
+
+  const legacyOpenAIKey = safeStorageGet('openaiKey');
+  if(legacyOpenAIKey && !safeStorageGet(PROVIDER_STORAGE_KEYS.openai)){
+    safeStorageSet(PROVIDER_STORAGE_KEYS.openai, legacyOpenAIKey);
+  }
+  if(legacyOpenAIKey){
+    try{ localStorage.removeItem('openaiKey'); }
+    catch(_){ }
+  }
+
+  const savedOpenAIKey = safeStorageGet(PROVIDER_STORAGE_KEYS.openai);
+  if(savedOpenAIKey && openaiKeyEl){
+    openaiKeyEl.value = savedOpenAIKey;
+    if(rememberOpenAIKeyEl) rememberOpenAIKeyEl.checked = true;
+  }
+  const savedGeminiKey = safeStorageGet(PROVIDER_STORAGE_KEYS.gemini);
+  if(savedGeminiKey && geminiKeyEl){
+    geminiKeyEl.value = savedGeminiKey;
+    if(rememberGeminiKeyEl) rememberGeminiKeyEl.checked = true;
+  }
+
+  function persistProviderKey(provider, value){
+    const storageKey = PROVIDER_STORAGE_KEYS[provider];
+    if(!storageKey) return;
+    const trimmed = (typeof value === 'string') ? value.trim() : '';
+    safeStorageSet(storageKey, trimmed);
+  }
+
+  if(rememberOpenAIKeyEl){
+    rememberOpenAIKeyEl.addEventListener('change', ()=>{
+      if(!openaiKeyEl) return;
+      if(rememberOpenAIKeyEl.checked && openaiKeyEl.value){
+        persistProviderKey('openai', openaiKeyEl.value);
+      }else{
+        persistProviderKey('openai', '');
+      }
+    });
+  }
+  if(openaiKeyEl){
+    openaiKeyEl.addEventListener('input', ()=>{
+      if(rememberOpenAIKeyEl && rememberOpenAIKeyEl.checked){
+        persistProviderKey('openai', openaiKeyEl.value);
+      }
+    });
+  }
+  if(rememberGeminiKeyEl){
+    rememberGeminiKeyEl.addEventListener('change', ()=>{
+      if(!geminiKeyEl) return;
+      if(rememberGeminiKeyEl.checked && geminiKeyEl.value){
+        persistProviderKey('gemini', geminiKeyEl.value);
+      }else{
+        persistProviderKey('gemini', '');
+      }
+    });
+  }
+  if(geminiKeyEl){
+    geminiKeyEl.addEventListener('input', ()=>{
+      if(rememberGeminiKeyEl && rememberGeminiKeyEl.checked){
+        persistProviderKey('gemini', geminiKeyEl.value);
+      }
+    });
+  }
+
+  async function handleKeyPaste(targetInput, rememberEl, provider){
+    if(!targetInput) return;
     try{
       const t = await navigator.clipboard.readText();
-      if(t){ apiKeyEl.value = t.trim().replace(/\s+/g,''); if(rememberKeyEl.checked){ localStorage.setItem('openaiKey', apiKeyEl.value); } }
-    }catch(e){ alert('Clipboard blocked. Long-press, then Paste.'); }
-  });
+      if(t){
+        const cleaned = t.trim().replace(/\s+/g,'');
+        targetInput.value = cleaned;
+        if(rememberEl && rememberEl.checked){
+          persistProviderKey(provider, cleaned);
+        }
+      }
+    }catch(e){
+      alert('Clipboard blocked. Long-press, then Paste.');
+    }
+  }
+
+  if(pasteOpenAIKeyBtn) pasteOpenAIKeyBtn.addEventListener('click', ()=>handleKeyPaste(openaiKeyEl, rememberOpenAIKeyEl, 'openai'));
+  if(pasteGeminiKeyBtn) pasteGeminiKeyBtn.addEventListener('click', ()=>handleKeyPaste(geminiKeyEl, rememberGeminiKeyEl, 'gemini'));
+
+  function providerLabel(provider){
+    return provider === 'gemini' ? 'Gemini' : 'OpenAI';
+  }
+
+  function getProviderKey(provider){
+    if(provider === 'gemini'){
+      return (geminiKeyEl && typeof geminiKeyEl.value === 'string') ? geminiKeyEl.value.trim() : '';
+    }
+    return (openaiKeyEl && typeof openaiKeyEl.value === 'string') ? openaiKeyEl.value.trim() : '';
+  }
+
+  function ensureProviderKey(provider, context){
+    if(getProviderKey(provider)) return true;
+    const label = providerLabel(provider);
+    const message = context ? `Please enter your ${label} API key in Setup ${context}` : `Please enter your ${label} API key in Setup.`;
+    alert(message);
+    const targetInput = provider === 'gemini' ? geminiKeyEl : openaiKeyEl;
+    if(targetInput && typeof targetInput.focus === 'function') targetInput.focus();
+    return false;
+  }
+
+  function ensureProvidersForSides(sides, context){
+    const needed = new Set();
+    sides.forEach(side=>{
+      const modelId = resolveModelForSide(side);
+      const provider = resolveProviderForModel(modelId);
+      needed.add(provider);
+    });
+    for(const provider of needed){
+      if(!ensureProviderKey(provider, context)) return false;
+    }
+    return true;
+  }
 
   function setModelOptions(selectEl, options, preserveValue){
     if(!selectEl) return;
@@ -368,8 +491,9 @@
 
   async function refreshModelList(){
     if(!refreshModelsBtn || !modelSelects.length) return;
-    if(!apiKeyEl.value){
-      alert('Enter your API key before refreshing models.');
+    const openaiKey = getProviderKey('openai');
+    if(!openaiKey){
+      ensureProviderKey('openai', 'before refreshing models.');
       return;
     }
     refreshModelsBtn.disabled = true;
@@ -384,7 +508,7 @@
     }
     try{
       const res = await fetch('https://api.openai.com/v1/models',{
-        headers:{ 'Authorization':'Bearer '+apiKeyEl.value.trim() }
+        headers:{ 'Authorization':'Bearer '+openaiKey }
       });
       if(!res.ok){
         const text = await res.text();
@@ -422,6 +546,27 @@
   const updateTemp = ()=> tempValEl.textContent = Number(temperatureEl.value).toFixed(1);
   temperatureEl.addEventListener('input', updateTemp);
   updateTemp();
+
+  function updateProviderStatuses(){
+    if(!openaiKeyStatusEl && !geminiKeyStatusEl) return;
+    const usage = { openai: [], gemini: [] };
+    ['A','B'].forEach(side=>{
+      const modelId = resolveModelForSide(side);
+      const provider = resolveProviderForModel(modelId);
+      const personaName = side==='A' ? (nameAEl.value || 'Persona A') : (nameBEl.value || 'Persona B');
+      const label = `${personaName} (${modelId})`;
+      if(!usage[provider]) usage[provider] = [];
+      usage[provider].push(label);
+    });
+    if(openaiKeyStatusEl){
+      const entries = usage.openai || [];
+      openaiKeyStatusEl.textContent = entries.length ? `Used by: ${entries.join(', ')}` : 'Not required by current personas.';
+    }
+    if(geminiKeyStatusEl){
+      const entries = usage.gemini || [];
+      geminiKeyStatusEl.textContent = entries.length ? `Used by: ${entries.join(', ')}` : 'Not required by current personas.';
+    }
+  }
 
   function updateSummary(){
     if(summaryAName){
@@ -462,6 +607,7 @@
     if(summaryAChip) summaryAChip.title = `Model: ${modelALabel}`;
     if(chipB) chipB.title = `Model: ${modelBLabel}`;
     if(summaryBChip) summaryBChip.title = `Model: ${modelBLabel}`;
+    updateProviderStatuses();
   }
 
   // Live chips + emojis (fix)
@@ -801,7 +947,7 @@
   }
 
   async function generatePersona(side){
-    if(!apiKeyEl.value){ alert('Please enter your API key in Setup.'); return; }
+    if(!ensureProvidersForSides([side], 'before generating personas.')) return;
     const seed = (generatorSeedEl && generatorSeedEl.value ? generatorSeedEl.value.trim() : '');
     if(!seed){ alert('Describe a theme, role, or mood to generate a persona.'); return; }
     setGeneratorBusy(true);
@@ -871,10 +1017,10 @@
     return (found && found.provider) || 'openai';
   }
 
-  async function callOpenAIChat({ model, messages, temperature }){
+  async function callOpenAIChat({ key, model, messages, temperature }){
     const res = await fetch('https://api.openai.com/v1/chat/completions',{
       method:'POST',
-      headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+apiKeyEl.value.trim() },
+      headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+key },
       body: JSON.stringify({ model, messages, temperature })
     });
     if(!res.ok){
@@ -919,8 +1065,7 @@
     return text.trim();
   }
 
-  async function callGeminiChat({ model, messages, temperature }){
-    const key = apiKeyEl.value.trim();
+  async function callGeminiChat({ key, model, messages, temperature }){
     const payload = buildGeminiPayload(messages);
     payload.generationConfig = { temperature };
     const endpointModel = encodeURIComponent(model);
@@ -942,10 +1087,14 @@
     const chosenModel = resolveModelForSide(side);
     const temperature = clampTemp(tempOverride ?? temperatureEl.value);
     const provider = resolveProviderForModel(chosenModel);
-    if(provider === 'gemini'){
-      return callGeminiChat({ model: chosenModel, messages, temperature });
+    const key = getProviderKey(provider);
+    if(!key){
+      throw new Error(`${providerLabel(provider)} key missing`);
     }
-    return callOpenAIChat({ model: chosenModel, messages, temperature });
+    if(provider === 'gemini'){
+      return callGeminiChat({ key, model: chosenModel, messages, temperature });
+    }
+    return callOpenAIChat({ key, model: chosenModel, messages, temperature });
   }
 
   function extractJSON(text){
@@ -1080,7 +1229,6 @@
   }
 
   async function runSegment(pairs, moderatorNote){
-    if(!apiKeyEl.value){ alert('Please enter your API key in Setup.'); return; }
     if(!promptAEl.value || !promptBEl.value){ alert('Both personas need prompts.'); return; }
     if(running) return;
     running = true;
@@ -1097,6 +1245,7 @@
 
   // Start Chat (new session)
   startBtn.addEventListener('click', ()=>{
+    if(!ensureProvidersForSides(['A','B'], 'before starting the chat.')) return;
     messages = [];
     convEl.innerHTML = '';
     currentSessionId = 'sess_'+Date.now();
@@ -1108,6 +1257,7 @@
 
   // Extend
   extendBtn.addEventListener('click', ()=>{
+    if(!ensureProvidersForSides(['A','B'], 'before extending the chat.')) return;
     const pairs = Math.max(1, parseInt(extendCountEl.value)||1);
     runSegment(pairs, moderatorMsgEl.value || '');
   });
