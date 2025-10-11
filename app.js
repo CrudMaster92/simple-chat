@@ -153,12 +153,17 @@
   const exchangesEl = el('exchanges');
   const temperatureEl = el('temperature');
   const tempValEl = el('tempVal');
-  const modelEl = el('model');
-  const customModelEl = el('customModel');
+  const modelAEl = el('modelA');
+  const modelBEl = el('modelB');
+  const customModelAEl = el('customModelA');
+  const customModelBEl = el('customModelB');
   const btnPaste = el('btnPaste');
   const refreshModelsBtn = el('refreshModels');
   const modelStatusEl = el('modelStatus');
-  const builtinModelOptions = modelEl ? Array.from(modelEl.options).map(opt=>({ value: opt.value, label: opt.textContent })) : [];
+  const modelSelects = [modelAEl, modelBEl].filter(Boolean);
+  const firstModelSelect = modelSelects[0] || null;
+  const builtinModelOptions = firstModelSelect ? Array.from(firstModelSelect.options).map(opt=>({ value: opt.value, label: opt.textContent })) : [];
+  const defaultModelId = builtinModelOptions.length ? builtinModelOptions[0].value : 'gpt-5';
 
   // Audio feedback for new messages
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -247,6 +252,7 @@
   const emojiAEl = el('emojiA'), emojiBEl = el('emojiB');
   const colorAEl = el('colorA'), colorBEl = el('colorB');
   const promptAEl = el('promptA'), promptBEl = el('promptB');
+  const chipA = el('chipA'), chipB = el('chipB');
   const chipAName = el('chipAName'), chipBName = el('chipBName');
   const chipAEmoji = el('chipAEmoji'), chipBEmoji = el('chipBEmoji');
 
@@ -279,6 +285,7 @@
   const chatHistoryList = el('chatHistoryList');
   const saveScenarioBtn = el('saveScenario');
 
+  const summaryAChip = el('summaryAChip'), summaryBChip = el('summaryBChip');
   const summaryAName = el('summaryAName'), summaryBName = el('summaryBName');
   const summaryAEmoji = el('summaryAEmoji'), summaryBEmoji = el('summaryBEmoji');
   const summaryADetail = el('summaryADetail'), summaryBDetail = el('summaryBDetail');
@@ -308,36 +315,69 @@
     }catch(e){ alert('Clipboard blocked. Long-press, then Paste.'); }
   });
 
-  function setModelOptions(options, preserveValue){
-    if(!modelEl) return;
-    const previous = preserveValue !== undefined ? preserveValue : modelEl.value;
-    modelEl.innerHTML = '';
+  function setModelOptions(selectEl, options, preserveValue){
+    if(!selectEl) return;
+    const previous = preserveValue !== undefined ? preserveValue : selectEl.value;
+    selectEl.innerHTML = '';
     options.forEach(optData=>{
       const opt = document.createElement('option');
       opt.value = optData.value;
       opt.textContent = optData.label;
-      modelEl.appendChild(opt);
+      selectEl.appendChild(opt);
     });
     const values = options.map(opt=>opt.value);
     if(previous && values.includes(previous)){
-      modelEl.value = previous;
+      selectEl.value = previous;
     }else if(options.length){
-      modelEl.value = options[0].value;
+      selectEl.value = options[0].value;
     }
   }
 
+  function getModelElementsForSide(side){
+    if(side==='B') return { select: modelBEl, custom: customModelBEl };
+    return { select: modelAEl, custom: customModelAEl };
+  }
+
+  function resolveModelForSide(side){
+    const { select, custom } = getModelElementsForSide(side);
+    if(select){
+      if(select.value === 'custom'){
+        const customVal = custom && custom.value ? custom.value.trim() : '';
+        return customVal || defaultModelId;
+      }
+      if(select.value){
+        return select.value;
+      }
+    }
+    return defaultModelId;
+  }
+
+  function describeModelLabel(side){
+    const { select, custom } = getModelElementsForSide(side);
+    if(!select) return defaultModelId;
+    if(select.value === 'custom'){
+      const customVal = custom && custom.value ? custom.value.trim() : '';
+      return customVal ? `Custom: ${customVal}` : 'Custom model';
+    }
+    const opt = select.options && select.options[select.selectedIndex];
+    if(opt && opt.textContent){
+      return opt.textContent;
+    }
+    return select.value || defaultModelId;
+  }
+
   async function refreshModelList(){
-    if(!refreshModelsBtn || !modelEl) return;
+    if(!refreshModelsBtn || !modelSelects.length) return;
     if(!apiKeyEl.value){
       alert('Enter your API key before refreshing models.');
       return;
     }
     refreshModelsBtn.disabled = true;
     if(modelStatusEl) modelStatusEl.textContent = 'Fetching models…';
-    const previousValue = modelEl.value;
-    const selectedModelId = modelEl.value==='custom' ? (customModelEl.value || '').trim() : modelEl.value;
-    const provider = resolveProviderForModel(selectedModelId);
-    if(provider !== 'openai'){
+    const previousValues = modelSelects.map(sel=>sel.value);
+    const selectedModelIds = ['A','B'].map(resolveModelForSide);
+    const openAICandidate = selectedModelIds.find(id=>resolveProviderForModel(id) === 'openai');
+    if(!openAICandidate){
       if(modelStatusEl) modelStatusEl.textContent = 'Model refresh is only available for OpenAI models.';
       refreshModelsBtn.disabled = false;
       return;
@@ -359,19 +399,20 @@
         if(!options.some(opt=>opt.value==='custom')){
           options.push({ value:'custom', label:'Custom…' });
         }
-        setModelOptions(options, previousValue);
+        modelSelects.forEach((sel, idx)=>setModelOptions(sel, options, previousValues[idx]));
         if(modelStatusEl) modelStatusEl.textContent = `Loaded ${uniqueIds.length} models.`;
       }else{
-        setModelOptions(builtinModelOptions, previousValue);
+        modelSelects.forEach((sel, idx)=>setModelOptions(sel, builtinModelOptions, previousValues[idx]));
         if(modelStatusEl) modelStatusEl.textContent = 'No models returned; showing defaults.';
       }
     }catch(err){
       console.error(err);
       if(modelStatusEl) modelStatusEl.textContent = 'Model refresh failed.';
       alert('Model refresh failed: '+err.message);
-      setModelOptions(builtinModelOptions, previousValue);
+      modelSelects.forEach((sel, idx)=>setModelOptions(sel, builtinModelOptions, previousValues[idx]));
     }finally{
       refreshModelsBtn.disabled = false;
+      updateSummary();
     }
   }
 
@@ -415,6 +456,12 @@
         if(reviewTopicDetail) reviewTopicDetail.textContent = 'Add a moderator preprompt to define the topic.';
       }
     }
+    const modelALabel = describeModelLabel('A');
+    const modelBLabel = describeModelLabel('B');
+    if(chipA) chipA.title = `Model: ${modelALabel}`;
+    if(summaryAChip) summaryAChip.title = `Model: ${modelALabel}`;
+    if(chipB) chipB.title = `Model: ${modelBLabel}`;
+    if(summaryBChip) summaryBChip.title = `Model: ${modelBLabel}`;
   }
 
   // Live chips + emojis (fix)
@@ -431,6 +478,10 @@
   emojiBEl.addEventListener('input', syncChips);
   syncChips();
   if(moderatorPrepromptEl) moderatorPrepromptEl.addEventListener('input', updateSummary);
+  if(modelAEl) modelAEl.addEventListener('change', updateSummary);
+  if(modelBEl) modelBEl.addEventListener('change', updateSummary);
+  if(customModelAEl) customModelAEl.addEventListener('input', updateSummary);
+  if(customModelBEl) customModelBEl.addEventListener('input', updateSummary);
   updateSummary();
 
   const samplePersonas = Array.isArray(window.samplePersonas) ? window.samplePersonas : [];
@@ -757,14 +808,14 @@
     setGeneratorStatus('Step 1/2: Drafting persona blueprint…', false);
     if(generatorTopicsEl) generatorTopicsEl.value = '';
     try{
-      const blueprintText = await chatCompletion([
+      const blueprintText = await chatCompletion(side, [
         { role:'system', content:'You are a persona concept architect. Respond ONLY with valid JSON.' },
         { role:'user', content:`Seed idea: ${seed}\n\nReturn a JSON object with the following keys:\n- name: imaginative persona name (if the seed requests an existing public figure or fictional character, use that canonical name exactly)\n- roleTagline: a short role or mission statement\n- emoji: a single emoji that matches the vibe\n- toneDescriptors: array of 3 short adjectives for the tone\n- signatureOpinions: array of 3 bold opinions the persona holds (ground them in canon if the seed references a known character)\n- communicationStyle: 2 sentences describing how they speak, mirroring any requested voice (e.g. \'Homer Simpson\' should speak like Homer)\n- suggestedColor: a hex color (e.g. #34d399) that fits the vibe.\n\nDo not invent a different persona than the one explicitly requested in the seed.` }
       ], 1.0);
       const blueprint = extractJSON(blueprintText);
       if(!blueprint){ throw new Error('Could not parse persona blueprint response.'); }
       setGeneratorStatus('Step 2/2: Expanding tone, opinions, and topics…', false);
-      const detailText = await chatCompletion([
+      const detailText = await chatCompletion(side, [
         { role:'system', content:'You turn persona blueprints into detailed chat persona prompts. Respond ONLY with valid JSON.' },
         { role:'user', content:`Seed request: ${seed}\nBlueprint data:\n${JSON.stringify(blueprint, null, 2)}\n\nReturn JSON with keys:\n- name\n- emoji\n- bubbleColor (hex, fallback to ${side==='A'?colorAEl.value:colorBEl.value})\n- prompt (concise instructions that include persona background, tone descriptors, signature opinions, and explicit guidance on response style. Make sure the prompt contains a clear line noting that the conversation partner already understands this is a playful portrayal and commanding the persona to stay fully in-character without ever volunteering disclaimers about not being the real individual.)\n- topics (array of 3-5 specific conversation topics related to the persona).\nThe prompt must explicitly instruct the assistant to speak in the voice that matches the seed (e.g. if asked for Homer Simpson, the prompt should make the assistant respond exactly like Homer Simpson with canon-consistent references).\nDo not include any statements about the assistant not being the real person.\nIf the seed named an existing character or person, ensure the name and characterization match that identity precisely, without substituting another persona.` }
       ], 1.0);
@@ -887,8 +938,8 @@
     return extractGeminiText(data);
   }
 
-  async function chatCompletion(messages, tempOverride){
-    const chosenModel = (modelEl.value==='custom' ? (customModelEl.value || 'gpt-5') : modelEl.value);
+  async function chatCompletion(side, messages, tempOverride){
+    const chosenModel = resolveModelForSide(side);
     const temperature = clampTemp(tempOverride ?? temperatureEl.value);
     const provider = resolveProviderForModel(chosenModel);
     if(provider === 'gemini'){
@@ -1011,7 +1062,7 @@
     const userContent = `${setupNote}${modLine}Context transcript so far:\n${transcript()}\n\nYou are ${name}${emoji ? ' ('+emoji+')' : ''}. Reply briefly to ${otherName}.`;
 
     try{
-      const reply = await chatCompletion([
+      const reply = await chatCompletion(current, [
         { role:'system', content: personaPrompt },
         { role:'user', content: userContent }
       ], temp);
@@ -1082,16 +1133,92 @@
   }
   function buildSessionRecord(){
     ensureSessionId();
+    const modelState = {
+      A: {
+        select: modelAEl ? modelAEl.value : defaultModelId,
+        custom: customModelAEl ? customModelAEl.value : '',
+        actual: resolveModelForSide('A')
+      },
+      B: {
+        select: modelBEl ? modelBEl.value : defaultModelId,
+        custom: customModelBEl ? customModelBEl.value : '',
+        actual: resolveModelForSide('B')
+      }
+    };
     return {
       id: currentSessionId,
       ts: Date.now(),
       a: { name: nameAEl.value, emoji: emojiAEl.value, prompt: promptAEl.value, color: colorAEl.value },
       b: { name: nameBEl.value, emoji: emojiBEl.value, prompt: promptBEl.value, color: colorBEl.value },
-      model: (modelEl.value==='custom' ? (customModelEl.value || 'gpt-5') : modelEl.value),
+      model: modelState.A.actual,
+      models: modelState,
       temperature: clampTemp(temperatureEl.value),
       messages: messages.slice(),
       moderatorPreprompt: moderatorPrepromptEl.value
     };
+  }
+
+  function getStoredModelSelection(rec, side){
+    const fallback = (rec && typeof rec.model === 'string' && rec.model) ? rec.model : defaultModelId;
+    const container = rec && rec.models && typeof rec.models === 'object' ? rec.models[side] : null;
+    if(container && typeof container === 'object'){
+      const selectVal = container.select ?? container.value ?? '';
+      const customVal = container.custom ?? container.customModel ?? '';
+      const actualVal = container.actual ?? (selectVal === 'custom' ? (customVal || fallback) : (selectVal || fallback));
+      return {
+        select: typeof selectVal === 'string' ? selectVal : '',
+        custom: typeof customVal === 'string' ? customVal : '',
+        actual: typeof actualVal === 'string' && actualVal ? actualVal : fallback
+      };
+    }
+    const legacySelect = rec && typeof rec[`model${side}`] === 'string' ? rec[`model${side}`] : '';
+    const legacyCustom = rec && typeof rec[`customModel${side}`] === 'string' ? rec[`customModel${side}`] : '';
+    if(legacySelect || legacyCustom){
+      const actual = legacySelect === 'custom' ? (legacyCustom || fallback) : (legacySelect || fallback);
+      return {
+        select: legacySelect,
+        custom: legacyCustom,
+        actual: actual || fallback
+      };
+    }
+    return { select: fallback, custom: '', actual: fallback };
+  }
+
+  function applyModelSelectionFromRecord(rec, side){
+    const { select: storedSelect, custom: storedCustom, actual } = getStoredModelSelection(rec, side);
+    const { select: selectEl, custom: customEl } = getModelElementsForSide(side);
+    if(!selectEl) return;
+    const values = Array.from(selectEl.options || []).map(opt=>opt.value);
+    let valueToSet = storedSelect || '';
+    if(valueToSet){
+      if(!values.includes(valueToSet)){
+        if(actual && values.includes(actual)){
+          valueToSet = actual;
+        }else if(values.includes('custom')){
+          valueToSet = 'custom';
+        }else if(values.length){
+          valueToSet = values[0];
+        }
+      }
+    }else{
+      if(actual && values.includes(actual)){
+        valueToSet = actual;
+      }else if(values.includes('custom')){
+        valueToSet = 'custom';
+      }else if(values.length){
+        valueToSet = values[0];
+      }
+    }
+    if(valueToSet && values.includes(valueToSet)){
+      selectEl.value = valueToSet;
+    }else if(values.length){
+      selectEl.value = values[0];
+    }
+    if(selectEl.value === 'custom'){
+      if(customEl) customEl.value = storedCustom || actual || '';
+    }else if(customEl){
+      customEl.value = storedCustom || '';
+    }
   }
   function persistSession(){
     if(!messages.length) return;
@@ -1185,11 +1312,8 @@
     promptBEl.value = rec.b.prompt || '';
     colorBEl.value = rec.b.color || '#ffffff';
 
-    if(rec.model){
-      const opt = Array.from(modelEl.options).some(o=>o.value===rec.model);
-      if(opt){ modelEl.value = rec.model; customModelEl.value=''; }
-      else{ modelEl.value='custom'; customModelEl.value=rec.model; }
-    }
+    applyModelSelectionFromRecord(rec, 'A');
+    applyModelSelectionFromRecord(rec, 'B');
     temperatureEl.value = rec.temperature ?? 1.0; updateTemp();
     moderatorPrepromptEl.value = rec.moderatorPreprompt || '';
     syncChips();
