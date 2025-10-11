@@ -335,6 +335,13 @@
     refreshModelsBtn.disabled = true;
     if(modelStatusEl) modelStatusEl.textContent = 'Fetching models…';
     const previousValue = modelEl.value;
+    const selectedModelId = modelEl.value==='custom' ? (customModelEl.value || '').trim() : modelEl.value;
+    const provider = resolveProviderForModel(selectedModelId);
+    if(provider !== 'openai'){
+      if(modelStatusEl) modelStatusEl.textContent = 'Model refresh is only available for OpenAI models.';
+      refreshModelsBtn.disabled = false;
+      return;
+    }
     try{
       const res = await fetch('https://api.openai.com/v1/models',{
         headers:{ 'Authorization':'Bearer '+apiKeyEl.value.trim() }
@@ -802,21 +809,92 @@
     return Math.min(2, Math.max(0, n));
   }
 
-  async function chatCompletion(messages, tempOverride){
-    const chosenModel = (modelEl.value==='custom' ? (customModelEl.value || 'gpt-5') : modelEl.value);
-    const temperature = clampTemp(tempOverride ?? temperatureEl.value);
+  const MODEL_PROVIDER_METADATA = [
+    { provider:'gemini', matcher:modelId=>/^gemini[-:]/i.test(modelId) },
+    { provider:'openai', matcher:()=>true }
+  ];
+
+  function resolveProviderForModel(modelId){
+    const normalized = typeof modelId === 'string' ? modelId.trim() : '';
+    const found = MODEL_PROVIDER_METADATA.find(entry=>entry.matcher(normalized));
+    return (found && found.provider) || 'openai';
+  }
+
+  async function callOpenAIChat({ model, messages, temperature }){
     const res = await fetch('https://api.openai.com/v1/chat/completions',{
       method:'POST',
       headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+apiKeyEl.value.trim() },
-      body: JSON.stringify({ model: chosenModel, messages, temperature })
+      body: JSON.stringify({ model, messages, temperature })
     });
     if(!res.ok){
       const t = await res.text();
-      throw new Error(t);
+      throw new Error(t || res.statusText || 'OpenAI chat completion failed');
     }
     const data = await res.json();
     const reply = ((data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'').trim();
     return reply;
+  }
+
+  function buildGeminiPayload(messages){
+    const contents = [];
+    const systemMessages = [];
+    messages.forEach(msg=>{
+      if(!msg || typeof msg.content !== 'string') return;
+      if(msg.role === 'system'){
+        systemMessages.push(msg.content);
+        return;
+      }
+      const role = msg.role === 'assistant' ? 'model' : 'user';
+      contents.push({ role, parts:[{ text: msg.content }] });
+    });
+    const payload = {
+      contents
+    };
+    if(systemMessages.length){
+      payload.systemInstruction = {
+        role:'system',
+        parts:[{ text: systemMessages.join('\n\n') }]
+      };
+    }
+    return payload;
+  }
+
+  function extractGeminiText(data){
+    if(!data) return '';
+    const candidates = Array.isArray(data.candidates) ? data.candidates : [];
+    const first = candidates[0];
+    const parts = first && first.content && Array.isArray(first.content.parts) ? first.content.parts : [];
+    const text = parts.map(part=>typeof part?.text === 'string' ? part.text : '').join('');
+    return text.trim();
+  }
+
+  async function callGeminiChat({ model, messages, temperature }){
+    const key = apiKeyEl.value.trim();
+    const payload = buildGeminiPayload(messages);
+    payload.generationConfig = { temperature };
+    const endpointModel = encodeURIComponent(model);
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${endpointModel}:generateContent?key=${encodeURIComponent(key)}`;
+    const res = await fetch(url,{
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok){
+      const t = await res.text();
+      throw new Error(t || res.statusText || 'Gemini chat completion failed');
+    }
+    const data = await res.json();
+    return extractGeminiText(data);
+  }
+
+  async function chatCompletion(messages, tempOverride){
+    const chosenModel = (modelEl.value==='custom' ? (customModelEl.value || 'gpt-5') : modelEl.value);
+    const temperature = clampTemp(tempOverride ?? temperatureEl.value);
+    const provider = resolveProviderForModel(chosenModel);
+    if(provider === 'gemini'){
+      return callGeminiChat({ model: chosenModel, messages, temperature });
+    }
+    return callOpenAIChat({ model: chosenModel, messages, temperature });
   }
 
   function extractJSON(text){
