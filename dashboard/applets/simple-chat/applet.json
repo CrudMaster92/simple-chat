@@ -1,0 +1,12 @@
+{
+  "slug": "simple-chat",
+  "name": "Simple Chat",
+  "description": "Two-persona alternating chat simulator with moderator extensions and local history.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "2.0.0",
+  "lastUpdated": "2024-05-01",
+  "tags": ["chat", "personas"],
+  "author": "Simple Chat Team",
+  "permissions": []
+}
