@@ -217,12 +217,30 @@
                   <div class="panel api-access-panel">
                     <div class="panel-head">
                       <div class="panel-title">API &amp; Model Settings</div>
-                      <label class="remember-toggle"><input id="rememberKey" type="checkbox"> <span class="muted">Remember key locally</span></label>
                     </div>
-                    <label class="label" for="apiKey">API Key</label>
-                    <div class="api-input-row">
-                      <textarea id="apiKey" rows="1" placeholder="Enter your OpenAI API key"></textarea>
-                      <button id="btnPaste" class="btn dark">📋 Paste</button>
+                    <div class="api-provider-grid">
+                      <div class="provider-key-block">
+                        <div class="provider-key-header">
+                          <label class="label" for="openaiKey">OpenAI key</label>
+                          <label class="remember-toggle"><input id="rememberOpenAIKey" type="checkbox"> <span class="muted">Remember locally</span></label>
+                        </div>
+                        <div class="api-input-row">
+                          <input id="openaiKey" type="password" placeholder="Enter your OpenAI API key" autocomplete="off">
+                          <button id="pasteOpenAIKey" class="btn dark" type="button">📋 Paste</button>
+                        </div>
+                        <div id="openaiKeyStatus" class="muted provider-status" aria-live="polite"></div>
+                      </div>
+                      <div class="provider-key-block">
+                        <div class="provider-key-header">
+                          <label class="label" for="geminiKey">Gemini key</label>
+                          <label class="remember-toggle"><input id="rememberGeminiKey" type="checkbox"> <span class="muted">Remember locally</span></label>
+                        </div>
+                        <div class="api-input-row">
+                          <input id="geminiKey" type="password" placeholder="Enter your Gemini API key" autocomplete="off">
+                          <button id="pasteGeminiKey" class="btn dark" type="button">📋 Paste</button>
+                        </div>
+                        <div id="geminiKeyStatus" class="muted provider-status" aria-live="polite"></div>
+                      </div>
                     </div>
                     <div class="api-settings-grid">
                       <div>
