@@ -41,3 +41,4 @@
 - Cassette Loop Challenge – Glide a glowing tape reel, time razor splices, and keep the wobble buffer calm for an endless mixtape streak.
 - Starfall Cipher Rally – Sprint across an observatory deck decoding crashing star sigils, chaining co-op power boosts, and keeping the shield grid alive for a high-score victory.
 - Luminous Rift Garden – Tend a radiant rift garden with cross-shaped pulse sweeps to stabilize hidden fissures.
+- Teacup Tempest Clicker – Conduct a glowing teacup lab where every click uncorks micro-squalls, harvests storm sips, and fuels eccentric weatherwork upgrades.

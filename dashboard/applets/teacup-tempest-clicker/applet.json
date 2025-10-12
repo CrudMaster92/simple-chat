@@ -1,0 +1,12 @@
+{
+  "slug": "teacup-tempest-clicker",
+  "name": "Teacup Tempest Clicker",
+  "description": "Infuse miniature squalls in a porcelain lab, tapping up storm sips and tuning whimsical weatherwork upgrades.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-05",
+  "tags": ["game", "clicker", "experimental"],
+  "author": "Teacup Tempest Collective",
+  "permissions": []
+}

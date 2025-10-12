@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacup Tempest Clicker</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="tempest-app" aria-labelledby="appTitle">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Close Teacup Tempest Clicker"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="intro">
+        <div class="intro__badge">Microstorm Brewlab</div>
+        <h1 id="appTitle">Teacup Tempest Clicker</h1>
+        <p class="intro__lede">
+          Tap the storming teacup to whip up miniature squalls, bottle the fizzing thunder, and outfit your brewbench with
+          whimsical weatherwork upgrades.
+        </p>
+      </header>
+
+      <section class="status-panel" aria-label="Tempest stats">
+        <div class="status-panel__stat">
+          <span class="label">Storm Sips</span>
+          <span class="value" id="totalSips">0</span>
+        </div>
+        <div class="status-panel__stat">
+          <span class="label">Per Click</span>
+          <span class="value" id="perClick">1</span>
+        </div>
+        <div class="status-panel__stat">
+          <span class="label">Auto Infusion</span>
+          <span class="value" id="perSecond">0 /s</span>
+        </div>
+        <div class="status-panel__stat status-panel__stat--mood">
+          <span class="label">Brew Mood</span>
+          <span class="value" id="moodText">Calm ripples</span>
+        </div>
+      </section>
+
+      <section class="laboratory" aria-label="Teacup control area">
+        <article class="teacup" aria-live="polite">
+          <div class="teacup__glow"></div>
+          <button class="teacup__core" id="brewButton" type="button" aria-label="Infuse a storm sip"></button>
+          <div class="teacup__swirls" aria-hidden="true">
+            <span class="swirl swirl--one"></span>
+            <span class="swirl swirl--two"></span>
+            <span class="swirl swirl--three"></span>
+          </div>
+          <div class="teacup__logline" id="lastAction">No tempest brewed yet. Give the cup a tap.</div>
+        </article>
+
+        <aside class="story-log" aria-label="Storm notes">
+          <h2>Infusion Journal</h2>
+          <ul id="logEntries"></ul>
+        </aside>
+      </section>
+
+      <section class="upgrade-grid" aria-label="Upgrade shop">
+        <h2>Weatherwork Upgrades</h2>
+        <div class="upgrade-grid__list" id="upgradeList"></div>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
