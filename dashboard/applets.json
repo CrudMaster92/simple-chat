@@ -1,5 +1,10 @@
 {
-  "simple-chat": "./applets/simple-chat/applet.json",
   "razor-cracktro": "./applets/razor-cracktro/applet.json",
-  "emoji-fusion-lab": "./applets/emoji-fusion-lab/applet.json"
+  "simple-chat": "./applets/simple-chat/applet.json",
+  "emoji-fusion-lab": "./applets/emoji-fusion-lab/applet.json",
+  "mythic-story-dice": "./applets/mythic-story-dice/applet.json",
+  "time-capsule-postcards": "./applets/time-capsule-postcards/applet.json",
+  "aurora-flavor-forge": "./applets/aurora-flavor-forge/applet.json",
+  "prism-pulse-labyrinth": "./applets/prism-pulse-labyrinth/applet.json",
+  "quantum-orbit-catcher": "./applets/quantum-orbit-catcher/applet.json"
 }
