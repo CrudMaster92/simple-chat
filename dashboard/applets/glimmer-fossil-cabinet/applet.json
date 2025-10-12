@@ -1,0 +1,12 @@
+{
+  "slug": "glimmer-fossil-cabinet",
+  "name": "Glimmer Fossil Cabinet",
+  "description": "Curate bioluminescent fossils on rotating stands and unveil whispered lore plaques.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-09",
+  "tags": ["creative", "ambient", "mystery"],
+  "author": "Glimmer Fossil Cabinet Team",
+  "permissions": []
+}
