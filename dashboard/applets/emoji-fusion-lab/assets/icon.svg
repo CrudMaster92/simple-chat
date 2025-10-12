@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff9a9e" />
+      <stop offset="50%" stop-color="#fad0c4" />
+      <stop offset="100%" stop-color="#fad961" />
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="108" height="108" rx="20" fill="url(#bg)" />
+  <text x="60" y="52" font-size="40" text-anchor="middle">🧪</text>
+  <text x="60" y="92" font-size="34" text-anchor="middle">✨</text>
+</svg>

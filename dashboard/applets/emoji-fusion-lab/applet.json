@@ -1,0 +1,12 @@
+{
+  "slug": "emoji-fusion-lab",
+  "name": "Emoji Fusion Lab",
+  "description": "Spin mood, creature, and activity reels to brew imaginative emoji mashups and prompts.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-01",
+  "tags": ["creativity", "fun"],
+  "author": "Emoji Fusion Lab Team",
+  "permissions": []
+}
