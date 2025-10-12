@@ -1,0 +1,12 @@
+{
+  "slug": "diskette-explorer",
+  "name": "Diskette Explorer",
+  "description": "Retro disk manager with drive trees, metadata inspector, and tactile copy station.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-30",
+  "tags": ["retro", "file manager", "productivity"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

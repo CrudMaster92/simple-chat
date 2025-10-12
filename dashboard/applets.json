@@ -17,5 +17,6 @@
   "chrono-lantern-workshop": "./applets/chrono-lantern-workshop/applet.json",
   "retrocalc-console": "./applets/retrocalc-console/applet.json",
   "geniepad-95": "./applets/geniepad-95/applet.json",
-  "pixelcanvas-studio": "./applets/pixelcanvas-studio/applet.json"
+  "pixelcanvas-studio": "./applets/pixelcanvas-studio/applet.json",
+  "diskette-explorer": "./applets/diskette-explorer/applet.json"
 }
