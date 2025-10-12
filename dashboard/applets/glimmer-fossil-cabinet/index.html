@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glimmer Fossil Cabinet</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app__header">
+        <img src="./assets/icon.svg" alt="Glimmer Fossil Cabinet icon" class="app__icon" />
+        <div>
+          <h1>Glimmer Fossil Cabinet</h1>
+          <p>
+            Curate a hush-lit cabinet of bioluminescent relics. Rotate each fossil, tune its glow, and let the lore plaques hint at
+            what still slumbers in the strata.
+          </p>
+        </div>
+      </header>
+
+      <main class="app__main">
+        <section class="panel archive" aria-labelledby="archive-title">
+          <div class="panel__header">
+            <h2 id="archive-title">Specimen Archive</h2>
+            <p>Choose fragments to anchor in your cabinet stands. Their histories remain open to interpretation.</p>
+          </div>
+          <div class="archive__list" id="fossil-list"></div>
+        </section>
+
+        <section class="panel cabinet" aria-labelledby="cabinet-title">
+          <div class="panel__header">
+            <h2 id="cabinet-title">Cabinet Assembly</h2>
+            <p>Five stands await. Rotate and brighten each fossil to invent your own noctilucent tableau.</p>
+          </div>
+
+          <div class="cabinet__controls">
+            <div class="control-group">
+              <label for="rotation-slider">Yaw Rotation</label>
+              <input type="range" id="rotation-slider" min="0" max="360" value="120" />
+              <div class="control-readout" id="rotation-readout">Yaw 120°</div>
+            </div>
+            <div class="control-group">
+              <label for="glow-slider">Radiance</label>
+              <input type="range" id="glow-slider" min="30" max="100" value="60" />
+              <div class="control-readout" id="glow-readout">Glow 60%</div>
+            </div>
+            <button class="control-btn" id="release-slot" type="button">Release Selected Specimen</button>
+          </div>
+
+          <div class="cabinet__status" id="cabinet-status">Select a fossil to begin arranging your cabinet.</div>
+          <div class="cabinet__grid" id="cabinet-grid" role="list"></div>
+        </section>
+
+        <section class="panel lore" aria-labelledby="lore-title">
+          <div class="panel__header">
+            <h2 id="lore-title">Lore Plaque</h2>
+            <p>Rotate the relics to awaken the whispers etched in their glow.</p>
+          </div>
+          <article class="lore-card" id="lore-card">
+            <h3 id="lore-name">No specimen selected</h3>
+            <p class="lore-card__subtitle" id="lore-origin">Anchor a relic to read its plaque.</p>
+            <p id="lore-text">
+              Each fossil emits differing hues once warmed by your cabinet. Piece together their story with your own intuition.
+            </p>
+            <dl class="lore-card__details">
+              <div>
+                <dt>Field Notes</dt>
+                <dd id="lore-notes">Uncatalogued</dd>
+              </div>
+              <div>
+                <dt>Glimmer Index</dt>
+                <dd id="lore-glimmer">—</dd>
+              </div>
+            </dl>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
