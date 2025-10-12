@@ -1,0 +1,16 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sail" x1="20" y1="18" x2="108" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F9D976" />
+      <stop offset="0.5" stop-color="#3EC5C4" />
+      <stop offset="1" stop-color="#2A6F9E" />
+    </linearGradient>
+    <linearGradient id="tail" x1="64" y1="80" x2="80" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F99867" />
+      <stop offset="1" stop-color="#2A9D8F" />
+    </linearGradient>
+  </defs>
+  <path d="M26 26L98 36L70 108L26 26Z" fill="url(#sail)" />
+  <path d="M70 108C70 108 60 116 58 124" stroke="url(#tail)" stroke-width="6" stroke-linecap="round" />
+  <circle cx="90" cy="32" r="6" fill="#FDE6B2" />
+</svg>

@@ -33,3 +33,4 @@
 - Glimmer Fossil Cabinet – Arrange noctilucent fossils on rotating stands, adjust their glow, and ponder the whispered plaques they unveil.
 - Chrono Lantern Workshop – Weave time-reactive lanterns that morph light cores, weather-tuned chimes, and seasonal fiber patterns.
 - Interstellar Herbarium Field Notes – Spin up lyrical field observations for cosmic flora with model-aware OpenAI integrations.
+- Stormglass Kite Atelier – Rig shimmering kites, sculpt stormglass thermals, and score breezy flight choreographies.
