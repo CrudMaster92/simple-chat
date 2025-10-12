@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tidal Dream Cartographer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div>
+          <h1>Tidal Dream Cartographer</h1>
+          <p>Sketch radiant archipelagos across bioluminescent tides, then invite GPT to whisper their lore.</p>
+        </div>
+        <span class="badge">OpenAI-powered daydreaming</span>
+      </header>
+
+      <main class="app-layout">
+        <section class="control-panel">
+          <h2 class="panel-title">Chart Controls</h2>
+
+          <label class="field">
+            <span>Chart Title</span>
+            <input id="title-input" type="text" placeholder="Lumen Shoal Almanac" maxlength="60" />
+          </label>
+
+          <label class="field">
+            <span>Tide Emotion</span>
+            <select id="mood-select">
+              <option value="serene hush">Serene Hush</option>
+              <option value="whispering ascent">Whispering Ascent</option>
+              <option value="glittering surge">Glittering Surge</option>
+              <option value="storm-kissed reverie">Storm-Kissed Reverie</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Archipelago Layout</span>
+            <select id="layout-select">
+              <option value="crescent chain">Crescent Chain</option>
+              <option value="spiral bloom">Spiral Bloom</option>
+              <option value="drifting fan">Drifting Fan</option>
+              <option value="scattered polyps">Scattered Polyps</option>
+            </select>
+          </label>
+
+          <label class="field field--slider">
+            <div class="slider-head">
+              <span>Luminescence</span>
+              <output id="lumen-output" for="lumen-slider">3 / 5</output>
+            </div>
+            <input id="lumen-slider" type="range" min="1" max="5" step="1" value="3" />
+          </label>
+
+          <label class="field">
+            <span>Guiding Instrument</span>
+            <select id="instrument-select">
+              <option value="tideline astrolabe">Tideline Astrolabe</option>
+              <option value="glowstone sextant">Glowstone Sextant</option>
+              <option value="chorus compass">Chorus Compass</option>
+              <option value="gossamer plumb">Gossamer Plumb</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Cartographer's Whisper</span>
+            <textarea id="whisper-input" rows="4" placeholder="Note the singing reefs or the sleeping leviathans..." maxlength="280"></textarea>
+          </label>
+
+          <label class="field">
+            <span>OpenAI Model</span>
+            <input id="model-input" type="text" value="gpt-4o-mini" />
+          </label>
+
+          <label class="field">
+            <span>OpenAI API Key</span>
+            <input id="api-key" type="password" placeholder="sk-..." autocomplete="off" />
+          </label>
+
+          <button id="generate-btn" class="action-btn">Weave Tidal Dream</button>
+          <p class="hint">Keys never leave your browser. We call OpenAI directly from this page.</p>
+        </section>
+
+        <section class="display-panel">
+          <div class="map-card">
+            <div class="map-meta">
+              <div>
+                <span class="map-label">Current Chart</span>
+                <h2 id="map-title">Awaiting your first tide sketch</h2>
+              </div>
+              <div class="map-tags" id="map-tags"></div>
+            </div>
+            <canvas id="tidal-map" width="640" height="480" role="img" aria-label="Stylized luminous tide map"></canvas>
+          </div>
+
+          <article class="story-card">
+            <header class="story-header">
+              <h2>Tidal Lore Dispatch</h2>
+              <div id="story-status" class="story-status" aria-live="polite"></div>
+            </header>
+            <pre id="tide-story" class="story-output" tabindex="0">Summon a chart and the tide will speak.</pre>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

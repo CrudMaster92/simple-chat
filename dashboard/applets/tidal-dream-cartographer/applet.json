@@ -1,0 +1,12 @@
+{
+  "slug": "tidal-dream-cartographer",
+  "name": "Tidal Dream Cartographer",
+  "description": "Sketch luminous tide charts and pair them with GPT-woven lore dispatches.",
+  "entry": "./index.html",
+  "icon": "",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-05",
+  "tags": ["creative", "generator", "story"],
+  "author": "Tidal Dream Cartographer Team",
+  "permissions": ["openai"]
+}

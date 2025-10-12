@@ -27,3 +27,4 @@
 - Potion Snap Oracle – Snap a fresh photo to distill its colors into whimsical potion ingredients and arcane incantations.
 - Sonic Bloom Conservatory – Tend an ethereal audio garden of shimmering blooms and sculpted breezes.
 - Matrix Synth Rain – Conduct a customizable matrix skyline with glyph dialects, luminous gradients, and live performance bursts.
+- Tidal Dream Cartographer – Sketch luminous archipelago tide maps and summon GPT-spun lore dispatches for each chart.
