@@ -1,0 +1,508 @@
+:root {
+  color-scheme: dark;
+  font-family: "Poppins", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #06112b;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, rgba(247, 183, 51, 0.15), transparent 55%),
+    linear-gradient(180deg, #071c3a 0%, #041225 55%, #02101f 100%);
+  color: #f2f5ff;
+}
+
+main.parade-app {
+  position: relative;
+  padding: 2.5rem clamp(1.5rem, 4vw, 3rem) 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 2.5rem;
+}
+
+.close-control {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  border: 0;
+  background: rgba(7, 23, 48, 0.75);
+  color: #f7b733;
+  font-size: 1.3rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.close-control:hover,
+.close-control:focus-visible {
+  background: rgba(247, 183, 51, 0.85);
+  color: #041225;
+  transform: scale(1.05);
+  outline: none;
+}
+
+.app-header {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(17, 55, 92, 0.85), rgba(6, 23, 54, 0.9));
+  border: 1px solid rgba(155, 199, 255, 0.2);
+  border-radius: 24px;
+  padding: clamp(1.75rem, 3vw, 2.5rem);
+  box-shadow: 0 24px 45px rgba(2, 12, 24, 0.45);
+}
+
+.header-titles {
+  flex: 1;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(247, 183, 51, 0.15);
+  color: #f7b733;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  letter-spacing: 0.01em;
+}
+
+.lede {
+  margin-top: 0.5rem;
+  max-width: 36ch;
+  color: rgba(226, 235, 255, 0.75);
+}
+
+.twilight-dial {
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+}
+
+.dial {
+  width: 110px;
+  height: 110px;
+  border-radius: 999px;
+  background: conic-gradient(from 210deg, #f7b733 0 40%, rgba(247, 183, 51, 0.2) 40% 100%);
+  border: 3px solid rgba(255, 205, 128, 0.4);
+  box-shadow: inset 0 0 22px rgba(255, 185, 75, 0.35);
+}
+
+.dial-caption {
+  text-align: center;
+}
+
+.dial-label {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(238, 244, 255, 0.6);
+}
+
+.dial-value {
+  font-weight: 600;
+  color: #fce3a0;
+}
+
+.planner {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.segment-form {
+  display: grid;
+  gap: 1.5rem;
+  background: linear-gradient(160deg, rgba(12, 30, 63, 0.85), rgba(7, 17, 35, 0.85));
+  border: 1px solid rgba(149, 192, 255, 0.15);
+  border-radius: 20px;
+  padding: 1.75rem;
+}
+
+.field-block {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.field-block > legend {
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(247, 183, 51, 0.85);
+  margin-bottom: 0.4rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.field span {
+  font-weight: 600;
+  color: rgba(233, 242, 255, 0.85);
+}
+
+.field input[type="text"],
+.field select {
+  background: rgba(3, 12, 27, 0.85);
+  border: 1px solid rgba(139, 189, 255, 0.25);
+  border-radius: 12px;
+  padding: 0.65rem 0.9rem;
+  color: #f6fbff;
+  font-size: 0.95rem;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.field input[type="text"]:focus,
+.field select:focus {
+  outline: none;
+  border-color: rgba(247, 183, 51, 0.85);
+  box-shadow: 0 0 0 3px rgba(247, 183, 51, 0.2);
+}
+
+.slider-field input[type="range"] {
+  width: 100%;
+  accent-color: #f7b733;
+}
+
+.micro-fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.micro-fieldset legend {
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+  color: rgba(238, 244, 255, 0.7);
+}
+
+.chip {
+  background: rgba(12, 34, 68, 0.7);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.chip input {
+  accent-color: #f7b733;
+}
+
+.chip:hover {
+  border-color: rgba(247, 183, 51, 0.4);
+  transform: translateY(-1px);
+}
+
+.submit-button {
+  margin-top: 0.5rem;
+  justify-self: start;
+  background: linear-gradient(135deg, #f7b733, #fdd27a);
+  border: 0;
+  border-radius: 999px;
+  padding: 0.65rem 1.8rem;
+  font-weight: 600;
+  color: #1c2435;
+  cursor: pointer;
+  box-shadow: 0 16px 30px rgba(247, 183, 51, 0.2);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.submit-button:hover,
+.submit-button:focus-visible {
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 22px 36px rgba(247, 183, 51, 0.3);
+}
+
+.inspiration {
+  background: linear-gradient(180deg, rgba(7, 30, 65, 0.9), rgba(6, 19, 41, 0.85));
+  border: 1px solid rgba(140, 194, 255, 0.15);
+  border-radius: 20px;
+  padding: 1.75rem;
+  display: grid;
+  gap: 1rem;
+  align-self: stretch;
+}
+
+.inspiration h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.inspiration p {
+  margin: 0;
+  color: rgba(224, 235, 255, 0.78);
+}
+
+.cue-notes {
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cue-notes dt {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(247, 183, 51, 0.75);
+}
+
+.cue-notes dd {
+  margin: 0;
+  color: rgba(222, 235, 255, 0.82);
+}
+
+.timeline {
+  background: linear-gradient(160deg, rgba(8, 28, 57, 0.85), rgba(6, 18, 38, 0.9));
+  border: 1px solid rgba(133, 186, 255, 0.18);
+  border-radius: 22px;
+  padding: 1.75rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.timeline-header h2 {
+  margin: 0;
+}
+
+.timeline-stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: rgba(223, 235, 255, 0.72);
+}
+
+.timeline-track {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.timeline-item {
+  position: relative;
+  padding: 1rem 1.2rem;
+  border-radius: 18px;
+  border: 1px solid rgba(149, 196, 255, 0.18);
+  background: linear-gradient(120deg, rgba(8, 38, 72, 0.85), rgba(4, 18, 36, 0.85));
+  box-shadow: inset 0 0 0 1px rgba(255, 208, 124, 0.08);
+  display: grid;
+  gap: 0.6rem;
+}
+
+.timeline-item::before {
+  content: attr(data-start);
+  position: absolute;
+  top: 50%;
+  left: -4rem;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: rgba(235, 242, 255, 0.6);
+}
+
+.timeline-item__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.timeline-item__title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.timeline-item__meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: rgba(224, 235, 255, 0.7);
+}
+
+.timeline-item__notes {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(232, 239, 255, 0.78);
+}
+
+.timeline-hints {
+  text-align: center;
+  color: rgba(208, 222, 255, 0.6);
+  padding: 0.8rem;
+  background: rgba(7, 23, 48, 0.6);
+  border-radius: 12px;
+}
+
+.atmosphere {
+  background: linear-gradient(180deg, rgba(7, 29, 62, 0.9), rgba(6, 18, 34, 0.9));
+  border: 1px solid rgba(133, 188, 255, 0.2);
+  border-radius: 22px;
+  padding: 1.75rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.atmosphere-header h2 {
+  margin: 0;
+}
+
+.atmosphere-header p {
+  margin: 0;
+  color: rgba(219, 232, 255, 0.72);
+}
+
+.atmosphere-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.atmosphere-block {
+  background: rgba(5, 22, 43, 0.65);
+  border: 1px solid rgba(136, 190, 255, 0.16);
+  border-radius: 18px;
+  padding: 1.1rem 1.3rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.atmosphere-block legend,
+.score-block h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(247, 183, 51, 0.7);
+}
+
+.swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.swatch:hover {
+  background: rgba(247, 183, 51, 0.12);
+}
+
+.swatch input {
+  accent-color: #f7b733;
+}
+
+.score-block {
+  align-content: start;
+}
+
+#atmosphereScore {
+  margin: 0;
+  font-size: 1rem;
+  color: rgba(233, 241, 255, 0.85);
+}
+
+.highlight-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: rgba(221, 235, 255, 0.75);
+  display: grid;
+  gap: 0.35rem;
+}
+
+@media (max-width: 980px) {
+  .planner {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-item::before {
+    position: static;
+    display: inline-block;
+    margin-bottom: 0.4rem;
+  }
+}
+
+@media (max-width: 720px) {
+  main.parade-app {
+    padding-top: 4.5rem;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .twilight-dial {
+    width: 100%;
+    justify-items: start;
+  }
+
+  .close-control {
+    top: 0.9rem;
+    right: 0.9rem;
+  }
+}
+
+body[data-sky='ember'] {
+  background: radial-gradient(circle at top, rgba(247, 183, 51, 0.2), transparent 55%),
+    linear-gradient(180deg, #071c3a 0%, #041225 55%, #02101f 100%);
+}
+
+body[data-sky='aqua'] {
+  background: radial-gradient(circle at top, rgba(126, 235, 255, 0.24), transparent 60%),
+    linear-gradient(180deg, #05233f 0%, #04192d 55%, #03131f 100%);
+}
+
+body[data-sky='rose'] {
+  background: radial-gradient(circle at top, rgba(255, 163, 195, 0.24), transparent 60%),
+    linear-gradient(180deg, #2a1036 0%, #1a0d27 55%, #0f0b20 100%);
+}
+
+.timeline-item__effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.timeline-item__effects span {
+  background: rgba(247, 183, 51, 0.12);
+  color: rgba(247, 209, 140, 0.95);
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
