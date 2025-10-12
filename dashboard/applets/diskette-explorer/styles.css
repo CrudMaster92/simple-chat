@@ -565,6 +565,10 @@ body.night-mode {
   backdrop-filter: blur(2px);
 }
 
+.dialog-overlay[hidden] {
+  display: none;
+}
+
 .dialog-window {
   width: min(420px, 100%);
   background: var(--dialog-bg);
