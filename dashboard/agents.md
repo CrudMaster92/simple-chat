@@ -32,3 +32,4 @@
 - Zephyr Relay Pen Pals – Coordinate breezy pen pal dispatches between airborne stations with animated drift routes, playful delays, and collectible trinkets.
 - Glimmer Fossil Cabinet – Arrange noctilucent fossils on rotating stands, adjust their glow, and ponder the whispered plaques they unveil.
 - Chrono Lantern Workshop – Weave time-reactive lanterns that morph light cores, weather-tuned chimes, and seasonal fiber patterns.
+- Interstellar Herbarium Field Notes – Spin up lyrical field observations for cosmic flora with model-aware OpenAI integrations.

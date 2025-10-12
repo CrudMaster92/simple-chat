@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interstellar Herbarium Field Notes</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="herbarium" aria-labelledby="appTitle">
+      <button class="close-control" type="button" aria-label="Close Interstellar Herbarium"
+        onclick="window.location.href='../../index.html';">✕</button>
+
+      <header class="intro">
+        <div class="intro__badge">Galactic Botanical Society</div>
+        <h1 id="appTitle">Interstellar Herbarium Field Notes</h1>
+        <p class="intro__lede">
+          Compose lyrical observations for luminous specimens gathered across nebular meadows.
+          Tune the expedition instruments, pick your pocket stars, and let the OpenAI botanist weave a report.
+        </p>
+      </header>
+
+      <section class="panels">
+        <section class="panel panel--inputs" aria-labelledby="expeditionHeading">
+          <h2 id="expeditionHeading">Expedition Deck</h2>
+          <p class="panel__hint">Mix coordinates, climates, and companions to flavor the observation.</p>
+          <form class="specimen-form" id="fieldForm">
+            <label class="field">
+              <span>Sector &amp; Coordinates</span>
+              <input type="text" id="sector" name="sector" placeholder="E.g. Lagrange Bloom // 04.9°N, 178.2°E" required />
+            </label>
+
+            <label class="field">
+              <span>Specimen Name</span>
+              <input type="text" id="specimen" name="specimen" placeholder="E.g. Radiant Mycelia of Thales" required />
+            </label>
+
+            <label class="field">
+              <span>Phenomenon Focus</span>
+              <select id="phenomenon" name="phenomenon">
+                <option value="bioluminescence">Bioluminescent Flourish</option>
+                <option value="gravitropic">Gravitropic Spiral</option>
+                <option value="harmonic">Harmonic Pollination Choir</option>
+                <option value="cryogenic">Cryogenic Bloom Cycle</option>
+                <option value="aerostatic">Aerostatic Seed Drift</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Companion Instrument</span>
+              <select id="instrument" name="instrument">
+                <option value="spectral harp">Spectral Harp Recorder</option>
+                <option value="quantum loupe">Quantum Loupe</option>
+                <option value="mycelial translator">Mycelial Translator Array</option>
+                <option value="nebula press">Nebula Press (for pigment impressions)</option>
+                <option value="wind archivist">Wind Archivist Drones</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Field Mood</span>
+              <div class="mood-grid" role="group" aria-label="Select mood">
+                <label class="mood-option">
+                  <input type="radio" name="mood" value="reverent hush" checked />
+                  <span>Reverent Hush</span>
+                </label>
+                <label class="mood-option">
+                  <input type="radio" name="mood" value="buoyant wonder" />
+                  <span>Buoyant Wonder</span>
+                </label>
+                <label class="mood-option">
+                  <input type="radio" name="mood" value="wind-tossed curiosity" />
+                  <span>Wind-tossed Curiosity</span>
+                </label>
+                <label class="mood-option">
+                  <input type="radio" name="mood" value="meteor hush" />
+                  <span>Meteor Hush</span>
+                </label>
+                <label class="mood-option">
+                  <input type="radio" name="mood" value="lantern-bright delight" />
+                  <span>Lantern-bright Delight</span>
+                </label>
+              </div>
+            </label>
+
+            <label class="field">
+              <span>Optional Notes to Emphasize</span>
+              <textarea id="notes" name="notes" rows="4" placeholder="Fragments to braid into the observation"></textarea>
+            </label>
+          </form>
+        </section>
+
+        <section class="panel panel--output" aria-labelledby="observationHeading">
+          <h2 id="observationHeading">Lyrical Field Report</h2>
+          <p class="panel__hint">When ready, request the synthesized narrative and archive it for your herbarium.</p>
+
+          <article class="observation" id="observation">
+            <div class="observation__aura" aria-hidden="true"></div>
+            <div class="observation__content">
+              <p class="placeholder" id="observationPlaceholder">
+                Calibrate your sensors, then press <em>Synthesize Observation</em>. A cosmic botanist will compose your field notes here.
+              </p>
+              <pre class="observation__text" id="observationText" hidden></pre>
+            </div>
+          </article>
+
+          <div class="observation__controls">
+            <button type="button" class="action" id="generateButton">Synthesize Observation</button>
+            <button type="button" class="action action--secondary" id="clearButton">Clear Canvas</button>
+          </div>
+          <p class="status" id="generationStatus" role="status" aria-live="polite"></p>
+        </section>
+      </section>
+
+      <section class="models" aria-labelledby="modelHeading">
+        <h2 id="modelHeading">Model Chorus</h2>
+        <p class="models__hint">
+          Provide an OpenAI API key to refresh the model catalog. Buckets are cached per key and refreshed on demand.
+        </p>
+        <div class="models__grid">
+          <label class="field">
+            <span>OpenAI API Key</span>
+            <input type="password" id="apiKey" autocomplete="off" placeholder="sk-..." />
+          </label>
+
+          <div class="model-actions">
+            <button type="button" id="toggleKeyVisibility" class="ghost">Reveal</button>
+            <button type="button" id="refreshModels" class="ghost">Refresh Models</button>
+          </div>
+
+          <label class="field field--full">
+            <span>Preferred Model</span>
+            <select id="modelSelect" disabled>
+              <option value="" selected>Enter an API key to populate models</option>
+            </select>
+          </label>
+        </div>
+        <p class="status" id="modelStatus" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
