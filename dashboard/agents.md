@@ -34,3 +34,4 @@
 - Chrono Lantern Workshop – Weave time-reactive lanterns that morph light cores, weather-tuned chimes, and seasonal fiber patterns.
 - Interstellar Herbarium Field Notes – Spin up lyrical field observations for cosmic flora with model-aware OpenAI integrations.
 - Stormglass Kite Atelier – Rig shimmering kites, sculpt stormglass thermals, and score breezy flight choreographies.
+- Resonant Crystal Cavern Jam Session – Stack loop-building crystals, steer reflective beams, and improvise cavernous echo jams with tactile controls.
