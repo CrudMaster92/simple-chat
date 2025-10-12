@@ -1,0 +1,12 @@
+{
+  "slug": "aurora-flavor-forge",
+  "name": "Aurora Flavor Forge",
+  "description": "Blend cosmic bases, aurora swirls, and interstellar toppings to craft dazzling dessert profiles.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-07",
+  "tags": ["creative", "generator", "fun"],
+  "author": "Aurora Flavor Forge Team",
+  "permissions": []
+}

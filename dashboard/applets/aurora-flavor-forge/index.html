@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aurora Flavor Forge</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app__header">
+        <img src="./assets/icon.svg" alt="Aurora Flavor Forge icon" class="app__icon" />
+        <div>
+          <h1>Aurora Flavor Forge</h1>
+          <p>Design shimmering interstellar desserts by mixing bases, aurora swirls, and stellar toppings.</p>
+        </div>
+      </header>
+
+      <main class="app__body">
+        <section class="control-panel">
+          <div class="control control--select">
+            <label for="base-select">Base Nebula</label>
+            <select id="base-select"></select>
+          </div>
+
+          <div class="control control--slider">
+            <label for="swirl-slider">Aurora Swirl Intensity</label>
+            <input type="range" id="swirl-slider" min="1" max="5" step="1" value="3" />
+            <div class="swirl-level" id="swirl-level">Radiant (3)</div>
+          </div>
+
+          <div class="control control--chips">
+            <span>Interstellar Toppings</span>
+            <div class="chip-grid" id="topping-grid"></div>
+          </div>
+
+          <div class="control control--chips">
+            <span>Atmospheric Mood</span>
+            <div class="chip-grid" id="mood-grid"></div>
+          </div>
+
+          <div class="control control--actions">
+            <button id="randomize-btn" class="btn btn--ghost">Cosmic Shuffle</button>
+            <button id="forge-btn" class="btn btn--primary">Forge Flavor</button>
+          </div>
+        </section>
+
+        <section class="result-panel">
+          <h2>Your Aurora Creation</h2>
+          <article class="flavor-card" id="flavor-card">
+            <h3 id="flavor-name">Select ingredients to conjure a new flavor.</h3>
+            <p id="flavor-description">Choose a base nebula, dial in the aurora intensity, and sprinkle toppings to begin.</p>
+            <ul class="flavor-tags" id="flavor-tags"></ul>
+          </article>
+
+          <div class="constellation">
+            <div class="constellation__header">
+              <h3>Constellation Log</h3>
+              <button id="clear-log-btn" class="btn btn--tiny">Clear</button>
+            </div>
+            <ul class="constellation__list" id="constellation-list"></ul>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

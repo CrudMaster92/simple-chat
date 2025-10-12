@@ -21,3 +21,4 @@
 - Simple Chat – Two-persona chat simulator with moderator tools and history.
 - Mythic Story Dice – Whimsical dice roller that conjures heroes, quests, and twists for instant story sparks.
 - Time Capsule Postcards – Compose alternate-timeline postcards and tuck favorites into a personal capsule shelf.
+- Aurora Flavor Forge – Blend cosmic dessert bases, aurora swirls, and stellar toppings into shimmering treat profiles.
