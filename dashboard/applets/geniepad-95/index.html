@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GeniePad 95</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="desktop">
+      <div class="window" role="application">
+        <header class="title-bar">
+          <div class="title">GeniePad 95</div>
+          <div class="window-controls" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </header>
+        <div class="window-body">
+          <aside class="sidebar">
+            <h1 class="sidebar-heading">File Drawer</h1>
+            <ul class="file-list" aria-label="Saved snippets">
+              <li class="file-item">draft_notes.txt</li>
+              <li class="file-item">meeting_log.md</li>
+              <li class="file-item">idea_sheet.rtf</li>
+            </ul>
+            <p class="sidebar-hint">GeniePad keeps things light—copy your favorites wherever you like.</p>
+          </aside>
+          <main class="editor-area">
+            <section class="toolbar" aria-label="Editor controls">
+              <div class="field-group">
+                <label for="apiKey">OpenAI API key</label>
+                <input id="apiKey" type="password" autocomplete="off" placeholder="sk-..." />
+              </div>
+              <div class="field-group">
+                <label for="model">Model</label>
+                <input id="model" type="text" value="gpt-4o-mini" />
+              </div>
+              <div class="field-group">
+                <label for="temperature">Creativity</label>
+                <input id="temperature" type="range" min="0" max="2" step="0.1" value="0.7" />
+                <span id="temperatureValue" aria-live="polite">0.7</span>
+              </div>
+              <button id="saveSettings" type="button">Save Settings</button>
+            </section>
+            <section class="notepad">
+              <header class="notepad-header">
+                <div class="tabs">
+                  <button class="tab-button active" type="button">Notebook</button>
+                  <button class="tab-button" type="button" data-tab="genie-output">Genie Output</button>
+                </div>
+                <div class="action-buttons" aria-label="Genie actions">
+                  <button class="genie-button" data-action="rewrite" type="button">Rewrite ✨</button>
+                  <button class="genie-button" data-action="summarize" type="button">Summarize 📄</button>
+                  <button class="genie-button" data-action="brainstorm" type="button">Brainstorm 💡</button>
+                </div>
+              </header>
+              <div class="panels">
+                <textarea id="noteInput" class="panel active" spellcheck="true" aria-label="Notebook editor" placeholder="Welcome to GeniePad 95! Jot notes here, highlight ideas, and let the genie lend a hand."></textarea>
+                <div id="genieOutput" class="panel" aria-live="polite"></div>
+              </div>
+            </section>
+            <section class="status-bar" aria-live="polite">
+              <div id="statusMessage" data-tone="info">Awaiting your next idea...</div>
+              <button id="copyOutput" type="button">Copy Genie Output</button>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>
