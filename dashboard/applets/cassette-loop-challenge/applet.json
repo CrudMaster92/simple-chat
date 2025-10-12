@@ -1,0 +1,12 @@
+{
+  "slug": "cassette-loop-challenge",
+  "name": "Cassette Loop Challenge",
+  "description": "Ride magnetic reels, time your splice hits, and stabilize a retro mixtape loop for a booming streak.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-08",
+  "tags": ["retro", "timing", "game"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
