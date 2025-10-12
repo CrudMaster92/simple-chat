@@ -1,4 +1,5 @@
 {
   "simple-chat": "./applets/simple-chat/applet.json",
-  "razor-cracktro": "./applets/razor-cracktro/applet.json"
+  "razor-cracktro": "./applets/razor-cracktro/applet.json",
+  "emoji-fusion-lab": "./applets/emoji-fusion-lab/applet.json"
 }
