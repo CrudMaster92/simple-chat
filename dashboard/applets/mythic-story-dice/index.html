@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mythic Story Dice</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <h1>Mythic Story Dice</h1>
+        <p>
+          Roll three enchanted dice to summon a hero, their quest, and an
+          unexpected twist. Each throw crafts a fresh spark for stories,
+          adventures, or tabletop sessions.
+        </p>
+      </header>
+
+      <section class="dice-grid" aria-live="polite">
+        <article class="die-card" data-die="hero">
+          <h2 class="die-label">Hero</h2>
+          <p class="die-value" id="hero-value">Skyship Cartographer</p>
+        </article>
+        <article class="die-card" data-die="quest">
+          <h2 class="die-label">Quest</h2>
+          <p class="die-value" id="quest-value">Map the music hidden in auroras</p>
+        </article>
+        <article class="die-card" data-die="twist">
+          <h2 class="die-label">Twist</h2>
+          <p class="die-value" id="twist-value">A mischievous moon fox keeps swapping clues</p>
+        </article>
+      </section>
+
+      <section class="actions">
+        <button id="roll-button" class="roll-button" type="button">
+          Roll the Dice
+        </button>
+        <button id="copy-button" class="ghost-button" type="button">
+          Copy prompt
+        </button>
+      </section>
+
+      <section class="prompt" aria-live="polite">
+        <h2>Your spark</h2>
+        <p id="prompt-output">
+          Skyship Cartographer must map the music hidden in auroras, but a
+          mischievous moon fox keeps swapping clues.
+        </p>
+        <p class="whisper" id="copy-feedback" role="status" aria-live="assertive"></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <small>
+        Pro tip: Combine multiple rolls into chapters, or challenge friends to
+        improvise the next scene.
+      </small>
+    </footer>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

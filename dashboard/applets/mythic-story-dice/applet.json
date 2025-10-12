@@ -1,0 +1,12 @@
+{
+  "slug": "mythic-story-dice",
+  "name": "Mythic Story Dice",
+  "description": "Roll whimsical hero, quest, and twist dice to spark mythic story prompts.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-07",
+  "tags": ["storytelling", "creative", "fun"],
+  "author": "Mythic Story Dice Team",
+  "permissions": []
+}
