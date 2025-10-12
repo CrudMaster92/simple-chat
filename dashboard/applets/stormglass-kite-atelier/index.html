@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stormglass Kite Atelier</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="atelier" aria-labelledby="appTitle">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Close Stormglass Kite Atelier"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="intro">
+        <div class="intro__badge">Stormglass Aerium</div>
+        <h1 id="appTitle">Stormglass Kite Atelier</h1>
+        <p class="intro__lede">
+          Rig shimmering kites, sculpt thermal columns, and choreograph breezy performances across a responsive sky stage.
+        </p>
+      </header>
+
+      <section class="workspace" aria-label="Kite workshop and sky field">
+        <section class="controls" aria-label="Kite rigging controls">
+          <h2>Windborne Workshop</h2>
+          <p class="controls__hint">Blend frame, palette, and flight paths before launching a new kite.</p>
+
+          <div class="control-group">
+            <span class="control-label">Frame Style</span>
+            <div class="option-row" role="group" aria-label="Choose frame style">
+              <label class="option">
+                <input type="radio" name="frame" value="diamond" checked />
+                <span>Diamond Crest</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="frame" value="winged" />
+                <span>Winged Delta</span>
+              </label>
+              <label class="option">
+                <input type="radio" name="frame" value="dragon" />
+                <span>Dragon Arc</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="paletteSelect">Color Draft</label>
+            <select id="paletteSelect">
+              <option value="sunspill">Sunspill Amber</option>
+              <option value="tidalglass">Tidal Glass</option>
+              <option value="auroramist">Aurora Mist</option>
+              <option value="emberveil">Ember Veil</option>
+            </select>
+            <p class="control-hint">Palettes tint sail cloth, tails, and wake traces.</p>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="pathSelect">Thermal Choreography</label>
+            <select id="pathSelect">
+              <option value="spiral">Spiral Climb</option>
+              <option value="drift">Lantern Drift</option>
+              <option value="cascade">Cascade Sweep</option>
+            </select>
+          </div>
+
+          <div class="control-group sliders">
+            <label class="control-label" for="thermalIntensity">Thermal Lift</label>
+            <input
+              type="range"
+              id="thermalIntensity"
+              min="10"
+              max="100"
+              value="60"
+            />
+            <output id="thermalReadout" for="thermalIntensity">60%</output>
+            <p class="control-hint">Adjusts updraft shimmer strength and column rise.</p>
+          </div>
+
+          <div class="control-group sliders">
+            <label class="control-label" for="gustPulse">Breeze Pulse</label>
+            <input type="range" id="gustPulse" min="5" max="40" value="18" />
+            <output id="gustReadout" for="gustPulse">18s</output>
+            <p class="control-hint">Sets gust cadence for every kite in flight.</p>
+          </div>
+
+          <button class="primary" id="launchButton" type="button">Launch Kite</button>
+          <button class="secondary" id="addThermal" type="button">Summon Thermal Column</button>
+        </section>
+
+        <section class="sky" aria-label="Kite park sky field">
+          <h2 class="sr-only">Sky Field</h2>
+          <div class="sky__status" id="skyStatus" aria-live="polite">
+            Thermals humming at 60%. Gust cadence set to 18 seconds.
+          </div>
+          <div class="thermal-columns" id="thermalColumns"></div>
+          <div class="kite-field" id="kiteField" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section class="log" aria-label="Performance log">
+        <h2>Breeze Chronicle</h2>
+        <p class="log__hint">Every launch or weather shift is recorded here. Use it to replay favorite routines.</p>
+        <ul id="performanceLog" class="log__list"></ul>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

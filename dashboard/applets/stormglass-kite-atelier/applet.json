@@ -1,0 +1,12 @@
+{
+  "slug": "stormglass-kite-atelier",
+  "name": "Stormglass Kite Atelier",
+  "description": "Choreograph shimmering kites through sculpted stormglass thermals with evolving color palettes.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-16",
+  "tags": ["creative", "simulation", "ambient"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
