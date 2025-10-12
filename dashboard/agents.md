@@ -23,3 +23,4 @@
 - Time Capsule Postcards – Compose alternate-timeline postcards and tuck favorites into a personal capsule shelf.
 - Aurora Flavor Forge – Blend cosmic dessert bases, aurora swirls, and stellar toppings into shimmering treat profiles.
 - Prism Pulse Labyrinth – Glowing memory-gauntlet where you chase expanding prism pulse sequences and protect stability.
+- Quantum Orbit Catcher – Three-lane reactor dash where you snare luminous particles and dodge overloads for high scores.

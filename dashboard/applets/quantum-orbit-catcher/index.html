@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quantum Orbit Catcher</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="orbit-shell">
+      <header class="orbit-header">
+        <h1>Quantum Orbit Catcher</h1>
+        <p class="tagline">
+          Drift through orbital lanes and snare luminous particles before they shatter the reactor.
+        </p>
+      </header>
+
+      <section class="control-panel" aria-live="polite">
+        <div class="status-card">
+          <span class="label">Score</span>
+          <span class="value" id="scoreValue">0</span>
+        </div>
+        <div class="status-card">
+          <span class="label">Misses</span>
+          <div class="misses" id="missTrack" role="meter" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0">
+            <span class="pip"></span>
+            <span class="pip"></span>
+            <span class="pip"></span>
+          </div>
+        </div>
+        <div class="status-card">
+          <span class="label">Best Run</span>
+          <span class="value" id="bestScore">0</span>
+        </div>
+        <button type="button" id="startButton" class="start">Ignite Reactor</button>
+      </section>
+
+      <section class="playfield" id="playfield" role="application" aria-label="Quantum orbit lanes">
+        <div class="lane lane-0" aria-hidden="true"></div>
+        <div class="lane lane-1" aria-hidden="true"></div>
+        <div class="lane lane-2" aria-hidden="true"></div>
+        <div class="hero" id="hero" aria-label="Interceptor shuttle" role="img"></div>
+      </section>
+
+      <section class="log" aria-live="polite">
+        <h2>Telemetry</h2>
+        <p id="telemetry">Tap ⬅️ or ➡️ to shift lanes. Catch the particles before they crash.</p>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

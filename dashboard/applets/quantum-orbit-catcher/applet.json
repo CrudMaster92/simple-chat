@@ -1,0 +1,12 @@
+{
+  "slug": "quantum-orbit-catcher",
+  "name": "Quantum Orbit Catcher",
+  "description": "Slide between orbit lanes to snare luminous particles before the reactor overloads.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-13",
+  "tags": ["arcade", "reflex", "sci-fi"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
