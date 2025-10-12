@@ -19,5 +19,6 @@
   "geniepad-95": "./applets/geniepad-95/applet.json",
   "pixelcanvas-studio": "./applets/pixelcanvas-studio/applet.json",
   "diskette-explorer": "./applets/diskette-explorer/applet.json",
-  "timekeeper-agenda": "./applets/timekeeper-agenda/applet.json"
+  "timekeeper-agenda": "./applets/timekeeper-agenda/applet.json",
+  "interstellar-herbarium-notes": "./applets/interstellar-herbarium-notes/applet.json"
 }

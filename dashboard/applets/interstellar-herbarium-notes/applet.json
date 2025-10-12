@@ -1,0 +1,12 @@
+{
+  "slug": "interstellar-herbarium-notes",
+  "name": "Interstellar Herbarium Field Notes",
+  "description": "Capture lyrical-yet-precise botanical dispatches from luminous specimens across nebular meadows.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-07-06",
+  "tags": ["creative", "writing", "sci-fi"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
