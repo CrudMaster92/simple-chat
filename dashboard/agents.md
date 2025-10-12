@@ -15,3 +15,7 @@
 ## Cross-Applet Isolation
 - Do not couple applets together unless the task requires shared behavior. Keep assets, metadata, and documentation scoped within each applet directory.
 - Never repurpose assets or configs from another applet without duplicating or clearly re-namespacing them.
+
+## Applet Directory
+- Razor Cracktro – Retro cracktro demo with raster bars and chiptune ambiance.
+- Simple Chat – Two-persona chat simulator with moderator tools and history.
