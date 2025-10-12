@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zephyr Relay Pen Pals</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="top-bar">
+        <div class="title-group">
+          <h1>Zephyr Relay Pen Pals</h1>
+          <p class="tagline">
+            Coordinate breezy correspondence between airborne stations as letters drift, pause, and deliver treasured trinkets.
+          </p>
+        </div>
+        <button class="wind-refresh" type="button" title="Sweep the sky routes">Stir the Winds</button>
+      </header>
+
+      <main class="layout">
+        <section class="composer" aria-labelledby="composer-heading">
+          <h2 id="composer-heading">Compose a Sky Letter</h2>
+          <form id="letter-form" class="letter-form">
+            <label class="field">
+              <span>From Station</span>
+              <select id="from-station" required></select>
+            </label>
+            <label class="field">
+              <span>To Station</span>
+              <select id="to-station" required></select>
+            </label>
+            <label class="field message-field">
+              <span>Letter Breeze</span>
+              <textarea id="letter-message" rows="4" maxlength="180" placeholder="Draft a gentle dispatch..." required></textarea>
+            </label>
+            <div class="form-footer">
+              <div class="delay-toggle">
+                <input type="checkbox" id="drift-delay" />
+                <label for="drift-delay">Add playful drift delay</label>
+              </div>
+              <button type="submit" class="send-button">Launch Letter Kite</button>
+            </div>
+          </form>
+          <div class="tips">
+            <p>Each delivery glides through shifting zephyrs. Toggle delays to savor the suspense.</p>
+          </div>
+        </section>
+
+        <section class="transit" aria-labelledby="transit-heading">
+          <h2 id="transit-heading">Sky Relay Routes</h2>
+          <p class="section-intro">Watch letters meander through slipstreams and tethered clouds.</p>
+          <div id="transit-list" class="transit-list" role="list"></div>
+        </section>
+
+        <section class="log" aria-labelledby="log-heading">
+          <h2 id="log-heading">Delivery Breeze Log</h2>
+          <ul id="log-entries" class="log-entries" aria-live="polite"></ul>
+        </section>
+
+        <section class="trinkets" aria-labelledby="trinket-heading">
+          <h2 id="trinket-heading">Aeroglyph Trinket Collection</h2>
+          <p class="section-intro">Complete sky routes to collect gleaming keepsakes from each cloud node.</p>
+          <div id="trinket-shelf" class="trinket-shelf"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
