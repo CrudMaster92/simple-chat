@@ -1,4 +1,5 @@
 const storageKey = "geniepad95-settings";
+const drawerSelectionKey = "geniepad95-active-drawer";
 
 const apiKeyInput = document.getElementById("apiKey");
 const modelInput = document.getElementById("model");
@@ -12,6 +13,26 @@ const copyButton = document.getElementById("copyOutput");
 const actionButtons = document.querySelectorAll(".genie-button");
 const tabButtons = document.querySelectorAll(".tab-button");
 const panels = document.querySelectorAll(".panel");
+const fileButtons = document.querySelectorAll(".file-item");
+const formatButtons = document.querySelectorAll(".format-button");
+
+const drawerEntries = {
+  "draft-notes": {
+    label: "draft_notes.txt",
+    summary: "Morning scribbles",
+    body: `# Morning Draft\n\n**Focus for today**\n- Polish onboarding copy\n- Prep call notes for 14:30 sync\n- Log any tricky phrasing for genie review\n\n_Quick reminder_: celebrate small wins and keep the tone encouraging.`
+  },
+  "meeting-log": {
+    label: "meeting_log.md",
+    summary: "Stand-up recap",
+    body: `## Daily Stand-up – Feb 9\n\n**Attendees:** Morgan, Lee, Priya\n**Highlights:**\n- GeniePad beta feedback trending positive\n- Identified two UI snags to triage\n- Shipping voiceover lines by Friday\n\n> Action item: capture follow-up questions for tomorrow's sync.`
+  },
+  "idea-sheet": {
+    label: "idea_sheet.rtf",
+    summary: "Concept sparks",
+    body: `Genie Concepts\n==============\n\n• Retro toolbar with smart formatting chips\n• Notebook "focus mode" with dimmed chrome\n• Built-in prompt snippets for tone and style shifts\n\nRemember to mark favorites with ==highlight marks== for later polish.`
+  }
+};
 
 function loadSettings() {
   try {
@@ -30,6 +51,18 @@ function loadSettings() {
   }
 }
 
+function restoreDrawerSelection() {
+  const storedId = localStorage.getItem(drawerSelectionKey);
+  if (!storedId || !drawerEntries[storedId]) {
+    return;
+  }
+  if (noteInput.value.trim()) {
+    setActiveDrawerButton(storedId);
+    return;
+  }
+  loadDrawerEntry(storedId, { skipStatus: true });
+}
+
 function saveSettings() {
   const settings = {
     apiKey: apiKeyInput.value.trim(),
@@ -44,6 +77,86 @@ function flashStatus(message, options = {}) {
   const { tone = "info" } = options;
   statusMessage.textContent = message;
   statusMessage.dataset.tone = tone;
+}
+
+function loadDrawerEntry(fileId, options = {}) {
+  const entry = drawerEntries[fileId];
+  if (!entry) return;
+  const { skipStatus = false } = options;
+
+  noteInput.value = entry.body;
+  noteInput.focus();
+  setActiveDrawerButton(fileId);
+  activatePanel("noteInput");
+  localStorage.setItem(drawerSelectionKey, fileId);
+
+  if (!skipStatus) {
+    flashStatus(`Loaded ${entry.label} from the drawer.`, { tone: "info" });
+  }
+}
+
+function setActiveDrawerButton(fileId) {
+  fileButtons.forEach((button) => {
+    const isActive = button.dataset.file === fileId;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+function wrapSelection(prefix, suffix = prefix, placeholder = "text") {
+  const start = noteInput.selectionStart ?? 0;
+  const end = noteInput.selectionEnd ?? start;
+  const selected = noteInput.value.slice(start, end);
+  const content = selected || placeholder;
+  const replacement = `${prefix}${content}${suffix}`;
+  noteInput.setRangeText(replacement, start, end, "end");
+  const focusStart = start + prefix.length;
+  if (typeof noteInput.setSelectionRange === "function") {
+    noteInput.setSelectionRange(focusStart, focusStart + content.length);
+  }
+  noteInput.focus();
+  activatePanel("noteInput");
+}
+
+function applyBulletList() {
+  const start = noteInput.selectionStart ?? 0;
+  const end = noteInput.selectionEnd ?? start;
+  const segment = noteInput.value.slice(start, end) || "First idea";
+  const lines = segment.split(/\r?\n/);
+  const formatted = lines
+    .map((line) => {
+      const trimmed = line.trim().replace(/^[-*•]\s*/, "");
+      return trimmed ? `- ${trimmed}` : "- ";
+    })
+    .join("\n");
+  noteInput.setRangeText(formatted, start, end, "end");
+  if (typeof noteInput.setSelectionRange === "function") {
+    noteInput.setSelectionRange(start, start + formatted.length);
+  }
+  noteInput.focus();
+  activatePanel("noteInput");
+}
+
+function applyFormatting(format) {
+  if (!noteInput) return;
+
+  const presets = {
+    bold: { prefix: "**", suffix: "**", placeholder: "bold text", message: "Bold formatting applied." },
+    italic: { prefix: "_", suffix: "_", placeholder: "italic text", message: "Italic formatting applied." },
+    highlight: { prefix: "==", suffix: "==", placeholder: "highlight", message: "Highlight added." },
+    code: { prefix: "`", suffix: "`", placeholder: "code", message: "Inline code formatting applied." }
+  };
+
+  if (format === "bullet") {
+    applyBulletList();
+    flashStatus("Converted selection to a bullet list.", { tone: "info" });
+    return;
+  }
+
+  const preset = presets[format];
+  if (!preset) return;
+  wrapSelection(preset.prefix, preset.suffix, preset.placeholder);
+  flashStatus(preset.message, { tone: "success" });
 }
 
 async function runGenie(action) {
@@ -166,6 +279,14 @@ tabButtons.forEach((button) => {
   });
 });
 
+fileButtons.forEach((button) => {
+  button.addEventListener("click", () => loadDrawerEntry(button.dataset.file));
+});
+
+formatButtons.forEach((button) => {
+  button.addEventListener("click", () => applyFormatting(button.dataset.format));
+});
+
 copyButton.addEventListener("click", async () => {
   const text = genieOutput.textContent.trim();
   if (!text) {
@@ -192,4 +313,5 @@ temperatureInput.addEventListener("input", () => {
 });
 
 loadSettings();
+restoreDrawerSelection();
 temperatureValue.textContent = Number(temperatureInput.value).toFixed(1);

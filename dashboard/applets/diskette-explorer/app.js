@@ -495,7 +495,9 @@ const state = {
   view: "details",
   selectedItemName: null,
   copyTimer: null,
-  copyProgress: 0
+  copyProgress: 0,
+  scanTimer: null,
+  lastFocusedElement: null
 };
 
 const dom = {
@@ -522,7 +524,8 @@ const dom = {
   closeDialog: document.getElementById("closeDialog"),
   dialogAcknowledge: document.getElementById("dialogAcknowledge"),
   runScan: document.getElementById("runScan"),
-  toggleNightMode: document.getElementById("toggleNightMode")
+  toggleNightMode: document.getElementById("toggleNightMode"),
+  dialogWindow: document.querySelector(".dialog-window")
 };
 
 const folderButtonRegistry = new Map();
@@ -551,6 +554,7 @@ function attachEventListeners() {
       closeDialog();
     }
   });
+  dom.dialogOverlay.addEventListener("keydown", handleDialogKeydown);
   dom.toggleNightMode.addEventListener("click", toggleNightMode);
 }
 
@@ -847,17 +851,49 @@ function updateFooter(message) {
 }
 
 function showDialog(content) {
+  if (document.activeElement instanceof HTMLElement) {
+    state.lastFocusedElement = document.activeElement;
+  } else {
+    state.lastFocusedElement = null;
+  }
+
   dom.dialogBody.innerHTML = "";
   content.forEach((block) => {
     const paragraph = document.createElement("p");
     paragraph.textContent = block;
     dom.dialogBody.append(paragraph);
   });
+
   dom.dialogOverlay.hidden = false;
+  dom.dialogOverlay.setAttribute("aria-hidden", "false");
+  dom.runScan.disabled = false;
+  dom.runScan.textContent = "Run Surface Scan";
+
+  const focusable = getDialogFocusable();
+  if (focusable.length) {
+    focusable[0].focus();
+  } else if (dom.dialogOverlay) {
+    dom.dialogOverlay.focus();
+  }
 }
 
 function closeDialog() {
   dom.dialogOverlay.hidden = true;
+  dom.dialogOverlay.setAttribute("aria-hidden", "true");
+
+  if (state.scanTimer) {
+    clearInterval(state.scanTimer);
+    state.scanTimer = null;
+  }
+
+  dom.runScan.disabled = false;
+  dom.runScan.textContent = "Run Surface Scan";
+  dom.dialogBody.innerHTML = "";
+
+  if (state.lastFocusedElement && typeof state.lastFocusedElement.focus === "function") {
+    state.lastFocusedElement.focus();
+  }
+  state.lastFocusedElement = null;
 }
 
 function showDiskInfoDialog() {
@@ -875,6 +911,10 @@ function showDiskInfoDialog() {
 }
 
 function simulateScan() {
+  if (state.scanTimer) {
+    return;
+  }
+
   dom.dialogBody.innerHTML = "";
   const status = document.createElement("p");
   status.textContent = "Surface scan running...";
@@ -885,15 +925,67 @@ function simulateScan() {
   meter.append(meterFill);
   dom.dialogBody.append(status, meter);
 
+  dom.runScan.disabled = true;
+  dom.runScan.textContent = "Scanning...";
+
   let progress = 0;
-  const timer = setInterval(() => {
+  state.scanTimer = setInterval(() => {
     progress = Math.min(100, progress + Math.random() * 20 + 5);
     meterFill.style.width = `${progress}%`;
     if (progress >= 100) {
-      clearInterval(timer);
+      clearInterval(state.scanTimer);
+      state.scanTimer = null;
       status.textContent = "Surface scan finished. No bad sectors detected.";
+      dom.runScan.disabled = false;
+      dom.runScan.textContent = "Run Surface Scan";
     }
   }, 480);
+}
+
+function handleDialogKeydown(event) {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeDialog();
+    return;
+  }
+
+  if (event.key === "Tab") {
+    const focusable = getDialogFocusable();
+    if (!focusable.length) {
+      event.preventDefault();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey) {
+      if (document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else if (document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+}
+
+function getDialogFocusable() {
+  if (!dom.dialogOverlay || dom.dialogOverlay.hidden) {
+    return [];
+  }
+
+  const selectors = [
+    "button:not([disabled])",
+    "[href]",
+    'input:not([disabled])',
+    'textarea:not([disabled])',
+    'select:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])'
+  ];
+
+  return Array.from(dom.dialogOverlay.querySelectorAll(selectors.join(",")));
 }
 
 function toggleNightMode() {

@@ -20,10 +20,25 @@
         <div class="window-body">
           <aside class="sidebar">
             <h1 class="sidebar-heading">File Drawer</h1>
-            <ul class="file-list" aria-label="Saved snippets">
-              <li class="file-item">draft_notes.txt</li>
-              <li class="file-item">meeting_log.md</li>
-              <li class="file-item">idea_sheet.rtf</li>
+            <ul class="file-list" id="fileDrawer" aria-label="Saved snippets">
+              <li>
+                <button class="file-item" type="button" data-file="draft-notes" aria-pressed="false">
+                  <span class="file-name">draft_notes.txt</span>
+                  <span class="file-meta">Morning scribbles</span>
+                </button>
+              </li>
+              <li>
+                <button class="file-item" type="button" data-file="meeting-log" aria-pressed="false">
+                  <span class="file-name">meeting_log.md</span>
+                  <span class="file-meta">Stand-up recap</span>
+                </button>
+              </li>
+              <li>
+                <button class="file-item" type="button" data-file="idea-sheet" aria-pressed="false">
+                  <span class="file-name">idea_sheet.rtf</span>
+                  <span class="file-meta">Concept sparks</span>
+                </button>
+              </li>
             </ul>
             <p class="sidebar-hint">GeniePad keeps things light—copy your favorites wherever you like.</p>
           </aside>
@@ -56,6 +71,13 @@
                   <button class="genie-button" data-action="brainstorm" type="button">Brainstorm 💡</button>
                 </div>
               </header>
+              <div class="format-toolbar" role="toolbar" aria-label="Text formatting">
+                <button class="format-button" type="button" data-format="bold" aria-label="Bold">B</button>
+                <button class="format-button" type="button" data-format="italic" aria-label="Italic">I</button>
+                <button class="format-button" type="button" data-format="highlight" aria-label="Highlight">HL</button>
+                <button class="format-button" type="button" data-format="code" aria-label="Inline code">&lt;/&gt;</button>
+                <button class="format-button" type="button" data-format="bullet" aria-label="Bullet list">• List</button>
+              </div>
               <div class="panels">
                 <textarea id="noteInput" class="panel active" spellcheck="true" aria-label="Notebook editor" placeholder="Welcome to GeniePad 95! Jot notes here, highlight ideas, and let the genie lend a hand."></textarea>
                 <div id="genieOutput" class="panel" aria-live="polite"></div>
