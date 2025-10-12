@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chromatic Spice Sketchpad</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="sketchpad">
+      <header class="sketchpad__header">
+        <h1>Chromatic Spice Sketchpad</h1>
+        <p>
+          Drag spices and pigments into the bloom field to discover synesthetic flavor palettes.
+          Layer hues, savor aroma notes, and listen for soft tonal whispers as your creation grows.
+        </p>
+      </header>
+      <section class="sketchpad__studio">
+        <aside class="studio__pantry" aria-label="Spice and pigment pantry">
+          <h2>Pantry</h2>
+          <p class="pantry__hint">Pick up a vial and drop it onto the bloom field.</p>
+          <div class="pantry__grid" id="palette-items" role="list"></div>
+        </aside>
+        <section class="studio__canvas" aria-label="Bloom field" id="bloom-field">
+          <div class="canvas__hint" id="canvas-hint">
+            Drop ingredients here to sketch your flavor bloom.
+          </div>
+        </section>
+      </section>
+      <footer class="sketchpad__footer">
+        <button type="button" id="clear-bloom" class="ghost-button">Clear Bloom</button>
+        <p class="footer__whisper">Gentle tones celebrate each new harmony—mix freely and follow your senses.</p>
+      </footer>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

@@ -28,3 +28,4 @@
 - Sonic Bloom Conservatory – Tend an ethereal audio garden of shimmering blooms and sculpted breezes.
 - Matrix Synth Rain – Conduct a customizable matrix skyline with glyph dialects, luminous gradients, and live performance bursts.
 - Tidal Dream Cartographer – Sketch luminous archipelago tide maps and summon GPT-spun lore dispatches for each chart.
+- Chromatic Spice Sketchpad – Drag-and-drop spices and pigments to compose synesthetic flavor blooms accompanied by gentle tones.
