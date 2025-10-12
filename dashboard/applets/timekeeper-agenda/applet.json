@@ -1,0 +1,12 @@
+{
+  "slug": "timekeeper-agenda",
+  "name": "Timekeeper Agenda",
+  "description": "Retro scheduler with day/week/month grids, reminders, and sticky-note annotations.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-20",
+  "tags": ["retro", "productivity", "calendar"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
