@@ -10,6 +10,7 @@
   "sonic-bloom-conservatory": "./applets/sonic-bloom-conservatory/applet.json",
   "potion-snap-oracle": "./applets/potion-snap-oracle/applet.json",
   "matrix-synth-rain": "./applets/matrix-synth-rain/applet.json",
+  "tidal-dream-cartographer": "./applets/tidal-dream-cartographer/applet.json",
   "chromatic-spice-sketchpad": "./applets/chromatic-spice-sketchpad/applet.json",
   "zephyr-relay-pen-pals": "./applets/zephyr-relay-pen-pals/applet.json",
   "glimmer-fossil-cabinet": "./applets/glimmer-fossil-cabinet/applet.json",
