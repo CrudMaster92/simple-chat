@@ -1,0 +1,31 @@
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Resonant Crystal Cavern icon</title>
+  <desc id="desc">Angular crystals suspended above concentric resonance rings.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071727" />
+      <stop offset="100%" stop-color="#10344a" />
+    </linearGradient>
+    <linearGradient id="crystal" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#7be4ff" />
+      <stop offset="50%" stop-color="#4fb4d6" />
+      <stop offset="100%" stop-color="#f4b662" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="60%" r="60%">
+      <stop offset="0%" stop-color="rgba(124, 226, 255, 0.65)" />
+      <stop offset="100%" stop-color="rgba(124, 226, 255, 0)" />
+    </radialGradient>
+  </defs>
+  <rect width="160" height="160" rx="22" fill="url(#bg)" />
+  <circle cx="80" cy="110" r="58" fill="url(#glow)" />
+  <g fill="none" stroke="#78d8f0" stroke-width="4" opacity="0.7">
+    <path d="M38 112c10 10 22 16 42 16s32-6 42-16" />
+    <path d="M48 126c8 7 18 11 32 11s24-4 32-11" opacity="0.6" />
+  </g>
+  <g fill="url(#crystal)" stroke="#9beaff" stroke-width="3" stroke-linejoin="round">
+    <path d="M64 26l-20 46 20 28 16-26z" />
+    <path d="M96 30l-18 42 14 28 28-22z" />
+    <path d="M78 64l-18 32 18 30 22-30z" opacity="0.85" />
+  </g>
+  <circle cx="80" cy="110" r="32" fill="none" stroke="#f7c97f" stroke-width="2" stroke-dasharray="6 8" opacity="0.65" />
+</svg>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resonant Crystal Cavern Jam Session</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="cavern" aria-labelledby="appTitle">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Exit Resonant Crystal Cavern"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="cavern__intro">
+        <div class="badge">Cavern Resonance Lab</div>
+        <h1 id="appTitle">Resonant Crystal Cavern</h1>
+        <p>
+          Sculpt shimmering light loops and coax harmonic pulses from living crystals.
+          Layer their patterns, tune reflective glow, and let the cavern answer with
+          responsive echoes.
+        </p>
+      </header>
+
+      <section class="transport" aria-label="Session transport controls">
+        <div class="transport__left">
+          <button type="button" class="transport__button" id="playToggle" aria-pressed="false">
+            <span class="transport__icon" aria-hidden="true">▶</span>
+            <span class="transport__label">Begin Resonance</span>
+          </button>
+          <button type="button" class="transport__button" id="clearPatterns">
+            <span class="transport__icon" aria-hidden="true">⟲</span>
+            <span class="transport__label">Clear Pattern</span>
+          </button>
+        </div>
+        <div class="transport__right">
+          <label class="control">
+            <span class="control__label">Tempo</span>
+            <input
+              type="range"
+              id="tempoControl"
+              min="60"
+              max="140"
+              step="1"
+              value="96"
+            />
+            <span class="control__value" id="tempoValue">96 BPM</span>
+          </label>
+          <label class="control">
+            <span class="control__label">Echo Depth</span>
+            <input
+              type="range"
+              id="echoControl"
+              min="0"
+              max="100"
+              value="45"
+            />
+            <span class="control__value" id="echoValue">45%</span>
+          </label>
+          <label class="control">
+            <span class="control__label">Lumen Sweep</span>
+            <input
+              type="range"
+              id="lumenControl"
+              min="0"
+              max="100"
+              value="65"
+            />
+            <span class="control__value" id="lumenValue">65%</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="board" aria-label="Crystal loop builder">
+        <article class="crystal" data-crystal="amethyst">
+          <header>
+            <h2>Amethyst Pulse</h2>
+            <p>Glassine shards weave the primary rhythm—gentle but insistent.</p>
+          </header>
+          <div class="crystal__controls">
+            <label>
+              Pitch Offset
+              <input type="range" min="-12" max="12" value="0" data-role="pitch" />
+            </label>
+            <label>
+              Glow Weight
+              <input type="range" min="0" max="100" value="60" data-role="glow" />
+            </label>
+          </div>
+          <div class="steps" role="grid" aria-label="Amethyst rhythm pattern"></div>
+        </article>
+
+        <article class="crystal" data-crystal="citrine">
+          <header>
+            <h2>Citrine Mirage</h2>
+            <p>Facet clusters shimmer with syncopated reflections and mid-tones.</p>
+          </header>
+          <div class="crystal__controls">
+            <label>
+              Pitch Offset
+              <input type="range" min="-12" max="12" value="5" data-role="pitch" />
+            </label>
+            <label>
+              Glow Weight
+              <input type="range" min="0" max="100" value="45" data-role="glow" />
+            </label>
+          </div>
+          <div class="steps" role="grid" aria-label="Citrine syncopation pattern"></div>
+        </article>
+
+        <article class="crystal" data-crystal="obsidian">
+          <header>
+            <h2>Obsidian Drone</h2>
+            <p>Low resonators stabilize the cavern with grounding undertones.</p>
+          </header>
+          <div class="crystal__controls">
+            <label>
+              Pitch Offset
+              <input type="range" min="-24" max="12" value="-12" data-role="pitch" />
+            </label>
+            <label>
+              Glow Weight
+              <input type="range" min="0" max="100" value="35" data-role="glow" />
+            </label>
+          </div>
+          <div class="steps" role="grid" aria-label="Obsidian foundation pattern"></div>
+        </article>
+      </section>
+
+      <section class="reflection" aria-label="Reflective lighting designer">
+        <div class="reflection__panel">
+          <h2>Reflective Lighting</h2>
+          <p>
+            Sweep the cavern's facets to redirect refracted light. The glow syncs with loop
+            intensity, revealing new crystalline paths.
+          </p>
+          <div class="reflection__grid">
+            <button class="reflection__chip" type="button" data-hue="210">Ice Prism</button>
+            <button class="reflection__chip" type="button" data-hue="285">Violet Echo</button>
+            <button class="reflection__chip" type="button" data-hue="160">Verdant Halo</button>
+            <button class="reflection__chip" type="button" data-hue="25">Amber Bloom</button>
+          </div>
+        </div>
+        <div class="reflection__visual" aria-hidden="true">
+          <div class="reflection__beam"></div>
+          <div class="reflection__beam reflection__beam--secondary"></div>
+          <div class="reflection__spark"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
