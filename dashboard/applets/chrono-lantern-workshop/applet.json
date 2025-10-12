@@ -1,0 +1,12 @@
+{
+  "slug": "chrono-lantern-workshop",
+  "name": "Chrono Lantern Workshop",
+  "description": "Weave time-reactive lanterns with evolving light cores, weather-linked chimes, and fiber patterns that respond to every season.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-07-06",
+  "tags": ["ambient", "creative", "visual"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
