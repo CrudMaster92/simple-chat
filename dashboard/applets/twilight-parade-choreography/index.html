@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twilight Parade Choreography</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="parade-app" aria-labelledby="appTitle">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Return to dashboard"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="app-header">
+        <div class="header-titles">
+          <div class="badge" aria-hidden="true">Duskworks</div>
+          <h1 id="appTitle">Twilight Parade Choreography</h1>
+          <p class="lede">
+            Orchestrate luminous procession chapters, weave atmospheric cues, and stage a finale that lingers long after dusk.
+          </p>
+        </div>
+        <aside class="twilight-dial" aria-label="Twilight sync status">
+          <div class="dial"></div>
+          <div class="dial-caption">
+            <span class="dial-label">Twilight Sync</span>
+            <span id="twilightStatus" class="dial-value">Awaiting segments</span>
+          </div>
+        </aside>
+      </header>
+
+      <section class="planner" aria-label="Segment planning workbench">
+        <form id="segmentForm" class="segment-form" autocomplete="off">
+          <fieldset class="field-block">
+            <legend>Segment Identity</legend>
+            <label class="field">
+              <span>Segment Name</span>
+              <input
+                id="segmentName"
+                name="segmentName"
+                type="text"
+                required
+                placeholder="Lantern Vanguard"
+              />
+            </label>
+            <label class="field">
+              <span>Theme Capsule</span>
+              <select id="themeSelect" name="theme">
+                <option value="celestial">Celestial Lanterns</option>
+                <option value="mist">Misty Revelers</option>
+                <option value="drumline">Starlit Drumline</option>
+                <option value="garden">Noctiluna Garden</option>
+                <option value="voyage">Skyward Voyage</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset class="field-block">
+            <legend>Choreography Flow</legend>
+            <label class="field slider-field">
+              <span>Procession Duration <strong id="durationReadout">6 min</strong></span>
+              <input
+                id="durationInput"
+                name="duration"
+                type="range"
+                min="3"
+                max="12"
+                step="1"
+                value="6"
+              />
+            </label>
+            <label class="field slider-field">
+              <span>Spacing Glow <strong id="spacingReadout">30 sec</strong></span>
+              <input
+                id="spacingInput"
+                name="spacing"
+                type="range"
+                min="0"
+                max="90"
+                step="5"
+                value="30"
+              />
+            </label>
+            <label class="field">
+              <span>Signature Moment</span>
+              <select id="momentSelect" name="moment">
+                <option value="lantern-lift">Lantern Lift Crescendo</option>
+                <option value="drum-swell">Phosphor Drum Swell</option>
+                <option value="veil-reveal">Mist Veil Reveal</option>
+                <option value="kite-ascend">Sky Kite Ascension</option>
+                <option value="constellation">Constellation Tableau</option>
+              </select>
+            </label>
+            <fieldset class="micro-fieldset" role="group" aria-labelledby="effectLabel">
+              <legend id="effectLabel">Atmospheric Accents</legend>
+              <label class="chip">
+                <input type="checkbox" name="effect" value="ember-trails" checked />
+                Ember Trails
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="effect" value="drone-fireflies" />
+                Drone Fireflies
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="effect" value="mist-ribbons" />
+                Mist Ribbons
+              </label>
+              <label class="chip">
+                <input type="checkbox" name="effect" value="sky-bells" />
+                Sky Bells
+              </label>
+            </fieldset>
+          </fieldset>
+
+          <fieldset class="field-block">
+            <legend>Cadence &amp; Harmony</legend>
+            <label class="field">
+              <span>Lead Ensemble</span>
+              <select id="ensembleSelect" name="ensemble">
+                <option value="dancers">Luminous Dancers</option>
+                <option value="acrobats">Ribbon Acrobats</option>
+                <option value="marchers">Lantern Marchers</option>
+                <option value="orchestra">Twilight Orchestra</option>
+                <option value="storytellers">Starlore Storytellers</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Ambient Underscore</span>
+              <select id="soundscapeSelect" name="soundscape">
+                <option value="silver-waltz">Silver Hour Waltz</option>
+                <option value="dawn-drums">Dawnside Drums</option>
+                <option value="tidal-hum">Tidal Hum</option>
+                <option value="embersong">Embersong Reverie</option>
+              </select>
+            </label>
+            <button type="submit" class="submit-button">Stage Segment</button>
+          </fieldset>
+        </form>
+
+        <aside class="inspiration" aria-live="polite">
+          <h2>Inspiration Pulse</h2>
+          <p id="inspirationCopy">
+            Choose a theme to receive twilight cadence notes and atmospheric pairings.
+          </p>
+          <dl class="cue-notes" id="cueNotes"></dl>
+        </aside>
+      </section>
+
+      <section class="timeline" aria-label="Procession timeline">
+        <header class="timeline-header">
+          <h2>Procession Sequence</h2>
+          <div class="timeline-stats">
+            <span id="segmentCount">0 segments</span>
+            <span id="totalRuntime">0:00 total</span>
+          </div>
+        </header>
+        <div class="timeline-track" id="timelineTrack" role="list"></div>
+        <div class="timeline-hints" id="timelineHints">Stage your first segment to light the route.</div>
+      </section>
+
+      <section class="atmosphere" aria-label="Twilight atmosphere controls">
+        <header class="atmosphere-header">
+          <h2>Atmosphere Conductor</h2>
+          <p>Blend sky hues, ground effects, and scent trails to sculpt the corridor.</p>
+        </header>
+        <div class="atmosphere-grid">
+          <fieldset class="atmosphere-block">
+            <legend>Sky Palette</legend>
+            <label class="swatch">
+              <input type="radio" name="sky" value="ember" checked />
+              Ember Horizon
+            </label>
+            <label class="swatch">
+              <input type="radio" name="sky" value="aqua" />
+              Aqua Afterglow
+            </label>
+            <label class="swatch">
+              <input type="radio" name="sky" value="rose" />
+              Rose Mirage
+            </label>
+          </fieldset>
+          <fieldset class="atmosphere-block">
+            <legend>Ground Layer</legend>
+            <label class="swatch">
+              <input type="radio" name="ground" value="lanterns" checked />
+              Lantern Lattice
+            </label>
+            <label class="swatch">
+              <input type="radio" name="ground" value="mist" />
+              Whispering Mist
+            </label>
+            <label class="swatch">
+              <input type="radio" name="ground" value="sparks" />
+              Ember Sparks
+            </label>
+          </fieldset>
+          <fieldset class="atmosphere-block">
+            <legend>Signature Trail</legend>
+            <label class="swatch">
+              <input type="radio" name="trail" value="citrus" checked />
+              Candied Citrus
+            </label>
+            <label class="swatch">
+              <input type="radio" name="trail" value="cedar" />
+              Moonlit Cedar
+            </label>
+            <label class="swatch">
+              <input type="radio" name="trail" value="sea" />
+              Tide Mist
+            </label>
+          </fieldset>
+          <div class="atmosphere-block score-block" aria-live="polite">
+            <h3>Atmospheric Score</h3>
+            <p id="atmosphereScore">Awaiting configuration…</p>
+            <ul id="atmosphereHighlights" class="highlight-list"></ul>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

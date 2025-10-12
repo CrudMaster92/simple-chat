@@ -1,0 +1,12 @@
+{
+  "slug": "twilight-parade-choreography",
+  "name": "Twilight Parade Choreography",
+  "description": "Design twilight procession chapters, orchestrate atmospheric effects, and track cadence cues down the route.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-05",
+  "tags": ["planning", "events", "creative"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

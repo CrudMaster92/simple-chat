@@ -22,5 +22,6 @@
   "timekeeper-agenda": "./applets/timekeeper-agenda/applet.json",
   "interstellar-herbarium-notes": "./applets/interstellar-herbarium-notes/applet.json",
   "stormglass-kite-atelier": "./applets/stormglass-kite-atelier/applet.json",
-  "resonant-crystal-cavern": "./applets/resonant-crystal-cavern/applet.json"
+  "resonant-crystal-cavern": "./applets/resonant-crystal-cavern/applet.json",
+  "twilight-parade-choreography": "./applets/twilight-parade-choreography/applet.json"
 }
