@@ -1,0 +1,12 @@
+{
+  "slug": "luminous-rift-garden",
+  "name": "Luminous Rift Garden",
+  "description": "Chart radiant crystal beds while sweeping for hidden void fissures with limited pulse charges.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-29",
+  "tags": ["game", "puzzle", "minesweeper"],
+  "author": "Luminous Rift Garden Team",
+  "permissions": []
+}

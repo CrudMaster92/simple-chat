@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luminous Rift Garden</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Chivo:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Return to dashboard"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="intro" aria-labelledby="appTitle">
+        <div class="intro__badge">Rift Garden Survey</div>
+        <h1 id="appTitle">Luminous Rift Garden</h1>
+        <p>
+          Tend a radiant mineral garden seeded with hidden void fissures. Read the luminous hints,
+          route your scouts, and unleash carefully rationed pulse sweeps to stabilize every plot.
+        </p>
+      </header>
+
+      <main class="layout">
+        <section class="panel panel--controls" aria-label="Garden controls">
+          <div class="field-group">
+            <label for="difficultySelect">Garden Stratum</label>
+            <select id="difficultySelect" aria-label="Select garden difficulty">
+              <option value="sprout">Sprout Stratum · 8×8 · 10 fissures</option>
+              <option value="bloom">Bloom Stratum · 10×12 · 20 fissures</option>
+              <option value="radiant">Radiant Stratum · 12×14 · 32 fissures</option>
+            </select>
+          </div>
+
+          <div class="field-group field-group--stats" aria-live="polite">
+            <div class="stat">
+              <span class="stat__label">Stabilized Plots</span>
+              <span class="stat__value" id="stableCount">0 / 0</span>
+            </div>
+            <div class="stat">
+              <span class="stat__label">Pulse Charges</span>
+              <span class="stat__value" id="pulseCount">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat__label">Fissures Flagged</span>
+              <span class="stat__value" id="flagCount">0</span>
+            </div>
+          </div>
+
+          <div class="field-group field-group--actions">
+            <button id="pulseButton" class="btn btn--pulse" type="button">
+              Prime Pulse Sweep
+            </button>
+            <button id="resetButton" class="btn" type="button">Replant Garden</button>
+          </div>
+
+          <div class="legend" aria-label="Legend">
+            <h2>Survey Legend</h2>
+            <ul>
+              <li><span class="legend__chip legend__chip--safe"></span> Stable plot</li>
+              <li><span class="legend__chip legend__chip--threat"></span> Hidden void fissure</li>
+              <li><span class="legend__chip legend__chip--pulse"></span> Pulse sweep radius</li>
+            </ul>
+            <p>
+              Left click to reveal, right click (or long press) to mark a fissure. Pulse sweeps reveal
+              a plus-shaped cluster of safe plots without triggering fissures.
+            </p>
+          </div>
+
+          <div class="log" aria-live="polite">
+            <h2>Field Notes</h2>
+            <ul id="logList"></ul>
+          </div>
+        </section>
+
+        <section class="panel panel--board" aria-label="Rift garden board">
+          <div class="board" id="board" role="grid" aria-describedby="boardStatus"></div>
+          <div class="status-banner" id="statusBanner" role="status" aria-live="assertive"></div>
+          <div class="board-status" id="boardStatus" aria-live="polite"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
