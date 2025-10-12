@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chrono Lantern Workshop</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="workshop">
+      <header class="hero">
+        <h1>Chrono Lantern Workshop</h1>
+        <p class="tagline">
+          Weave time-reactive lanterns whose living cores, chimes, and fiber patterns
+          reshape themselves with every shift in light and weather.
+        </p>
+      </header>
+
+      <section class="control-panel" aria-labelledby="controlHeading">
+        <h2 id="controlHeading">Temporal Loom Controls</h2>
+        <p class="control-intro">
+          Shift the day arc, dial in a season, and invite the skies to sing. The workshop
+          paints your lantern in real time as you experiment.
+        </p>
+
+        <div class="control-grid">
+          <fieldset class="control-group">
+            <legend>Daylight Arc</legend>
+            <label for="timeOfDay">Hour of weaving</label>
+            <div class="time-input">
+              <input
+                id="timeOfDay"
+                type="range"
+                min="0"
+                max="24"
+                step="0.25"
+                value="18"
+                aria-describedby="timeLabel"
+              />
+              <output id="timeLabel" for="timeOfDay">Twilight • 18:00</output>
+            </div>
+            <div class="time-buttons" role="group" aria-label="Preset times">
+              <button type="button" class="chip" data-time="5">Dawn</button>
+              <button type="button" class="chip" data-time="12">Zenith</button>
+              <button type="button" class="chip" data-time="18">Twilight</button>
+              <button type="button" class="chip" data-time="22">Midnight</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="control-group">
+            <legend>Seasonal Thread</legend>
+            <label for="seasonSelect">Fiber memory</label>
+            <select id="seasonSelect">
+              <option value="spring">Vernal Bloom</option>
+              <option value="summer">Solstice Ember</option>
+              <option value="autumn">Harvest Ember</option>
+              <option value="winter">Aurora Frost</option>
+            </select>
+            <p class="hint">Each season seeds new dyes, pattern densities, and glow rhythms.</p>
+          </fieldset>
+
+          <fieldset class="control-group">
+            <legend>Sky Resonance</legend>
+            <label for="weatherSelect">Chime weather</label>
+            <select id="weatherSelect">
+              <option value="clear">Clear – glass harmonics</option>
+              <option value="mist">Mist – hollow bells</option>
+              <option value="storm">Storm – bronze gongs</option>
+            </select>
+            <p class="hint">Weather tunes the chimes and refracts the aura halo.</p>
+          </fieldset>
+        </div>
+      </section>
+
+      <section class="lantern-stage" aria-live="polite">
+        <div class="lantern-scene" id="lanternScene">
+          <div class="scene-aura" id="lanternAura"></div>
+          <div class="lantern" id="lantern">
+            <div class="lantern-fibers" id="lanternFibers"></div>
+            <div class="lantern-core" id="lanternCore"></div>
+            <div class="lantern-cap top"></div>
+            <div class="lantern-cap bottom"></div>
+          </div>
+          <div class="chime-cluster" id="chimeCluster" aria-hidden="true">
+            <span class="chime strand"></span>
+            <span class="chime bead"></span>
+            <span class="chime echo"></span>
+          </div>
+        </div>
+
+        <section class="lantern-journal">
+          <article>
+            <h3>Light Core Chronicle</h3>
+            <p id="coreDescription">
+              The lantern waits for your touch. Choose an hour and season to ignite its
+              evolving heart.
+            </p>
+          </article>
+          <article>
+            <h3>Weather Chime Forecast</h3>
+            <p id="chimeDescription">
+              Chimes rest silent until the wind carries a mood from the skies above.
+            </p>
+          </article>
+          <article>
+            <h3>Fiber Loom Notes</h3>
+            <p id="fiberDescription">
+              Braided reeds hang loose, eager to absorb the dyes of a new cycle.
+            </p>
+          </article>
+        </section>
+      </section>
+
+      <footer class="footnote">
+        <p>
+          Tip: Try pairing a midnight winter weave with storm resonance for crystalline pulses,
+          then jump to a solstice dawn to watch the fibers thaw.
+        </p>
+      </footer>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
