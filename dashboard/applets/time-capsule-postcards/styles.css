@@ -1,0 +1,283 @@
+:root {
+  --bg-gradient: radial-gradient(circle at top, #fef9f5 0%, #f0ecff 45%, #d9f0ff 100%);
+  --ink: #2c2a4a;
+  --accent: #7b5cff;
+  --accent-soft: rgba(123, 92, 255, 0.16);
+  --card-bg: rgba(255, 255, 255, 0.82);
+  --border: rgba(44, 42, 74, 0.12);
+  --stamp-color: #ff7ab5;
+  --frame-color: rgba(123, 92, 255, 0.35);
+  --success: #0a8f7f;
+  --warning: #a053ff;
+  font-size: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
+  background: var(--bg-gradient);
+  color: var(--ink);
+  display: flex;
+  justify-content: center;
+}
+
+.page {
+  width: min(960px, 100%);
+  padding: 2.5rem clamp(1.25rem, 4vw, 3rem) 4rem;
+  display: grid;
+  gap: 2.5rem;
+}
+
+.hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  margin: 0;
+  max-width: 38ch;
+  line-height: 1.6;
+}
+
+section {
+  background: var(--card-bg);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: clamp(1.5rem, 4vw, 2rem);
+  box-shadow: 0 24px 60px rgba(44, 42, 74, 0.12);
+}
+
+.controls {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.controls h2,
+.postcard-area h2,
+.capsule h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+}
+
+.field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input[type="text"],
+textarea {
+  font: inherit;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(44, 42, 74, 0.2);
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.9);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus,
+input[type="range"]:focus-visible,
+button:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+button {
+  font: inherit;
+  border-radius: 999px;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+button.primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(123, 92, 255, 0.3);
+}
+
+button.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+button.secondary {
+  background: rgba(10, 143, 127, 0.12);
+  color: var(--success);
+}
+
+button.secondary:hover:not(:disabled),
+button.ghost:hover {
+  transform: translateY(-1px);
+}
+
+button.ghost {
+  background: transparent;
+  border: 1px dashed rgba(44, 42, 74, 0.3);
+  color: var(--ink);
+}
+
+.status {
+  margin: 0;
+  min-height: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--warning);
+}
+
+.postcard-area {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.postcard {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(229, 229, 255, 0.9));
+  border-radius: 18px;
+  border: 1px solid rgba(44, 42, 74, 0.14);
+  padding: 1.5rem;
+  min-height: 220px;
+  position: relative;
+  overflow: hidden;
+}
+
+.postcard::before,
+.postcard::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 14px;
+  border: 1px dashed var(--frame-color);
+  pointer-events: none;
+}
+
+.postcard__front {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.postcard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(44, 42, 74, 0.7);
+}
+
+.postcard__stamp {
+  font-size: 2.5rem;
+  color: var(--stamp-color);
+}
+
+.postcard__message {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.postcard__footer {
+  font-style: italic;
+  text-align: right;
+}
+
+.capsule {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.capsule__hint {
+  margin: 0;
+  color: rgba(44, 42, 74, 0.7);
+}
+
+.capsule__list {
+  display: grid;
+  gap: 1rem;
+}
+
+.capsule-card {
+  border: 1px solid rgba(44, 42, 74, 0.12);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(123, 92, 255, 0.08);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.capsule-card__meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(44, 42, 74, 0.6);
+}
+
+.capsule-card__body {
+  white-space: pre-wrap;
+  font-family: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
+  margin: 0;
+}
+
+.capsule__empty {
+  border: 1px dashed rgba(44, 42, 74, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  color: rgba(44, 42, 74, 0.6);
+  font-style: italic;
+}
+
+@media (max-width: 720px) {
+  .button-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .postcard::before,
+  .postcard::after {
+    inset: 8px;
+  }
+}

@@ -20,3 +20,4 @@
 - Razor Cracktro – Retro cracktro demo with raster bars and chiptune ambiance.
 - Simple Chat – Two-persona chat simulator with moderator tools and history.
 - Mythic Story Dice – Whimsical dice roller that conjures heroes, quests, and twists for instant story sparks.
+- Time Capsule Postcards – Compose alternate-timeline postcards and tuck favorites into a personal capsule shelf.

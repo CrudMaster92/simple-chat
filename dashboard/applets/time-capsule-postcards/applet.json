@@ -1,0 +1,12 @@
+{
+  "slug": "time-capsule-postcards",
+  "name": "Time Capsule Postcards",
+  "description": "Compose vibrant postcards from alternate timelines and save them to a personal time capsule.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-15",
+  "tags": ["story", "creative", "fun"],
+  "author": "Time Capsule Postcards Team",
+  "permissions": []
+}
