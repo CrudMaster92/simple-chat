@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diskette Explorer</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="explorer-shell" role="application" aria-label="Diskette Explorer">
+      <header class="explorer-header">
+        <div class="brand-block">
+          <div class="brand-icon" aria-hidden="true">DX</div>
+          <div>
+            <h1>Diskette Explorer</h1>
+            <p>Mounted disk tools &middot; Rev. 1.0</p>
+          </div>
+        </div>
+        <div class="header-actions" role="group" aria-label="Global actions">
+          <button class="header-button" id="showDiskInfo" type="button">Disk Info</button>
+          <button class="header-button" id="toggleNightMode" type="button" aria-pressed="false">
+            Night Grid
+          </button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <aside class="drive-panel" aria-label="Drive cabinet">
+          <div class="panel-title">
+            <h2>Mounted Drives</h2>
+            <span class="status-indicator" aria-live="polite" id="mountedCount"></span>
+          </div>
+          <ul class="drive-list" id="driveList" role="tree"></ul>
+        </aside>
+
+        <main class="file-area">
+          <section class="path-bar" aria-label="Location toolbar">
+            <div class="path-controls">
+              <button id="pathUp" type="button" class="path-button" aria-label="Go up one level">⬆</button>
+              <span id="currentPath" class="path-label" aria-live="polite"></span>
+            </div>
+            <div class="path-gauges">
+              <div class="gauge" aria-label="Disk usage">
+                <span class="gauge-label">Usage</span>
+                <div class="gauge-bar">
+                  <div class="gauge-fill" id="usageFill"></div>
+                </div>
+              </div>
+              <div class="gauge" aria-label="Disk temperature">
+                <span class="gauge-label">Temp</span>
+                <div class="gauge-bar gauge-warm">
+                  <div class="gauge-fill" id="tempFill"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="file-browser" aria-label="File listing">
+            <header class="browser-header">
+              <div class="header-label">Items</div>
+              <div class="view-switch" role="group" aria-label="View switches">
+                <button class="view-button is-active" data-view="details" type="button">Details</button>
+                <button class="view-button" data-view="icons" type="button">Icon Grid</button>
+              </div>
+            </header>
+            <div class="browser-content" id="browserContent" tabindex="0">
+              <table class="file-table" aria-label="File detail view">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Modified</th>
+                  </tr>
+                </thead>
+                <tbody id="fileList"></tbody>
+              </table>
+              <div class="icon-grid" id="iconGrid" hidden></div>
+            </div>
+          </section>
+
+          <section class="inspector" aria-label="Metadata inspector">
+            <header>
+              <h2>Inspector</h2>
+              <span id="inspectorHint">Select a file to view details</span>
+            </header>
+            <dl class="inspector-grid" id="metadataDetails"></dl>
+          </section>
+
+          <section class="copy-center" aria-label="Copy center">
+            <div class="copy-header">
+              <h2>Copy Station</h2>
+              <button id="startCopy" type="button" class="path-button">Start Copy</button>
+            </div>
+            <div class="copy-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="copyProgress">
+              <div class="copy-fill" id="copyFill"></div>
+            </div>
+            <p class="copy-status" id="copyStatus" aria-live="polite">Idle &ndash; insert diskette to begin.</p>
+          </section>
+        </main>
+      </div>
+
+      <footer class="explorer-footer">
+        <div class="footer-led" aria-hidden="true"></div>
+        <span id="footerStatus">Ready.</span>
+      </footer>
+    </div>
+
+    <div class="dialog-overlay" id="dialogOverlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" hidden>
+      <div class="dialog-window">
+        <header class="dialog-header">
+          <h2 id="dialogTitle">Diskette Diagnostics</h2>
+          <button type="button" class="dialog-close" id="closeDialog" aria-label="Close dialog">×</button>
+        </header>
+        <div class="dialog-body" id="dialogBody"></div>
+        <footer class="dialog-footer">
+          <button type="button" class="header-button" id="runScan">Run Surface Scan</button>
+          <button type="button" class="header-button" id="dialogAcknowledge">OK</button>
+        </footer>
+      </div>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
