@@ -16,5 +16,6 @@
   "glimmer-fossil-cabinet": "./applets/glimmer-fossil-cabinet/applet.json",
   "chrono-lantern-workshop": "./applets/chrono-lantern-workshop/applet.json",
   "retrocalc-console": "./applets/retrocalc-console/applet.json",
-  "geniepad-95": "./applets/geniepad-95/applet.json"
+  "geniepad-95": "./applets/geniepad-95/applet.json",
+  "pixelcanvas-studio": "./applets/pixelcanvas-studio/applet.json"
 }

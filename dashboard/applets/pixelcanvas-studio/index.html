@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixelCanvas Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="studio-shell" role="application" aria-label="PixelCanvas Studio drawing interface">
+      <header class="pixel-header">
+        <div class="pixel-brand">
+          <div class="pixel-badge" aria-hidden="true"></div>
+          <div class="pixel-title">PixelCanvas Studio</div>
+        </div>
+        <div class="pixel-controls" role="toolbar" aria-label="Canvas controls">
+          <button id="saveButton" type="button">Save PNG</button>
+          <button id="clearButton" type="button">Clear</button>
+        </div>
+      </header>
+
+      <main class="desktop-panel">
+        <section class="tool-column" aria-label="Drawing tools and settings">
+          <div class="tool-section" aria-live="polite">
+            <h2>Palette Swatches</h2>
+            <div
+              id="swatchGrid"
+              class="swatch-grid"
+              role="listbox"
+              aria-label="Palette swatches"
+            ></div>
+          </div>
+
+          <div class="tool-section">
+            <h2>Brush Size</h2>
+            <div class="brush-sizes" role="radiogroup" aria-label="Brush sizes" id="brushSizeGroup"></div>
+          </div>
+
+          <div class="tool-section">
+            <h2>Pixel Stamps</h2>
+            <div
+              class="stamp-grid"
+              id="stampGrid"
+              role="radiogroup"
+              aria-label="Stamp shapes"
+            ></div>
+          </div>
+
+          <div class="tool-section">
+            <div class="toggle-row">
+              <label for="soundToggle">Play retro blips</label>
+              <input id="soundToggle" type="checkbox" aria-label="Toggle drawing sound effects" />
+            </div>
+            <div class="toggle-row">
+              <label for="gridToggle">Show guide grid</label>
+              <input id="gridToggle" type="checkbox" aria-label="Toggle pixel grid overlay" checked />
+            </div>
+          </div>
+        </section>
+
+        <section class="canvas-column" aria-label="Drawing canvas">
+          <div class="canvas-stage">
+            <div class="pixel-frame" id="pixelFrame">
+              <canvas id="pixelCanvas" width="256" height="256" role="img" aria-label="Pixel art drawing area"></canvas>
+            </div>
+          </div>
+          <div class="canvas-meta">
+            <span id="brushLabel">Brush: 1x</span>
+            <span id="colorLabel">Color: #2dd1a4</span>
+          </div>
+          <div class="action-buttons">
+            <button id="undoButton" type="button" data-variant="ghost">Undo</button>
+            <button id="fillButton" type="button">Fill Canvas</button>
+            <button id="eraseButton" type="button" data-variant="ghost">Eraser</button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="pixel-footer">
+        <div>
+          <strong>How to paint:</strong>
+          Tap or click to draw; drag for continuous strokes; pick stamps for one-tap sprites.
+        </div>
+        <div>
+          Built for desktop & touch — PixelCanvas Studio keeps the chunky pixels crisp wherever you create.
+        </div>
+      </footer>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

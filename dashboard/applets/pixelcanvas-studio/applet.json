@@ -1,0 +1,12 @@
+{
+  "slug": "pixelcanvas-studio",
+  "name": "PixelCanvas Studio",
+  "description": "Chunky-pixel paint utility with retro chrome, color swatches, brush sizes, and playful stamp tools.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-29",
+  "tags": ["art", "creative", "retro"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
