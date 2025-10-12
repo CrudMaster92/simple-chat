@@ -1,0 +1,12 @@
+{
+  "slug": "retro-warp-arcade",
+  "name": "Retro Warp Arcade",
+  "description": "Chain neon lane catches, tune synth chips, and chase a warp-run high score across a holo arcade cabinet.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-08",
+  "tags": ["retro", "arcade", "game"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">Retro Warp Arcade Icon</title>
+  <desc id="desc">Stylized arcade cabinet with neon lanes and glowing screen.</desc>
+  <defs>
+    <linearGradient id="cabinet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ef0c3" />
+      <stop offset="100%" stop-color="#0a8f7f" />
+    </linearGradient>
+    <linearGradient id="screen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0b2d36" />
+      <stop offset="100%" stop-color="#021216" />
+    </linearGradient>
+    <linearGradient id="lanes" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1dd3b0" />
+      <stop offset="50%" stop-color="#ffd56f" />
+      <stop offset="100%" stop-color="#7ef06c" />
+    </linearGradient>
+  </defs>
+  <rect x="18" y="18" width="84" height="84" rx="16" fill="#02181d" stroke="url(#cabinet)" stroke-width="4" />
+  <rect x="30" y="28" width="60" height="40" rx="6" fill="url(#screen)" stroke="#1dd3b0" stroke-width="3" />
+  <path d="M38 44h44" stroke="url(#lanes)" stroke-width="6" stroke-linecap="round" />
+  <path d="M45 56h30" stroke="#0ef0c3" stroke-width="4" stroke-linecap="round" opacity="0.7" />
+  <circle cx="42" cy="84" r="8" fill="#1dd3b0" />
+  <circle cx="78" cy="84" r="8" fill="#ffd56f" />
+  <rect x="50" y="78" width="20" height="10" rx="4" fill="#061f24" stroke="#1dd3b0" stroke-width="2" />
+</svg>
