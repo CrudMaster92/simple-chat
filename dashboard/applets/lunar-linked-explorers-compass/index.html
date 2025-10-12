@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lunar-Linked Explorer's Compass</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <button
+      class="escape-hatch"
+      type="button"
+      aria-label="Return to dashboard"
+      onclick="window.location.href='../../index.html';"
+    >
+      ✕
+    </button>
+
+    <main class="compass-app" aria-labelledby="appTitle">
+      <header class="app-header">
+        <div class="title-block">
+          <div class="badge" aria-hidden="true">Moonwoven</div>
+          <h1 id="appTitle">Lunar-Linked Explorer's Compass</h1>
+          <p class="lede">
+            Drift through celestial tuning rituals, let motifs shift beneath your fingertips, and follow a compass that hums with
+            patient curiosity.
+          </p>
+        </div>
+        <section class="phase-panel" aria-label="Lunar attunement state">
+          <div class="compass-visual" role="presentation">
+            <div class="orbital-halo"></div>
+            <div class="compass-face">
+              <div class="phase-glow" id="phaseGlow"></div>
+              <div class="needle" id="compassNeedle">
+                <div class="needle-tip"></div>
+              </div>
+              <div class="center-pearl"></div>
+            </div>
+          </div>
+          <dl class="phase-readout">
+            <div>
+              <dt>Phase Link</dt>
+              <dd id="phaseLabel">Waxing Ways</dd>
+            </div>
+            <div>
+              <dt>Orbital Drift</dt>
+              <dd id="driftLabel">Northern hush</dd>
+            </div>
+            <div>
+              <dt>Selected Motif</dt>
+              <dd id="motifLabel">Lullaby Tide Map</dd>
+            </div>
+          </dl>
+        </section>
+      </header>
+
+      <section class="control-grid" aria-label="Compass controls">
+        <article class="control-card" aria-labelledby="phaseControlsTitle">
+          <h2 id="phaseControlsTitle">Celestial Tuning</h2>
+          <label class="slider-field">
+            <span>Phase cadence <strong id="phaseValue">68%</strong></span>
+            <input id="phaseSlider" type="range" min="0" max="100" value="68" />
+          </label>
+          <label class="slider-field">
+            <span>Drift bearing <strong id="driftValue">42°</strong></span>
+            <input id="driftSlider" type="range" min="0" max="360" value="42" />
+          </label>
+          <p class="control-note">
+            Slide gently to let the compass breathe. Each adjustment reshapes the glow and guides the needle toward a new lunar
+            conversation.
+          </p>
+        </article>
+
+        <article class="control-card" aria-labelledby="motifTitle">
+          <h2 id="motifTitle">Shifting Motifs</h2>
+          <div class="motif-grid" role="group" aria-label="Motif selection">
+            <button class="motif-chip active" data-motif="Lullaby Tide Map">Lullaby Tide Map</button>
+            <button class="motif-chip" data-motif="Crater Lantern Weave">Crater Lantern Weave</button>
+            <button class="motif-chip" data-motif="Orbital Echo Garden">Orbital Echo Garden</button>
+            <button class="motif-chip" data-motif="Noctiluna Wayfinding">Noctiluna Wayfinding</button>
+            <button class="motif-chip" data-motif="Satellite Drift Chorus">Satellite Drift Chorus</button>
+          </div>
+          <p class="motif-description" id="motifDescription">
+            Soft arcs trace hidden coastlines while quiet bells mark the tide's return. Every note lingers like moonlight resting on calm water.
+          </p>
+          <button class="secondary" id="wanderButton" type="button">Wander to a new alignment</button>
+        </article>
+
+        <article class="control-card" aria-labelledby="fieldNotesTitle">
+          <h2 id="fieldNotesTitle">Explorer's Field Notes</h2>
+          <p class="control-note">
+            Each pause records a whisper from the compass. Collect them, rearrange them, and let the journey stay open-ended.
+          </p>
+          <ul class="notes-list" id="notesList" aria-live="polite"></ul>
+          <button class="secondary" id="captureButton" type="button">Capture this moment</button>
+        </article>
+      </section>
+
+      <footer class="app-footer">
+        <p>
+          The compass offers a quiet escape hatch above if you need to drift elsewhere. Until then, take bearings from curiosity and stay moonlinked.
+        </p>
+      </footer>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

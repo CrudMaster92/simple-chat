@@ -23,5 +23,6 @@
   "interstellar-herbarium-notes": "./applets/interstellar-herbarium-notes/applet.json",
   "stormglass-kite-atelier": "./applets/stormglass-kite-atelier/applet.json",
   "resonant-crystal-cavern": "./applets/resonant-crystal-cavern/applet.json",
-  "twilight-parade-choreography": "./applets/twilight-parade-choreography/applet.json"
+  "twilight-parade-choreography": "./applets/twilight-parade-choreography/applet.json",
+  "lunar-linked-explorers-compass": "./applets/lunar-linked-explorers-compass/applet.json"
 }

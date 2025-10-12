@@ -36,3 +36,4 @@
 - Stormglass Kite Atelier – Rig shimmering kites, sculpt stormglass thermals, and score breezy flight choreographies.
 - Resonant Crystal Cavern Jam Session – Stack loop-building crystals, steer reflective beams, and improvise cavernous echo jams with tactile controls.
 - Twilight Parade Choreography – Plot luminous procession chapters, blend skyline ambience, and cue a twilight finale that ripples through every block.
+- Lunar-Linked Explorer’s Compass – Follow a moonlit compass that shifts motifs, retunes phases, and offers a tranquil escape hatch.
