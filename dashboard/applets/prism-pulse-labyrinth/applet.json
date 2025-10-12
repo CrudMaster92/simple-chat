@@ -1,0 +1,12 @@
+{
+  "slug": "prism-pulse-labyrinth",
+  "name": "Prism Pulse Labyrinth",
+  "description": "Cosmic sequence-chasing memory run with shifting constellations and pulse streak bonuses.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-05",
+  "tags": ["game", "memory", "arcade"],
+  "author": "OpenAI Applet Crafter",
+  "permissions": []
+}

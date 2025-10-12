@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prism Pulse Labyrinth</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="labyrinth-shell">
+      <header>
+        <h1>Prism Pulse Labyrinth</h1>
+        <p class="tagline">Chase the growing signal trail through a cosmic memory maze.</p>
+      </header>
+
+      <section class="status-panel" aria-live="polite">
+        <div class="status-card">
+          <span class="label">Current Wave</span>
+          <span class="value" id="wave">0</span>
+        </div>
+        <div class="status-card">
+          <span class="label">Highest Burst</span>
+          <span class="value" id="best">0</span>
+        </div>
+        <div class="status-card">
+          <span class="label">Stability</span>
+          <div class="stability" id="stability" role="meter" aria-valuemin="0" aria-valuemax="3" aria-valuenow="3">
+            <span class="pip filled"></span>
+            <span class="pip filled"></span>
+            <span class="pip filled"></span>
+          </div>
+        </div>
+        <button type="button" class="start" id="startButton">Start Pulse</button>
+      </section>
+
+      <section class="grid" role="group" aria-label="Pulse tiles">
+        <button class="tile" data-tile="nova" aria-label="Nova tile"></button>
+        <button class="tile" data-tile="aurora" aria-label="Aurora tile"></button>
+        <button class="tile" data-tile="quasar" aria-label="Quasar tile"></button>
+        <button class="tile" data-tile="nebula" aria-label="Nebula tile"></button>
+      </section>
+
+      <section class="log" aria-live="polite">
+        <h2>Signal Log</h2>
+        <div id="logFeed"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./script.js"></script>
+  </body>
+</html>
