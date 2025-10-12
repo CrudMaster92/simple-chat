@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retro Warp Arcade</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="arcade" aria-labelledby="appTitle">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Close Retro Warp Arcade"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="arcade__intro">
+        <div class="intro__badge">Warp Cabinet MK-IV</div>
+        <h1 id="appTitle">Retro Warp Arcade</h1>
+        <p class="intro__lede">
+          Tune a synth-fueled cabinet, ride neon lanes, and stitch flawless catch chains to etch your callsign onto the holo leaderboard.
+        </p>
+      </header>
+
+      <section class="arcade__grid" aria-label="Warp arcade workspace">
+        <section class="module module--settings" aria-labelledby="settingsTitle">
+          <h2 id="settingsTitle">Cabinet Dial-In</h2>
+          <p class="module__hint">Curate a chip, palette, and glow to flavor your warp run.</p>
+
+          <div class="control">
+            <label class="control__label" for="soundchip">Soundchip Emulation</label>
+            <select id="soundchip" class="control__select">
+              <option value="sid">SID 6581</option>
+              <option value="fm">FM Cascade</option>
+              <option value="pc">Turbo Adlib</option>
+            </select>
+            <p class="control__note" id="soundchipNote">Warm pulse width modulation with roomy basslines.</p>
+          </div>
+
+          <div class="control">
+            <label class="control__label" for="palette">Cabinet Palette</label>
+            <select id="palette" class="control__select">
+              <option value="nebula">Nebula Aqua</option>
+              <option value="amber">Amber Surge</option>
+              <option value="glacier">Glacier Lime</option>
+            </select>
+            <div class="palette-preview" id="palettePreview" aria-hidden="true"></div>
+          </div>
+
+          <div class="control">
+            <label class="control__label" for="glow">Beam Glow</label>
+            <input id="glow" type="range" min="15" max="95" value="55" />
+            <div class="glow-readout"><span id="glowValue">55</span>% intensity</div>
+          </div>
+
+          <div class="control control--chips" role="group" aria-label="Cabinet boosts">
+            <button class="chip" data-chip="overclock" type="button">Overclock Pulse</button>
+            <button class="chip" data-chip="shield" type="button">Flux Shield</button>
+            <button class="chip" data-chip="trail" type="button">Comet Trail</button>
+          </div>
+          <p class="boost-readout" id="boostReadout">Select boosts to amplify your warp route.</p>
+        </section>
+
+        <section class="module module--run" aria-labelledby="runTitle">
+          <h2 id="runTitle">Warp Lane Catch</h2>
+          <p class="module__hint">Launch a run and tap the correct lanes as the sequence streaks in.</p>
+
+          <div class="status">
+            <div class="status__panel" aria-live="polite">
+              <span class="status__label">Run Status</span>
+              <span class="status__value" id="statusValue">Awaiting launch…</span>
+            </div>
+            <button id="startRun" class="primary-action" type="button">Launch Warp Run</button>
+          </div>
+
+          <div class="lanes" role="group" aria-label="Warp lanes">
+            <button class="lane" data-lane="0" type="button">Left Surge</button>
+            <button class="lane" data-lane="1" type="button">Core Flux</button>
+            <button class="lane" data-lane="2" type="button">Right Rift</button>
+          </div>
+
+          <div class="sequence" aria-live="polite" aria-atomic="true">
+            <h3 class="sequence__title">Incoming Pattern</h3>
+            <ol class="sequence__list" id="sequenceList"></ol>
+          </div>
+
+          <dl class="run-metrics">
+            <div class="metric">
+              <dt>Score</dt>
+              <dd id="scoreValue">0</dd>
+            </div>
+            <div class="metric">
+              <dt>Streak</dt>
+              <dd id="streakValue">0</dd>
+            </div>
+            <div class="metric">
+              <dt>Glitches</dt>
+              <dd id="glitchValue">0</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="module module--leaderboard" aria-labelledby="boardTitle">
+          <h2 id="boardTitle">Holo Leaderboard</h2>
+          <p class="module__hint">Outrun synth operators from across the neon net.</p>
+          <ol class="leaderboard" id="leaderboard" aria-live="polite"></ol>
+
+          <section class="run-log" aria-live="polite" aria-atomic="true">
+            <h3 class="run-log__title">Run Telemetry</h3>
+            <p class="run-log__entry" id="runLog">No telemetry yet. Launch a warp run!</p>
+          </section>
+        </section>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
