@@ -1,0 +1,12 @@
+{
+  "slug": "potion-snap-oracle",
+  "name": "Potion Snap Oracle",
+  "description": "Snap a photo to distill chromatic ingredients into a whimsical potion recipe and incantation.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-07",
+  "tags": ["camera", "creative", "generator"],
+  "author": "Potion Snap Oracle Team",
+  "permissions": ["camera"]
+}

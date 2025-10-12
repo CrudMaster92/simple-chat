@@ -24,3 +24,4 @@
 - Aurora Flavor Forge – Blend cosmic dessert bases, aurora swirls, and stellar toppings into shimmering treat profiles.
 - Prism Pulse Labyrinth – Glowing memory-gauntlet where you chase expanding prism pulse sequences and protect stability.
 - Quantum Orbit Catcher – Three-lane reactor dash where you snare luminous particles and dodge overloads for high scores.
+- Potion Snap Oracle – Snap a fresh photo to distill its colors into whimsical potion ingredients and arcane incantations.

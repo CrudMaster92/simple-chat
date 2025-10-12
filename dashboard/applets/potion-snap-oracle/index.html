@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Potion Snap Oracle</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Playfair+Display:wght@600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <img src="./assets/icon.svg" alt="Potion Snap Oracle icon" class="hero__icon" />
+        <div class="hero__text">
+          <h1>Potion Snap Oracle</h1>
+          <p>
+            Capture a scene or upload a favorite photo, then let the oracle distill its chromatic secrets into a bespoke potion
+            recipe, ingredient lore, and sparkly incantation.
+          </p>
+        </div>
+      </header>
+
+      <section class="capture" aria-labelledby="capture-title">
+        <div class="capture__card">
+          <h2 id="capture-title">Summon an image</h2>
+          <p>Use your camera or select a photo to bottle the hues swirling within it.</p>
+          <label class="capture__label" for="photo-input">
+            <input type="file" id="photo-input" accept="image/*" capture="environment" />
+            <span class="capture__cta">Tap to open camera or gallery</span>
+            <span class="capture__hint">Large photos are gently resized for quicker alchemy.</span>
+          </label>
+          <p class="capture__status" id="status-message" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="preview" id="preview" hidden>
+        <div class="preview__frame">
+          <img id="preview-image" alt="Chosen scene for potion crafting" />
+        </div>
+        <button class="preview__retake" type="button" id="retake-button">Choose another photo</button>
+      </section>
+
+      <section class="results" id="results" hidden>
+        <div class="results__intro">
+          <h2>Your chromatic ingredient roster</h2>
+          <p>
+            The oracle sampled the image and identified the most resonant colors. Each swatch unlocks a curious ingredient with a
+            story-driven effect.
+          </p>
+        </div>
+        <div class="ingredients" id="ingredients"></div>
+        <div class="brew" id="brew" hidden>
+          <h3 id="brew-title"></h3>
+          <p id="brew-description"></p>
+          <div class="incantation">
+            <h4>Incantation Whisper</h4>
+            <p id="incantation-text"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js" type="module"></script>
+  </body>
+</html>
