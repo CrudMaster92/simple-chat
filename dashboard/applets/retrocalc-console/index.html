@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RetroCalc Console</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="console-shell">
+      <div class="console-header">
+        <div class="window-dots" aria-hidden="true">
+          <span class="dot dot-close"></span>
+          <span class="dot dot-min"></span>
+          <span class="dot dot-max"></span>
+        </div>
+        <div class="header-title">RetroCalc Console</div>
+        <div class="header-clock" id="headerClock">--:--</div>
+      </div>
+      <div class="console-body">
+        <section class="calculator-panel" aria-label="Calculator">
+          <div class="display" role="group" aria-label="Calculator display">
+            <div class="display-status" id="displayExpression">Ready</div>
+            <div class="display-main" id="displayValue" aria-live="polite">0</div>
+          </div>
+          <div class="button-grid" role="group" aria-label="Calculator keypad">
+            <button class="key" data-action="clear-all">AC</button>
+            <button class="key" data-action="clear-entry">CE</button>
+            <button class="key" data-action="backspace">←</button>
+            <button class="key" data-value="/">÷</button>
+
+            <button class="key" data-value="7">7</button>
+            <button class="key" data-value="8">8</button>
+            <button class="key" data-value="9">9</button>
+            <button class="key" data-value="*">×</button>
+
+            <button class="key" data-value="4">4</button>
+            <button class="key" data-value="5">5</button>
+            <button class="key" data-value="6">6</button>
+            <button class="key" data-value="-">−</button>
+
+            <button class="key" data-value="1">1</button>
+            <button class="key" data-value="2">2</button>
+            <button class="key" data-value="3">3</button>
+            <button class="key" data-value="+">+</button>
+
+            <button class="key" data-action="negate">±</button>
+            <button class="key" data-value="0">0</button>
+            <button class="key" data-value=".">.</button>
+            <button class="key" data-action="calculate" data-emphasis="true">=</button>
+          </div>
+        </section>
+        <section class="tape-panel" aria-label="Tape roll history">
+          <header>
+            <h2>Tape Roll</h2>
+            <button class="key tape-clear" data-action="tape-clear" aria-label="Clear tape roll">Clear</button>
+          </header>
+          <div class="tape-window" id="tapeWindow">
+            <ul class="tape-list" id="tapeList" aria-live="polite"></ul>
+          </div>
+          <div class="tape-footer" aria-hidden="true"></div>
+        </section>
+        <section class="conversion-panel" aria-label="Quick conversions">
+          <header>
+            <h2>Quick Conversions</h2>
+          </header>
+          <p class="conversion-note">
+            Select a conversion to translate the current display value instantly.
+          </p>
+          <div class="conversion-buttons" role="group" aria-label="Conversion options">
+            <button class="key conversion" data-conversion="usd-eur">USD → EUR</button>
+            <button class="key conversion" data-conversion="fahrenheit-celsius">°F → °C</button>
+            <button class="key conversion" data-conversion="inch-cm">in → cm</button>
+            <button class="key conversion" data-conversion="pound-kg">lb → kg</button>
+          </div>
+          <div class="conversion-output" id="conversionOutput" aria-live="polite">
+            Conversion results will appear here.
+          </div>
+        </section>
+      </div>
+      <footer class="console-footer">
+        <div class="status-light" aria-hidden="true"></div>
+        <span>Audio clicks engage on first tap · Keep calculations rolling</span>
+      </footer>
+    </div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
