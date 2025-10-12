@@ -1,0 +1,12 @@
+{
+  "slug": "matrix-synth-rain",
+  "name": "Matrix Synth Rain",
+  "description": "Conduct a customizable matrix rain skyline with dynamic glyphs, glow, and ambient pulses.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-19",
+  "tags": ["visual", "ambient", "customization"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

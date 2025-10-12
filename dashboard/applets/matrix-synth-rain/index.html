@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matrix Synth Rain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="matrix-shell">
+      <canvas id="matrixCanvas" aria-hidden="true"></canvas>
+      <button class="panel-toggle" aria-expanded="true" aria-controls="controlPanel">
+        <span class="icon">⚙️</span>
+        <span class="label">Hide controls</span>
+      </button>
+      <aside class="control-panel" id="controlPanel">
+        <header>
+          <h1>Matrix Synth Rain</h1>
+          <p>Conduct your own skyline of flowing glyphs and luminous pulses.</p>
+        </header>
+        <section class="control-group">
+          <h2>Palette</h2>
+          <label class="field">
+            <span>Theme</span>
+            <select id="themeSelect">
+              <option value="classic">Classic Green</option>
+              <option value="nebula">Nebula Magenta</option>
+              <option value="glacier">Glacier Blue</option>
+              <option value="ember">Ember Amber</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Glyph set</span>
+            <select id="glyphSelect">
+              <option value="katakana">Katakana Stream</option>
+              <option value="binary">Binary Chorus</option>
+              <option value="alphanumeric">Alphanumeric Mesh</option>
+              <option value="emoji">Emoji Whispers</option>
+            </select>
+          </label>
+        </section>
+        <section class="control-group">
+          <h2>Flow</h2>
+          <label class="field">
+            <span>Density</span>
+            <input id="densitySlider" type="range" min="20" max="120" value="70" />
+            <output for="densitySlider" id="densityValue">70</output>
+          </label>
+          <label class="field">
+            <span>Speed</span>
+            <input id="speedSlider" type="range" min="40" max="200" value="100" />
+            <output for="speedSlider" id="speedValue">1.0×</output>
+          </label>
+          <label class="field">
+            <span>Trails</span>
+            <input id="trailSlider" type="range" min="4" max="35" value="15" />
+            <output for="trailSlider" id="trailValue">0.15</output>
+          </label>
+        </section>
+        <section class="control-group">
+          <h2>Luminosity</h2>
+          <label class="field">
+            <span>Glow</span>
+            <input id="glowSlider" type="range" min="0" max="40" value="12" />
+            <output for="glowSlider" id="glowValue">12px</output>
+          </label>
+          <label class="field toggle">
+            <span>Gradient backdrop</span>
+            <input id="gradientToggle" type="checkbox" checked />
+            <span class="toggle-indicator" aria-hidden="true"></span>
+          </label>
+        </section>
+        <section class="control-group">
+          <h2>Live performance</h2>
+          <div class="button-row">
+            <button id="pulseButton" type="button">Pulse Burst</button>
+            <button id="pauseButton" type="button" aria-pressed="false">Pause flow</button>
+          </div>
+          <p class="hint">Tip: Click anywhere on the canvas to drop a resonance ripple.</p>
+        </section>
+      </aside>
+    </div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

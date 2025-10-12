@@ -26,3 +26,4 @@
 - Quantum Orbit Catcher – Three-lane reactor dash where you snare luminous particles and dodge overloads for high scores.
 - Potion Snap Oracle – Snap a fresh photo to distill its colors into whimsical potion ingredients and arcane incantations.
 - Sonic Bloom Conservatory – Tend an ethereal audio garden of shimmering blooms and sculpted breezes.
+- Matrix Synth Rain – Conduct a customizable matrix skyline with glyph dialects, luminous gradients, and live performance bursts.
