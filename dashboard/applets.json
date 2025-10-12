@@ -7,5 +7,7 @@
   "aurora-flavor-forge": "./applets/aurora-flavor-forge/applet.json",
   "prism-pulse-labyrinth": "./applets/prism-pulse-labyrinth/applet.json",
   "quantum-orbit-catcher": "./applets/quantum-orbit-catcher/applet.json",
-  "sonic-bloom-conservatory": "./applets/sonic-bloom-conservatory/applet.json"
+  "sonic-bloom-conservatory": "./applets/sonic-bloom-conservatory/applet.json",
+  "potion-snap-oracle": "./applets/potion-snap-oracle/applet.json",
+  "matrix-synth-rain": "./applets/matrix-synth-rain/applet.json"
 }
