@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timekeeper Agenda</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="timekeeper-shell">
+      <div class="window-frame">
+        <div class="window-bar">
+          <div class="window-lights">
+            <span class="light light-red" aria-hidden="true"></span>
+            <span class="light light-gold" aria-hidden="true"></span>
+            <span class="light light-green" aria-hidden="true"></span>
+          </div>
+          <p class="window-title" aria-live="polite">Timekeeper Agenda</p>
+          <div class="bar-grooves" aria-hidden="true"></div>
+        </div>
+        <div class="window-body">
+          <section class="overview-panel">
+            <div class="clock-panel" aria-live="polite">
+              <p class="clock-label">System Clock</p>
+              <p class="clock-digits" id="clock-display">--:--</p>
+              <p class="clock-date" id="clock-date">----</p>
+            </div>
+            <div class="status-panel">
+              <div class="status-chip" id="next-event-chip">
+                <span class="chip-label">Next Event</span>
+                <span class="chip-value" id="next-event">No events queued</span>
+              </div>
+              <div class="status-chip" id="reminder-chip">
+                <span class="chip-label">Reminders</span>
+                <span class="chip-value" id="reminder-count">0 active</span>
+              </div>
+              <div class="status-chip" id="note-chip">
+                <span class="chip-label">Sticky Notes</span>
+                <span class="chip-value" id="note-count">0 pinned</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="control-panel" aria-label="Schedule navigation">
+            <div class="control-group">
+              <button class="nav-button" id="prev-button" aria-label="Previous period">
+                ◀
+              </button>
+              <p class="current-date" id="current-date">Loading…</p>
+              <button class="nav-button" id="next-button" aria-label="Next period">
+                ▶
+              </button>
+              <button class="today-button" id="today-button">Today</button>
+            </div>
+            <div class="view-toggle" role="tablist" aria-label="View modes">
+              <button class="toggle-button active" data-view="day" role="tab" aria-selected="true">
+                Day Grid
+              </button>
+              <button class="toggle-button" data-view="week" role="tab" aria-selected="false">
+                Week Grid
+              </button>
+              <button class="toggle-button" data-view="month" role="tab" aria-selected="false">
+                Month Grid
+              </button>
+            </div>
+          </section>
+
+          <section class="workspace" aria-live="polite">
+            <div class="board" id="schedule-board" aria-label="Schedule display"></div>
+            <aside class="side-panel">
+              <div class="card" aria-labelledby="reminders-title">
+                <header class="card-header">
+                  <h2 id="reminders-title">Reminders</h2>
+                </header>
+                <form id="reminder-form" class="card-form">
+                  <label class="field">
+                    <span>Reminder</span>
+                    <input type="text" name="text" required maxlength="60" placeholder="Call library, pick up film…" />
+                  </label>
+                  <label class="field">
+                    <span>Date</span>
+                    <input type="date" name="date" required />
+                  </label>
+                  <label class="field">
+                    <span>Time</span>
+                    <input type="time" name="time" required />
+                  </label>
+                  <button type="submit" class="submit-button">Add Reminder</button>
+                </form>
+                <ul class="item-list" id="reminder-list" aria-live="polite"></ul>
+              </div>
+
+              <div class="card" aria-labelledby="notes-title">
+                <header class="card-header">
+                  <h2 id="notes-title">Sticky Notes</h2>
+                </header>
+                <form id="note-form" class="card-form">
+                  <label class="field">
+                    <span>Note</span>
+                    <textarea name="text" rows="2" maxlength="120" required placeholder="Draft timeline ideas…"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Color</span>
+                    <select name="color">
+                      <option value="mint">Mint</option>
+                      <option value="sun">Sunbeam</option>
+                      <option value="sky">Skyline</option>
+                      <option value="sand">Sandstone</option>
+                    </select>
+                  </label>
+                  <button type="submit" class="submit-button">Pin Note</button>
+                </form>
+                <div class="note-board" id="note-board" aria-live="polite"></div>
+              </div>
+            </aside>
+          </section>
+
+          <section class="planner-tools" aria-labelledby="planner-tools-title">
+            <h2 id="planner-tools-title" class="sr-only">Planner tools</h2>
+            <form id="event-form" class="event-form" aria-label="Add a new schedule event">
+              <div class="field compact">
+                <label for="event-title">Title</label>
+                <input id="event-title" name="title" type="text" required maxlength="80" placeholder="Team sync" />
+              </div>
+              <div class="field compact">
+                <label for="event-date">Date</label>
+                <input id="event-date" name="date" type="date" required />
+              </div>
+              <div class="field compact">
+                <label for="event-time">Start</label>
+                <input id="event-time" name="time" type="time" required />
+              </div>
+              <div class="field compact">
+                <label for="event-duration">Duration (min)</label>
+                <input id="event-duration" name="duration" type="number" min="15" max="480" step="15" value="60" />
+              </div>
+              <div class="field compact">
+                <label for="event-tag">Tag</label>
+                <select id="event-tag" name="tag">
+                  <option value="planning">Planning</option>
+                  <option value="meeting">Meeting</option>
+                  <option value="creative">Creative</option>
+                  <option value="personal">Personal</option>
+                </select>
+              </div>
+              <button type="submit" class="submit-button primary">Schedule Event</button>
+            </form>
+          </section>
+        </div>
+      </div>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
