@@ -1,0 +1,12 @@
+{
+  "slug": "sonic-bloom-conservatory",
+  "name": "Sonic Bloom Conservatory",
+  "description": "Cultivate luminous flora loops and sculpt ambient breezes in a living sound garden.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-11",
+  "tags": ["audio", "ambient", "creative"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

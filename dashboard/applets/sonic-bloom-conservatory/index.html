@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sonic Bloom Conservatory</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="top-bar">
+        <h1>Sonic Bloom Conservatory</h1>
+        <p class="tagline">Awaken luminous flora and weave a living soundscape.</p>
+      </header>
+
+      <section class="intro" id="intro">
+        <p>
+          The conservatory is hushed, waiting for its caretaker. Tap the button
+          below to activate the sound garden and invite each bloom to sing.
+        </p>
+        <button id="enterButton" class="primary">Enter the Conservatory</button>
+      </section>
+
+      <section class="garden" id="garden" hidden>
+        <section class="environment">
+          <h2>Atmospheric Sculpting</h2>
+          <div class="control-group">
+            <label for="shimmerDepth">Shimmer Trail</label>
+            <input type="range" id="shimmerDepth" min="0" max="0.8" step="0.01" value="0.3" />
+            <span class="hint">Sets the glow of echoing dew drops.</span>
+          </div>
+          <div class="control-group">
+            <label for="breezeLevel">Glide Breeze</label>
+            <input type="range" id="breezeLevel" min="0" max="0.5" step="0.01" value="0" />
+            <span class="hint">Lift soft gusts of airy noise through the leaves.</span>
+          </div>
+          <div class="control-group">
+            <label for="canopyShade">Canopy Shade</label>
+            <input type="range" id="canopyShade" min="200" max="3000" step="1" value="1400" />
+            <span class="hint">Darken or brighten the tone of every bloom.</span>
+          </div>
+        </section>
+
+        <section class="plant-grid" id="plantGrid" aria-live="polite">
+          <!-- Plant cards injected via JS -->
+        </section>
+      </section>
+
+      <footer class="footnote">
+        <p>
+          Tip: Blend three or more blooms with contrasting pulses for evolving harmonies.
+        </p>
+      </footer>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

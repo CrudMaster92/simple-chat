@@ -1,0 +1,25 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="160" height="160" rx="32" fill="url(#gradient-bg)" />
+  <g filter="url(#glow)">
+    <path d="M80 32c8.4 0 15.2 6.8 15.2 15.2 0 5.6-3 10.5-7.6 13.1 15.6 4.7 26.8 19.1 26.8 36.2 0 20.9-17 37.9-37.9 37.9s-37.9-17-37.9-37.9c0-17.1 11.2-31.5 26.8-36.2-4.6-2.6-7.6-7.5-7.6-13.1C57.8 38.8 64.6 32 73 32c2.7 0 5.2.6 7.5 1.8 2.3-1.2 4.8-1.8 7.5-1.8z" fill="url(#bloom)" />
+    <circle cx="80" cy="96" r="18" fill="url(#core)" />
+  </g>
+  <defs>
+    <linearGradient id="gradient-bg" x1="24" y1="16" x2="140" y2="144" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#152542" />
+      <stop offset="1" stop-color="#081226" />
+    </linearGradient>
+    <radialGradient id="bloom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(80 92) rotate(90) scale(64)">
+      <stop stop-color="#8ffcff" />
+      <stop offset="1" stop-color="#2a64ff" />
+    </radialGradient>
+    <radialGradient id="core" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(80 96) rotate(90) scale(24)">
+      <stop stop-color="#ffffff" />
+      <stop offset="1" stop-color="#58d0ff" />
+    </radialGradient>
+    <filter id="glow" x="20" y="20" width="120" height="140" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feBlend in="SourceGraphic" in2="blur" mode="screen" />
+    </filter>
+  </defs>
+</svg>

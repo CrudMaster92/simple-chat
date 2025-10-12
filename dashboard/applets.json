@@ -6,5 +6,6 @@
   "time-capsule-postcards": "./applets/time-capsule-postcards/applet.json",
   "aurora-flavor-forge": "./applets/aurora-flavor-forge/applet.json",
   "prism-pulse-labyrinth": "./applets/prism-pulse-labyrinth/applet.json",
-  "quantum-orbit-catcher": "./applets/quantum-orbit-catcher/applet.json"
+  "quantum-orbit-catcher": "./applets/quantum-orbit-catcher/applet.json",
+  "sonic-bloom-conservatory": "./applets/sonic-bloom-conservatory/applet.json"
 }
