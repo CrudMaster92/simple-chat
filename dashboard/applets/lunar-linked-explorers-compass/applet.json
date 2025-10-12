@@ -1,0 +1,12 @@
+{
+  "slug": "lunar-linked-explorers-compass",
+  "name": "Lunar-Linked Explorer's Compass",
+  "description": "Plot soothing celestial bearings, shift lunar motifs, and follow a compass that listens to your curiosity.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-07",
+  "tags": ["exploration", "wellness", "ambient"],
+  "author": "Lunar Compass Collective",
+  "permissions": []
+}
