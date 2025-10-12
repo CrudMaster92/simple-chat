@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Capsule Postcards</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1>Time Capsule Postcards</h1>
+      <p>Spin up a surprise dispatch from alternate eras and distant locales, then bottle it for your future self.</p>
+    </header>
+
+    <section class="controls" aria-labelledby="controls-title">
+      <h2 id="controls-title">Compose a Temporal Dispatch</h2>
+      <div class="field">
+        <label for="recipient">Recipient name</label>
+        <input id="recipient" type="text" placeholder="e.g. Future Me" />
+      </div>
+      <div class="field">
+        <label for="vibe">Atmosphere dial <span id="vibe-label" aria-live="polite">Mellow Drift</span></label>
+        <input id="vibe" type="range" min="1" max="5" value="1" step="1" />
+      </div>
+      <div class="field">
+        <label for="note">Secret note (optional)</label>
+        <textarea id="note" rows="3" placeholder="Drop in a side quest, a reminder, or coordinates."></textarea>
+      </div>
+      <div class="button-row">
+        <button id="generate" class="primary">Generate postcard</button>
+        <button id="save" class="secondary" disabled>Save to capsule</button>
+        <button id="clear" class="ghost">Clear capsule</button>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="postcard-area" aria-labelledby="postcard-title">
+      <h2 id="postcard-title">Live Postcard</h2>
+      <div class="postcard" id="postcard" aria-live="polite">
+        <div class="postcard__front">
+          <div class="postcard__header">
+            <span class="postcard__origin">Awaiting coordinates…</span>
+            <span class="postcard__stamp" aria-hidden="true">✶</span>
+          </div>
+          <pre class="postcard__message">Tap "Generate" to receive a freshly inked time capsule postcard.</pre>
+          <div class="postcard__footer">
+            <span class="postcard__signature">— Chrononaut Courier</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="capsule" aria-labelledby="capsule-title">
+      <h2 id="capsule-title">Capsule Shelf</h2>
+      <p class="capsule__hint">Saved postcards rest here for later retrieval (stored in your browser).</p>
+      <div id="capsule-list" class="capsule__list" aria-live="polite"></div>
+    </section>
+  </main>
+  <script src="./app.js" type="module"></script>
+</body>
+</html>
