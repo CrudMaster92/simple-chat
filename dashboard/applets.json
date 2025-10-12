@@ -14,5 +14,6 @@
   "chromatic-spice-sketchpad": "./applets/chromatic-spice-sketchpad/applet.json",
   "zephyr-relay-pen-pals": "./applets/zephyr-relay-pen-pals/applet.json",
   "glimmer-fossil-cabinet": "./applets/glimmer-fossil-cabinet/applet.json",
-  "chrono-lantern-workshop": "./applets/chrono-lantern-workshop/applet.json"
+  "chrono-lantern-workshop": "./applets/chrono-lantern-workshop/applet.json",
+  "retrocalc-console": "./applets/retrocalc-console/applet.json"
 }

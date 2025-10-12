@@ -1,0 +1,12 @@
+{
+  "slug": "retrocalc-console",
+  "name": "RetroCalc Console",
+  "description": "Desktop-style calculator with tape roll history, tactile clicks, and handy quick conversions.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-15",
+  "tags": ["retro", "calculator", "productivity"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
