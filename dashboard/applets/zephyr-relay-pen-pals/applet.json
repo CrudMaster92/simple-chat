@@ -1,0 +1,12 @@
+{
+  "slug": "zephyr-relay-pen-pals",
+  "name": "Zephyr Relay Pen Pals",
+  "description": "Float letters between sky stations with playful drift routes and collectible aeroglyph trinkets.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-07",
+  "tags": ["creative", "simulation", "relaxing"],
+  "author": "Zephyr Relay Pen Pals Team",
+  "permissions": []
+}
