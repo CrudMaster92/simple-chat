@@ -51,3 +51,4 @@
 - Nebula Gear Emulator – Boot a prototype handheld shell, swap experimental ROM cartridges, and tackle twin microgames born from an imagined dev lab.
 - Vector Bloom Forge – Sculpt luminous vector petals by dragging nodes to match shimmering silhouettes and chase precision streaks.
 - Bang Bang Beat Barrage – Orchestrate dueling rhythm cannons, slam beats on cue, and trigger thunder slams to keep the crowd voltage spiking.
+- Hyperlink Surf Club – Spin a pace dial, surface playful web destinations, and log postcard notes from every spontaneous surf.

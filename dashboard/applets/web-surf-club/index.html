@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Surf Club</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="club" aria-labelledby="clubTitle">
+      <header class="club__header">
+        <div class="club__identity">
+          <img src="./assets/icon.svg" alt="Web Surf Club badge" class="club__icon" />
+          <div>
+            <h1 id="clubTitle" class="club__title">Hyperlink Surf Club</h1>
+            <p class="club__subtitle">Spin playful destinations and feel the living web in quick postcard bursts.</p>
+          </div>
+        </div>
+        <a class="club__close" href="../../index.html" aria-label="Return to the dashboard">×</a>
+      </header>
+
+      <section class="club__content">
+        <article class="compass" aria-live="polite">
+          <div class="compass__halo"></div>
+          <div class="compass__card" id="destinationCard">
+            <h2 id="destinationName">Pick a vibe to begin</h2>
+            <p id="destinationTagline" class="compass__tagline">Dial the pace slider, then spin the compass to surface an internet gem.</p>
+            <dl class="compass__meta">
+              <div>
+                <dt>Pace</dt>
+                <dd id="destinationTempo">—</dd>
+              </div>
+              <div>
+                <dt>Best Moment</dt>
+                <dd id="destinationMoment">—</dd>
+              </div>
+            </dl>
+            <ul id="destinationHighlights" class="compass__highlights" aria-label="Highlights"></ul>
+            <div class="compass__actions">
+              <button id="openLink" class="club-button" disabled>Open in new tab</button>
+              <button id="copyLink" class="club-button club-button--ghost" disabled>Copy link</button>
+            </div>
+          </div>
+          <button class="compass__spin" id="spinButton">Spin the compass</button>
+        </article>
+
+        <aside class="controls" aria-label="Club controls">
+          <section class="controls__block" aria-labelledby="paceHeading">
+            <h2 id="paceHeading">Pace dial</h2>
+            <p class="controls__description">Slide from drift to dash to tune what kind of web ride you crave.</p>
+            <label class="dial">
+              <input type="range" id="paceSlider" min="0" max="100" value="40" aria-describedby="paceLabel" />
+              <span id="paceLabel" class="dial__label">Curious roaming</span>
+            </label>
+          </section>
+
+          <section class="controls__block" aria-labelledby="logHeading">
+            <h2 id="logHeading">Voyage log</h2>
+            <p class="controls__description">Each spin drops a postcard in your log so you can revisit surprise finds.</p>
+            <ol id="voyageLog" class="log" reversed></ol>
+          </section>
+
+          <section class="controls__block" aria-labelledby="tipHeading">
+            <h2 id="tipHeading">Web drift tip</h2>
+            <p id="tipText" class="controls__description">Layer the pace dial with a second spin for a totally different corner of the web.</p>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

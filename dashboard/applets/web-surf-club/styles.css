@@ -1,0 +1,345 @@
+:root {
+  color-scheme: light dark;
+  --bg-gradient: radial-gradient(circle at 20% 20%, #113f67, #041326 65%);
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255, 255, 255, 0.18);
+  --accent: #ffb300;
+  --accent-strong: #ff8a00;
+  --text-main: #f5f9ff;
+  --text-muted: rgba(245, 249, 255, 0.7);
+  --surface: rgba(9, 36, 61, 0.72);
+  font-family: "Manrope", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 32px clamp(16px, 5vw, 48px);
+}
+
+main.club {
+  width: min(1120px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  padding: clamp(20px, 4vw, 32px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  position: relative;
+  overflow: hidden;
+}
+
+.club::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 10%, rgba(255, 200, 80, 0.18), transparent 55%),
+    radial-gradient(circle at 10% 90%, rgba(18, 118, 255, 0.16), transparent 60%);
+  pointer-events: none;
+}
+
+.club__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.club__identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.club__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.club__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  letter-spacing: 0.01em;
+}
+
+.club__subtitle {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  max-width: 42ch;
+  line-height: 1.4;
+}
+
+.club__close {
+  font-size: 2rem;
+  text-decoration: none;
+  color: var(--text-muted);
+  padding: 4px 14px;
+  border-radius: 999px;
+  line-height: 1;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.club__close:hover,
+.club__close:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-main);
+}
+
+.club__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: clamp(24px, 4vw, 40px);
+  position: relative;
+  z-index: 1;
+}
+
+.compass {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 26px;
+  padding: clamp(24px, 4vw, 32px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+}
+
+.compass__halo {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 68%);
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+
+.compass__card {
+  width: 100%;
+  background: rgba(3, 13, 29, 0.52);
+  border-radius: 22px;
+  padding: clamp(18px, 4vw, 24px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 320px;
+}
+
+.compass__card h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+}
+
+.compass__tagline {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.compass__meta {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.compass__meta dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.compass__meta dd {
+  margin: 4px 0 0;
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+.compass__highlights {
+  margin: 0;
+  padding: 0 0 0 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.compass__highlights li {
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--text-main) 80%, white 20%);
+}
+
+.compass__actions {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.club-button {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent) 80%, white 20%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 65%, #fff 5%), color-mix(in srgb, var(--accent-strong) 75%, #fff 5%));
+  color: #08233e;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.club-button:hover:not(:disabled),
+.club-button:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+.club-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.club-button--ghost {
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.compass__spin {
+  appearance: none;
+  border: none;
+  background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 70%, #fff 15%), color-mix(in srgb, var(--accent-strong) 80%, #111 10%));
+  color: #081422;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 14px 32px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.compass__spin:hover,
+.compass__spin:focus-visible {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.controls {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 26px;
+  padding: clamp(20px, 4vw, 28px);
+  display: grid;
+  gap: 24px;
+  backdrop-filter: blur(16px);
+}
+
+.controls__block {
+  display: grid;
+  gap: 12px;
+}
+
+.controls__block h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.controls__description {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.dial {
+  display: grid;
+  gap: 8px;
+}
+
+.dial input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.dial__label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.log li {
+  background: rgba(3, 13, 29, 0.45);
+  border-radius: 16px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 4px;
+}
+
+.log__title {
+  font-weight: 600;
+}
+
+.log__meta {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 960px) {
+  .club__content {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    order: -1;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 16px;
+  }
+
+  main.club {
+    border-radius: 20px;
+  }
+
+  .club__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .club__close {
+    align-self: flex-end;
+  }
+}
