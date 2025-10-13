@@ -98,27 +98,21 @@ body {
 
 .applet-main {
   display: grid;
-  grid-template-columns: 320px 1fr 420px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
 }
 
-.control-panel,
-.results-panel,
-.player-panel {
+.player-panel,
+.search-panel {
   background: var(--bg-panel);
   border: 1px solid var(--stroke-strong);
   border-radius: 24px;
-  padding: 24px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
   position: relative;
-}
-
-.control-panel form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
 label {
@@ -134,24 +128,21 @@ textarea {
   color: inherit;
 }
 
-.api-key-row,
 .search-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
   gap: 12px;
 }
 
-.api-key-row input,
 .search-row input {
   padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: var(--bg-subtle);
   color: var(--text-primary);
+  width: 100%;
 }
 
-.api-key-row button,
-.search-row button,
+.search-form button,
 .nav-button {
   padding: 12px 18px;
   border-radius: 12px;
@@ -163,8 +154,7 @@ textarea {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.api-key-row button:disabled,
-.search-row button:disabled,
+.search-form button:disabled,
 .nav-button:disabled {
   background: #2c2c2c;
   color: var(--text-secondary);
@@ -172,38 +162,16 @@ textarea {
   box-shadow: none;
 }
 
-.api-key-row button:hover:not(:disabled),
-.search-row button:hover:not(:disabled),
+.search-form button:hover:not(:disabled),
 .nav-button:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 12px 25px rgba(255, 65, 54, 0.35);
 }
 
-.remember-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.helper-text {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
-}
-
-.api-status {
-  min-height: 1.3em;
-  font-size: 0.9rem;
-  color: var(--accent-soft);
-}
-
 .search-options {
   display: flex;
   gap: 14px;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .search-options label {
@@ -220,6 +188,47 @@ textarea {
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: var(--bg-subtle);
   color: var(--text-primary);
+}
+
+.search-panel {
+  gap: 24px;
+  min-height: 0;
+}
+
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-form button {
+  align-self: flex-start;
+}
+
+.search-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.search-helper {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.results-card {
+  background: var(--bg-subtle);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
 }
 
 .results-header {
@@ -245,8 +254,11 @@ textarea {
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .result-card {
@@ -295,10 +307,6 @@ textarea {
   gap: 4px;
   color: var(--text-secondary);
   font-size: 0.85rem;
-}
-
-.player-panel {
-  gap: 20px;
 }
 
 .player-frame {
@@ -385,22 +393,11 @@ textarea {
   }
 
   .applet-main {
-    grid-template-columns: 320px 1fr;
-    grid-template-areas:
-      "control results"
-      "player player";
-  }
-
-  .control-panel {
-    grid-area: control;
-  }
-
-  .results-panel {
-    grid-area: results;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .player-panel {
-    grid-area: player;
+    order: -1;
   }
 }
 
@@ -409,10 +406,12 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  .control-panel,
-  .results-panel,
   .player-panel {
     padding: 20px;
+  }
+
+  .search-panel {
+    padding: 24px;
   }
 
   .search-options {
@@ -436,9 +435,8 @@ textarea {
     align-items: flex-start;
   }
 
-  .api-key-row,
   .search-row {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 
   .applet-main {
