@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EchoTape Recorder</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="title-block">
+          <h1>EchoTape Recorder</h1>
+          <p>
+            A studio-fresh tribute to Windows Sound Recorder &mdash; capture voice notes,
+            live memos, and sonic postcards with waveform markers and take management.
+          </p>
+        </div>
+        <a class="close-button" href="../../index.html" aria-label="Return to dashboard">×</a>
+      </header>
+
+      <main class="app-main">
+        <section class="control-panel" aria-label="Recording controls">
+          <div class="transport">
+            <button id="recordButton" class="primary" type="button">
+              <span class="led"></span>
+              Start Capture
+            </button>
+            <button id="pauseButton" type="button" disabled>Pause</button>
+            <button id="resumeButton" type="button" disabled>Resume</button>
+            <button id="stopButton" type="button" disabled>Finish Take</button>
+          </div>
+          <div class="status-cluster">
+            <div class="status-line">
+              <span class="status-indicator" id="statusIndicator">Idle</span>
+              <span class="timer" id="timerDisplay" aria-live="polite">00:00.0</span>
+            </div>
+            <div class="level-meter" aria-hidden="true">
+              <span class="meter-fill" id="levelFill"></span>
+            </div>
+            <div class="capture-modes">
+              <label>
+                <input type="checkbox" id="focusModeToggle" />
+                Focus boost
+              </label>
+              <label>
+                <input type="checkbox" id="roomToneToggle" checked />
+                Room tone blend
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="waveform-card" aria-label="Waveform preview and markers">
+          <div class="waveform-header">
+            <h2>Live Waveform</h2>
+            <div class="marker-controls">
+              <input
+                id="markerNoteInput"
+                type="text"
+                placeholder="Optional marker note"
+                maxlength="40"
+                aria-label="Marker note"
+              />
+              <button id="dropMarkerButton" type="button" disabled>Drop Marker</button>
+            </div>
+          </div>
+          <canvas id="waveformCanvas" width="900" height="220" role="img" aria-label="Live audio waveform"></canvas>
+          <ul id="liveMarkers" class="marker-timeline" aria-live="polite"></ul>
+        </section>
+
+        <section class="takes-panel" aria-label="Captured takes">
+          <div class="takes-header">
+            <h2>Take Library</h2>
+            <label class="import-control">
+              Import audio
+              <input type="file" id="importInput" accept="audio/*" />
+            </label>
+          </div>
+          <p class="takes-subtitle">
+            Each take keeps its own waveform markers so you can revisit moments without scrubbing guesswork.
+          </p>
+          <div id="takesList" class="takes-list" role="list"></div>
+        </section>
+
+        <section class="reference-panel" aria-label="Reference information">
+          <h2>Why EchoTape?</h2>
+          <ul>
+            <li>
+              Built as a respectful remix of the minimalist <strong>Windows Sound Recorder</strong>, but with timeline markers,
+              take notes, and lossless exports.
+            </li>
+            <li>
+              Focus boost softly lifts quieter passages while room tone blend keeps ambience consistent across edits.
+            </li>
+            <li>
+              Waveform rendering uses the Web Audio API so you can see energy and pacing as you capture it.
+            </li>
+            <li>
+              Everything runs locally in your browser &mdash; perfect for podcast intros, user research quotes, or memory-keeping.
+            </li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
