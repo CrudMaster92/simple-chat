@@ -23,6 +23,14 @@ const wallpaperList = document.querySelector('[data-role="wallpaper-list"]');
 const wallpaperStatus = document.querySelector('[data-role="wallpaper-status"]');
 const wallpaperUpload = document.querySelector('[data-role="wallpaper-upload"]');
 const wallpaperClear = document.querySelector('[data-role="wallpaper-clear"]');
+const osShell = document.querySelector('[data-role="os-shell"]');
+const osWindow = document.querySelector('[data-role="os-window"]');
+const osTitle = document.querySelector('[data-role="os-title"]');
+const osIconSlot = document.querySelector('[data-role="os-icon"]');
+const osFrame = document.querySelector('[data-role="os-frame"]');
+const osMinimizeButton = document.querySelector('[data-action="minimize"]');
+const osCloseButton = document.querySelector('[data-action="close"]');
+const taskbarSessions = document.querySelector('[data-role="taskbar-sessions"]');
 
 const shortcutButtonMap = new Map();
 const deleteRevealTimers = new WeakMap();
@@ -119,6 +127,13 @@ const state = {
   isCustomWallpaper: false,
 };
 
+const osState = {
+  current: null,
+  minimized: false,
+};
+
+let activeTaskbarButton = null;
+
 function updateClock() {
   if (!clockDisplay) return;
   const now = new Date();
@@ -129,6 +144,173 @@ function updateClock() {
 
 setInterval(updateClock, 30_000);
 updateClock();
+
+function normalizeAppletRecord(record) {
+  if (!record || typeof record.entryUrl !== 'string' || !record.entryUrl) {
+    return null;
+  }
+  const name = typeof record.name === 'string' && record.name.trim() ? record.name.trim() : 'Applet';
+  return {
+    slug: record.slug ?? record.entryUrl,
+    name,
+    entryUrl: record.entryUrl,
+    iconUrl: record.iconUrl ?? null,
+    emoji: record.emoji ?? fallbackGlyph(name),
+  };
+}
+
+function updateOsChrome(record) {
+  if (osTitle) {
+    osTitle.textContent = record.name;
+  }
+  if (osWindow) {
+    osWindow.setAttribute('aria-label', `${record.name} window`);
+  }
+  if (osFrame) {
+    osFrame.title = `${record.name} applet`;
+  }
+  if (osIconSlot) {
+    osIconSlot.replaceChildren();
+    const icon = createIconElement({
+      iconUrl: record.iconUrl,
+      emoji: record.emoji,
+      label: record.name,
+      className: 'os-window__icon-visual',
+    });
+    osIconSlot.appendChild(icon);
+  }
+}
+
+function updateTaskbarSessionButton() {
+  if (!taskbarSessions) return;
+  taskbarSessions.replaceChildren();
+  if (!osState.current) {
+    activeTaskbarButton = null;
+    return;
+  }
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'taskbar__session';
+  button.dataset.slug = osState.current.slug;
+  const actionVerb = osState.minimized ? 'Restore' : 'Minimize';
+  const actionLabel = `${actionVerb} ${osState.current.name}`;
+  button.title = actionLabel;
+  button.setAttribute('aria-label', actionLabel);
+  button.setAttribute('aria-pressed', String(!osState.minimized));
+  if (osState.minimized) {
+    button.classList.add('is-minimized');
+  }
+  button.addEventListener('click', () => {
+    if (osState.minimized) {
+      restoreActiveApplet();
+    } else {
+      minimizeActiveApplet();
+    }
+  });
+
+  const icon = createIconElement({
+    iconUrl: osState.current.iconUrl,
+    emoji: osState.current.emoji,
+    label: osState.current.name,
+    className: 'taskbar__session-icon',
+  });
+  const label = document.createElement('span');
+  label.className = 'taskbar__session-label';
+  label.textContent = osState.current.name;
+
+  button.append(icon, label);
+  taskbarSessions.appendChild(button);
+  activeTaskbarButton = button;
+}
+
+function minimizeActiveApplet() {
+  if (!osShell || !osState.current) return;
+  osState.minimized = true;
+  osShell.classList.add('is-minimized');
+  osShell.setAttribute('aria-hidden', 'true');
+  updateTaskbarSessionButton();
+  requestAnimationFrame(() => {
+    activeTaskbarButton?.focus();
+  });
+}
+
+function restoreActiveApplet() {
+  if (!osShell || !osState.current) return;
+  osState.minimized = false;
+  osShell.classList.add('is-active');
+  osShell.classList.remove('is-minimized');
+  osShell.setAttribute('aria-hidden', 'false');
+  updateTaskbarSessionButton();
+  requestAnimationFrame(() => {
+    try {
+      osFrame?.contentWindow?.focus();
+    } catch (error) {
+      if (osFrame instanceof HTMLElement) {
+        osFrame.focus();
+      }
+    }
+  });
+}
+
+function closeActiveApplet() {
+  if (!osState.current) return;
+  osState.current = null;
+  osState.minimized = false;
+  if (osShell) {
+    osShell.classList.remove('is-active', 'is-minimized');
+    osShell.setAttribute('aria-hidden', 'true');
+  }
+  if (osTitle) {
+    osTitle.textContent = '';
+  }
+  if (osIconSlot) {
+    osIconSlot.replaceChildren();
+  }
+  if (osWindow) {
+    osWindow.removeAttribute('aria-label');
+  }
+  if (osFrame) {
+    osFrame.src = 'about:blank';
+    osFrame.title = '';
+  }
+  updateTaskbarSessionButton();
+  startButton?.focus();
+}
+
+function launchApplet(record) {
+  const normalized = normalizeAppletRecord(record);
+  if (!normalized) return;
+  const isSameApplet = osState.current?.slug === normalized.slug;
+  osState.current = normalized;
+  osState.minimized = false;
+
+  if (osShell) {
+    osShell.classList.add('is-active');
+    osShell.classList.remove('is-minimized');
+    osShell.setAttribute('aria-hidden', 'false');
+  }
+
+  const currentSrc = osFrame?.getAttribute('src');
+  if (osFrame && (!isSameApplet || !currentSrc || currentSrc === 'about:blank')) {
+    osFrame.src = normalized.entryUrl;
+  }
+
+  updateOsChrome(normalized);
+  updateTaskbarSessionButton();
+  toggleStartMenu(false);
+  allAppsPanel?.classList.remove('is-open');
+  allAppsPanel?.setAttribute('aria-hidden', 'true');
+
+  requestAnimationFrame(() => {
+    try {
+      osFrame?.contentWindow?.focus();
+    } catch (error) {
+      if (osFrame instanceof HTMLElement) {
+        osFrame.focus();
+      }
+    }
+  });
+}
 
 function toggleStartMenu(force) {
   if (!startMenu) return;
@@ -170,6 +352,18 @@ function handleOutsideClick(event) {
 }
 
 document.addEventListener('click', handleOutsideClick);
+
+osMinimizeButton?.addEventListener('click', () => {
+  if (osState.current) {
+    minimizeActiveApplet();
+  }
+});
+
+osCloseButton?.addEventListener('click', () => {
+  if (osState.current) {
+    closeActiveApplet();
+  }
+});
 
 startButton?.addEventListener('click', () => toggleStartMenu());
 startClose?.addEventListener('click', () => toggleStartMenu(false));
@@ -376,8 +570,7 @@ function createPinnedItem(record) {
   } else {
     button.title = `Open ${record.name}`;
     button.addEventListener('click', () => {
-      window.open(record.entryUrl, '_blank', 'noopener');
-      toggleStartMenu(false);
+      launchApplet(record);
     });
   }
 
@@ -411,8 +604,7 @@ function createMenuItem(record) {
   } else {
     button.title = `Open ${record.name}`;
     button.addEventListener('click', () => {
-      window.open(record.entryUrl, '_blank', 'noopener');
-      toggleStartMenu(false);
+      launchApplet(record);
     });
   }
 
@@ -602,7 +794,7 @@ function createShortcut(record) {
   } else {
     shortcut.title = `Open ${record.name}`;
     const openShortcut = () => {
-      window.open(record.entryUrl, '_blank', 'noopener');
+      launchApplet(record);
     };
     shortcut.addEventListener('dblclick', openShortcut);
     shortcut.addEventListener('keydown', (event) => {
@@ -894,10 +1086,12 @@ function createTile(slug, metadata, resolvedEntryUrl, iconUrl) {
   const openLink = document.createElement('a');
   openLink.className = 'tile__action tile__action--primary';
   openLink.href = resolvedEntryUrl;
-  openLink.target = '_blank';
-  openLink.rel = 'noopener noreferrer';
   openLink.setAttribute('aria-label', `Open ${metadata.name}`);
   openLink.textContent = 'Open';
+  openLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    launchApplet(fallbackRecord);
+  });
 
   actions.append(shortcutButton, openLink);
   tile.appendChild(actions);

@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Applet Desktop</title>
+    <link rel="stylesheet" href="./os.css" />
     <style>
       :root {
         color-scheme: light;
@@ -922,6 +923,41 @@
       <section class="desktop__shortcuts" data-role="shortcut-container" aria-label="Desktop shortcuts"></section>
     </div>
 
+    <div class="os-shell" data-role="os-shell" aria-hidden="true">
+      <div class="os-shell__backdrop" data-role="os-backdrop"></div>
+      <section class="os-window" data-role="os-window" role="group" aria-live="polite">
+        <header class="os-window__titlebar">
+          <div class="os-window__identity">
+            <div class="os-window__icon" data-role="os-icon" aria-hidden="true"></div>
+            <h1 class="os-window__title" data-role="os-title"></h1>
+          </div>
+          <div class="os-window__actions">
+            <button
+              type="button"
+              class="os-window__action"
+              data-action="minimize"
+              aria-label="Minimize window"
+              title="Minimize"
+            >
+              &minus;
+            </button>
+            <button
+              type="button"
+              class="os-window__action os-window__action--close"
+              data-action="close"
+              aria-label="Close window"
+              title="Close"
+            >
+              ✕
+            </button>
+          </div>
+        </header>
+        <div class="os-window__content">
+          <iframe data-role="os-frame" title="" tabindex="-1" loading="lazy"></iframe>
+        </div>
+      </section>
+    </div>
+
     <div class="start-menu" data-role="start-menu" aria-hidden="true">
       <div class="start-menu__panel">
         <header class="start-menu__header">
@@ -1003,6 +1039,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 5L20.5 19l-5-5Zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Z" /></svg>
         <input type="search" placeholder="Search apps" autocomplete="off" data-role="taskbar-search" />
       </label>
+      <div class="taskbar__sessions" data-role="taskbar-sessions" aria-live="polite" aria-label="Active applet"></div>
       <button class="taskbar__settings" type="button" data-role="settings-toggle">
         <span aria-hidden="true">⚙️</span>
         <span class="taskbar__settings-label">Settings</span>
