@@ -43,5 +43,6 @@
   "trickster-postmaster": "./applets/trickster-postmaster/applet.json",
   "glyphsmith": "./applets/glyphsmith/applet.json",
   "pocket-terrarium": "./applets/pocket-terrarium/applet.json",
-  "adaptive-drift-biorealm": "./applets/adaptive-drift-biorealm/applet.json"
+  "adaptive-drift-biorealm": "./applets/adaptive-drift-biorealm/applet.json",
+  "snes-emulator-studio": "./applets/snes-emulator-studio/applet.json"
 }

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNES Emulator Studio</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="studio" aria-labelledby="appTitle">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Close SNES Emulator Studio"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="studio__intro">
+        <p class="intro__badge">Cartridge Uploader</p>
+        <h1 id="appTitle">SNES Emulator Studio</h1>
+        <p class="intro__lede">
+          Boot your own Super Nintendo classics directly in the browser using the EmulatorJS runtime.
+          Drop in a ROM, tweak the view, and resume exactly where you left off.
+        </p>
+      </header>
+
+      <section class="studio__layout" aria-label="SNES emulator workspace">
+        <section class="panel panel--load" aria-labelledby="loadTitle">
+          <h2 id="loadTitle">Load a ROM</h2>
+          <p class="panel__hint">
+            Supports <code>.smc</code>, <code>.sfc</code>, and zipped archives.
+            Uploads never leave your browser and stream directly into the emulator.
+          </p>
+
+          <label class="dropzone" for="romInput" id="dropzone" aria-live="polite">
+            <input
+              id="romInput"
+              type="file"
+              accept=".smc,.sfc,.zip,.7z,.rar,.fig"
+              aria-label="Upload a SNES ROM"
+            />
+            <span class="dropzone__prompt">Click to select or drop a ROM file</span>
+            <span class="dropzone__sub">Up to 32&nbsp;MB supported</span>
+          </label>
+
+          <div class="status" role="status" id="statusMessage">Waiting for a ROM…</div>
+
+          <div class="tips" aria-label="Keyboard reference">
+            <h3>Keyboard Quick Reference</h3>
+            <ul>
+              <li><span>Enter</span><span>Start</span></li>
+              <li><span>Shift</span><span>Select</span></li>
+              <li><span>Z / X</span><span>B / A</span></li>
+              <li><span>A / S</span><span>Y / X</span></li>
+              <li><span>Arrow Keys</span><span>D-Pad</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="panel panel--play" aria-labelledby="playTitle">
+          <div class="panel__heading">
+            <h2 id="playTitle">Emulator View</h2>
+            <div class="view-controls" role="group" aria-label="View controls">
+              <button type="button" id="fullscreenBtn">Fullscreen</button>
+              <button type="button" id="resetBtn">Reset</button>
+              <button type="button" id="muteBtn">Mute</button>
+            </div>
+          </div>
+
+          <div class="viewport" id="emulatorViewport" aria-live="polite">
+            <div class="viewport__placeholder" id="placeholder">
+              <p>Upload a ROM to initialize the SNES core.</p>
+              <p class="placeholder__hint">Emulation boots automatically as soon as a file is selected.</p>
+            </div>
+          </div>
+
+          <div class="note" id="compatibilityNote">
+            EmulatorJS downloads its core assets from their CDN when first used.
+            Ensure you have a stable connection for the initial boot.
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      window.EJS_player = "#emulatorViewport";
+      window.EJS_core = "snes";
+      window.EJS_pathtodata = "https://cdn.emulatorjs.com/latest/data/";
+      window.EJS_backgroundColor = "#0a1c2b";
+      window.EJS_gameName = "Custom Upload";
+      window.EJS_startOnLoaded = false;
+    </script>
+    <script src="https://cdn.emulatorjs.com/latest/loader.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
