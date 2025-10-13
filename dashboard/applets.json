@@ -49,5 +49,6 @@
   "rooftop-apiary-planner": "./applets/rooftop-apiary-planner/applet.json",
   "windchime-pattern-composer": "./applets/windchime-pattern-composer/applet.json",
   "seismic-ripple-atlas": "./applets/seismic-ripple-atlas/applet.json",
-  "maestro-clock-pavilion": "./applets/maestro-clock-pavilion/applet.json"
+  "maestro-clock-pavilion": "./applets/maestro-clock-pavilion/applet.json",
+  "canvas-remix-studio": "./applets/canvas-remix-studio/applet.json"
 }
