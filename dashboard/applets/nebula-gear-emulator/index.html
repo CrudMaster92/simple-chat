@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nebula Gear Emulator</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="emulator" aria-labelledby="appTitle">
+      <header class="emulator__header">
+        <div class="header__text">
+          <p class="header__badge">Dev Kit Series // XE-7 Emulator</p>
+          <h1 id="appTitle">Nebula Gear Emulator</h1>
+          <p class="header__lede">
+            Slot experimental ROM cartridges, flip the power gate, and explore two prototype worlds inside a retro-futuristic handheld shell.
+          </p>
+        </div>
+        <a class="emulator__close" href="../../index.html" aria-label="Return to dashboard">✕</a>
+      </header>
+
+      <main class="emulator__body">
+        <section class="emulator__device" aria-label="Nebula Gear emulator device">
+          <div class="device__shell">
+            <div class="device__screen">
+              <canvas
+                id="emulatorScreen"
+                width="320"
+                height="240"
+                role="img"
+                aria-label="Nebula Gear emulator display"
+              ></canvas>
+              <div class="device__status" aria-live="polite">
+                <div id="moduleTitle" class="status__title">Awaiting Cartridge</div>
+                <div id="moduleStatus" class="status__text">Toggle power and slot a cartridge to begin.</div>
+              </div>
+            </div>
+            <div class="device__controls" role="group" aria-label="Emulator controls">
+              <button id="powerButton" type="button" class="control control--primary">Power On</button>
+              <button id="resetButton" type="button" class="control" disabled>Reset Module</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="emulator__library" aria-label="Cartridge library">
+          <h2>Cartridge Library</h2>
+          <p class="library__hint">Each ROM boots a sandbox tuned for the Nebula Gear dev kit.</p>
+          <div id="moduleList" class="library__list" role="list"></div>
+          <div class="library__info" aria-live="polite">
+            <h3 id="infoName">No cartridge loaded</h3>
+            <p id="infoDescription">Select a module to review its pitch and controls.</p>
+            <ul id="infoControls" class="info__controls"></ul>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
