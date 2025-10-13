@@ -50,3 +50,4 @@
 - Parallax Bloom Atelier – Choreograph a drifting bouquet of 3D orbiters, blend hues, and weave parallax trails through a luminous depthfield.
 - Nebula Gear Emulator – Boot a prototype handheld shell, swap experimental ROM cartridges, and tackle twin microgames born from an imagined dev lab.
 - Vector Bloom Forge – Sculpt luminous vector petals by dragging nodes to match shimmering silhouettes and chase precision streaks.
+- Bang Bang Beat Barrage – Orchestrate dueling rhythm cannons, slam beats on cue, and trigger thunder slams to keep the crowd voltage spiking.
