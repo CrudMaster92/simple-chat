@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">EchoTape Recorder Icon</title>
+  <desc id="desc">Stylized tape reel with waveform center</desc>
+  <defs>
+    <linearGradient id="outer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a5f" />
+      <stop offset="100%" stop-color="#0d1b2a" />
+    </linearGradient>
+    <linearGradient id="inner" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="26" ry="26" fill="url(#outer)" />
+  <circle cx="60" cy="60" r="34" fill="none" stroke="#0ea5e9" stroke-width="4" opacity="0.6" />
+  <circle cx="60" cy="60" r="22" fill="none" stroke="#38bdf8" stroke-width="6" opacity="0.75" />
+  <rect x="32" y="57" width="56" height="6" rx="3" fill="#05111d" opacity="0.8" />
+  <path d="M32 60c8-14 16 12 24 0s16 12 24 0 16 12 24 0" fill="none" stroke="url(#inner)" stroke-width="6" stroke-linecap="round" />
+  <circle cx="60" cy="60" r="6" fill="#05111d" />
+  <circle cx="60" cy="60" r="4" fill="#38bdf8" />
+</svg>

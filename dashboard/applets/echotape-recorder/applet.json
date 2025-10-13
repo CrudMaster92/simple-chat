@@ -1,0 +1,12 @@
+{
+  "slug": "echotape-recorder",
+  "name": "EchoTape Recorder",
+  "description": "Modernized Windows Sound Recorder with live waveform markers, focus boost, and a take library.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2025-10-13",
+  "tags": ["audio", "productivity", "retro"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
