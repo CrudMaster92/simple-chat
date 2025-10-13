@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adaptive Drift Biorealm</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Inconsolata:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-frame">
+      <button class="close-button" type="button" aria-label="Return to dashboard" onclick="window.location.href='../../index.html'">
+        ×
+      </button>
+      <header class="app-header">
+        <div class="title-block">
+          <h1>Adaptive Drift Biorealm</h1>
+          <p>
+            Seed a cohort of proto-creatures, tune their world, and watch mutation currents sculpt survivors in real time.
+          </p>
+        </div>
+        <div class="header-badges">
+          <span class="badge">Evolution Playground</span>
+          <span class="badge badge--pulse" id="era-label">Era 0</span>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <section class="control-panel" aria-label="Simulation controls">
+          <h2>World Parameters</h2>
+
+          <label class="field">
+            <span>Climate Mode</span>
+            <select id="climate-select">
+              <option value="verdant">Verdant Bloom</option>
+              <option value="arid">Arid Ember</option>
+              <option value="frost">Frost Drift</option>
+              <option value="toxic">Toxic Surge</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Mutation Rate</span>
+            <input id="mutation-range" type="range" min="0" max="1" step="0.05" value="0.2" />
+            <output id="mutation-output">20%</output>
+          </label>
+
+          <label class="field">
+            <span>Food Pulse Frequency</span>
+            <input id="food-range" type="range" min="0.2" max="1.5" step="0.1" value="0.8" />
+            <output id="food-output">0.8x</output>
+          </label>
+
+          <label class="field">
+            <span>Population Cap</span>
+            <input id="cap-input" type="number" min="10" max="120" value="60" />
+          </label>
+
+          <div class="button-row">
+            <button id="pulse-event" class="action">Trigger Cataclysm</button>
+            <button id="reset-btn" class="secondary">Re-seed Biosphere</button>
+          </div>
+
+          <article class="climate-notes" id="climate-notes" aria-live="polite"></article>
+        </section>
+
+        <section class="sim-panel" aria-label="Evolution simulator">
+          <canvas id="biome-canvas" width="720" height="500" role="img" aria-label="Evolution field"></canvas>
+          <div class="stat-deck">
+            <div class="stat-card">
+              <h3>Population</h3>
+              <p id="population">0</p>
+              <span id="lineage-count" class="stat-note">Lineages: 0</span>
+            </div>
+            <div class="stat-card">
+              <h3>Trait Drift</h3>
+              <dl id="trait-breakdown"></dl>
+            </div>
+            <div class="stat-card">
+              <h3>Era Report</h3>
+              <p id="era-status">Awaiting simulation...</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="log-panel" aria-label="Evolution log">
+          <h2>Mutation Chronicle</h2>
+          <ul id="log-stream"></ul>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

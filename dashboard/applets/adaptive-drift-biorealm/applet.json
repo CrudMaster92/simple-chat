@@ -1,0 +1,12 @@
+{
+  "slug": "adaptive-drift-biorealm",
+  "name": "Adaptive Drift Biorealm",
+  "description": "Guide climates and mutation currents as proto-creatures evolve within a living biome playground.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-05",
+  "tags": ["simulation", "creative", "play"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
