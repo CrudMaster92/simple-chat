@@ -1,9 +1,15 @@
+:root {
+  --os-window-margin: 1.75rem;
+  --taskbar-safe-area: 0px;
+}
+
 .os-shell {
   position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 3rem 2rem 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem calc(5rem + var(--taskbar-safe-area));
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -30,6 +36,12 @@
   opacity: 1;
 }
 
+.os-shell.is-fullscreen {
+  align-items: flex-start;
+  padding: var(--os-window-margin);
+  padding-bottom: calc(var(--os-window-margin) + var(--taskbar-safe-area));
+}
+
 .os-shell.is-minimized {
   pointer-events: none;
 }
@@ -53,6 +65,14 @@
   opacity: 0;
   transition: transform 220ms ease, opacity 180ms ease;
   pointer-events: auto;
+}
+
+.os-shell.is-fullscreen .os-window {
+  width: calc(100vw - var(--os-window-margin) * 2);
+  max-width: none;
+  height: calc(100vh - var(--taskbar-safe-area) - var(--os-window-margin) * 2);
+  max-height: none;
+  border-radius: 18px;
 }
 
 .os-shell.is-active .os-window {
