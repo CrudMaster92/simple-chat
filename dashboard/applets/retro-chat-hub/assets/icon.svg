@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Retro Chat Hub Icon</title>
+  <desc id="desc">Stylized speech bubble with pixel spark</desc>
+  <rect width="64" height="64" rx="12" fill="#0b1c26" />
+  <path d="M14 14h36a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H28l-10 10v-10h-4a6 6 0 0 1-6-6V20a6 6 0 0 1 6-6z" fill="#9de64e" />
+  <path d="M38 18h8v8h-8zM46 26h8v8h-8z" fill="#ff8b3d" />
+</svg>

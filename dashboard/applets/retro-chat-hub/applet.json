@@ -1,0 +1,12 @@
+{
+  "slug": "retro-chat-hub",
+  "name": "Retro Chat Hub",
+  "description": "Stylized ChatGPT homage with OpenAI/Gemini selectors, image & voice tools, and 8-bit flair.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-08",
+  "tags": ["chat", "productivity", "retro"],
+  "author": "Retro Chat Collective",
+  "permissions": []
+}

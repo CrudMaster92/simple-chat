@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retro Chat Hub</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="retro-chat" data-provider="openai">
+      <header class="retro-chat__header">
+        <div class="retro-chat__identity">
+          <img src="./assets/icon.svg" alt="Retro Chat Hub icon" class="retro-chat__icon" />
+          <div>
+            <h1 class="retro-chat__title">Retro Chat Hub</h1>
+            <p class="retro-chat__subtitle">A pixel-flair studio for your favorite AI copilots.</p>
+          </div>
+        </div>
+        <p class="retro-chat__status" id="connectionStatus" role="status" aria-live="polite">Offline – add an API key to sync models.</p>
+        <a class="retro-chat__close" href="../../index.html" aria-label="Return to the dashboard">×</a>
+      </header>
+
+      <div class="retro-chat__layout">
+        <aside class="retro-chat__sidebar" aria-label="Saved chats">
+          <div class="sidebar__actions">
+            <button id="newChatButton" class="pixel-button pixel-button--primary">New chat</button>
+            <button id="clearAllButton" class="pixel-button" aria-label="Delete all saved chats">Clear all</button>
+          </div>
+          <div class="sidebar__memory-toggle">
+            <label class="toggle">
+              <input type="checkbox" id="memoryToggle" checked />
+              <span>Persistent memory</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="rememberKeysToggle" />
+              <span>Remember API keys</span>
+            </label>
+          </div>
+          <nav class="sidebar__list" id="conversationList" aria-live="polite"></nav>
+        </aside>
+
+        <section class="retro-chat__workspace">
+          <div class="provider-panel" aria-label="Model provider controls">
+            <div class="provider-panel__tabs" role="tablist">
+              <button role="tab" aria-selected="true" data-provider="openai" class="provider-tab">OpenAI</button>
+              <button role="tab" aria-selected="false" data-provider="gemini" class="provider-tab">Gemini</button>
+            </div>
+            <div class="provider-panel__settings">
+              <label class="provider-field">
+                <span class="provider-field__label">API key</span>
+                <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off" />
+              </label>
+              <div class="provider-field provider-field--button">
+                <button id="loadModelsButton" class="pixel-button">Refresh models</button>
+                <span id="modelStatus" class="provider-field__hint" aria-live="polite"></span>
+              </div>
+              <label class="provider-field">
+                <span class="provider-field__label">Model</span>
+                <select id="modelSelect" aria-label="Available models"></select>
+              </label>
+              <label class="provider-field">
+                <span class="provider-field__label">Temperature</span>
+                <input type="number" id="temperatureInput" min="0" max="2" step="0.1" value="0.7" />
+              </label>
+            </div>
+          </div>
+
+          <section class="memory-panel" aria-label="Conversation memory">
+            <div class="memory-panel__header">
+              <h2>Memory</h2>
+              <button id="editMemoryButton" class="pixel-button pixel-button--ghost">Edit</button>
+            </div>
+            <textarea id="memoryEditor" class="memory-panel__editor" rows="3" placeholder="Key facts we should remember..."></textarea>
+            <p id="memorySummary" class="memory-panel__summary">No memories captured yet.</p>
+          </section>
+
+          <section class="chat-panel" aria-label="Chat timeline">
+            <div class="chat-panel__header">
+              <div class="chat-panel__meta">
+                <span id="activeChatTitle">Untitled session</span>
+                <span id="chatMeta" class="chat-panel__meta-tag">0 messages</span>
+              </div>
+              <div class="chat-panel__indicators" id="typingIndicator" aria-live="polite"></div>
+            </div>
+            <div class="chat-panel__messages" id="messageList" aria-live="polite"></div>
+          </section>
+
+          <form class="composer" id="composer" autocomplete="off">
+            <div class="composer__inputs">
+              <label class="composer__voice" for="voiceButton">
+                <button type="button" id="voiceButton" class="pixel-button pixel-button--ghost">🎤 Voice</button>
+                <span id="voiceStatus" class="composer__hint" aria-live="polite"></span>
+              </label>
+              <label class="composer__upload" for="imageInput">
+                <input type="file" id="imageInput" accept="image/*" multiple />
+                <span class="pixel-button pixel-button--ghost">🖼️ Image</span>
+              </label>
+              <textarea id="messageInput" rows="3" placeholder="Send a message"></textarea>
+            </div>
+            <div class="composer__footer">
+              <div class="composer__attachments" id="attachmentPreview" aria-live="polite"></div>
+              <button type="submit" class="pixel-button pixel-button--primary">Send</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
