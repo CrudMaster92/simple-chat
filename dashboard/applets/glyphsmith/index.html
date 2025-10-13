@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glyphsmith</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="glyphsmith-shell" role="application" aria-label="Glyphsmith micro alphabet forge">
+      <a class="close-applet" href="../../index.html" aria-label="Return to app list">✕</a>
+      <header class="glyphsmith-header">
+        <div class="title-block">
+          <h1>Glyphsmith</h1>
+          <p>Craft a custom 5×7 glyph set and export it as a sprite sheet.</p>
+        </div>
+        <div class="preset-picker">
+          <label for="presetSelect">Starter alphabet:</label>
+          <select id="presetSelect" aria-label="Select a starter alphabet"></select>
+        </div>
+      </header>
+
+      <main class="glyphsmith-main">
+        <section class="glyph-column" aria-label="Glyph selection">
+          <h2>Letters</h2>
+          <div class="letter-grid" id="letterGrid" role="tablist" aria-label="Alphabet letters"></div>
+          <div class="glyph-actions">
+            <button id="clearGlyph" type="button">Clear glyph</button>
+            <button id="invertGlyph" type="button">Invert</button>
+          </div>
+        </section>
+
+        <section class="editor-column" aria-label="Glyph editor">
+          <div class="editor-header">
+            <div class="glyph-label">
+              <span id="currentGlyphLabel">A</span>
+            </div>
+            <div class="tool-controls" role="toolbar" aria-label="Drawing tools">
+              <label>
+                <input type="radio" name="tool" value="draw" checked />
+                Pen
+              </label>
+              <label>
+                <input type="radio" name="tool" value="erase" />
+                Eraser
+              </label>
+            </div>
+            <div class="mirror-controls" role="group" aria-label="Symmetry controls">
+              <label>
+                <input type="checkbox" id="mirrorHorizontal" />
+                Mirror X
+              </label>
+              <label>
+                <input type="checkbox" id="mirrorVertical" />
+                Mirror Y
+              </label>
+            </div>
+          </div>
+
+          <div class="glyph-grid" id="editorGrid" role="grid" aria-label="Glyph editing grid"></div>
+
+          <div class="nudge-controls" role="group" aria-label="Nudge glyph">
+            <button type="button" data-direction="up">↑</button>
+            <div class="nudge-middle">
+              <button type="button" data-direction="left">←</button>
+              <button type="button" data-direction="down">↓</button>
+              <button type="button" data-direction="right">→</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="preview-column" aria-label="Preview and export">
+          <h2>Preview</h2>
+          <canvas id="previewCanvas" width="720" height="140" role="img" aria-label="Live preview of the custom glyphs"></canvas>
+          <p class="preview-text">“Sphinx of black quartz, judge my vow.”</p>
+          <div class="export-panel">
+            <button id="exportPng" type="button">Export PNG sprite</button>
+            <button id="exportJson" type="button">Export JSON map</button>
+            <button id="exportCss" type="button">Export CSS classes</button>
+          </div>
+          <div class="export-note" id="exportNote" aria-live="polite"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

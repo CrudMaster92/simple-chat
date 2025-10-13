@@ -40,5 +40,6 @@
   "signal-relay-playhouse": "./applets/signal-relay-playhouse/applet.json",
   "wiki-frame-carnival": "./applets/wiki-frame-carnival/applet.json",
   "echo-orchard": "./applets/echo-orchard/applet.json",
-  "trickster-postmaster": "./applets/trickster-postmaster/applet.json"
+  "trickster-postmaster": "./applets/trickster-postmaster/applet.json",
+  "glyphsmith": "./applets/glyphsmith/applet.json"
 }
