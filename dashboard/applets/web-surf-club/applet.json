@@ -1,0 +1,12 @@
+{
+  "slug": "web-surf-club",
+  "name": "Hyperlink Surf Club",
+  "description": "Spin curated web destinations, tune your pace dial, and drop postcard notes into a playful voyage log.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-09",
+  "tags": ["web", "exploration", "game"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
