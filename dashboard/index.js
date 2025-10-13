@@ -173,6 +173,20 @@ const PINNED_CONFIG = [
     emoji: '🗓️',
     categories: ['Utilities'],
   },
+  {
+    slug: 'youtube-search-theater',
+    label: 'YouTube Search Theater',
+    hint: 'Search and watch YouTube videos',
+    emoji: '📺',
+    categories: ['Creative'],
+  },
+  {
+    slug: 'wiki-frame-carnival',
+    label: 'Wiki Frame Carnival',
+    hint: 'Explore playful Wikipedia frames',
+    emoji: '📚',
+    categories: ['Utilities'],
+  },
 ];
 
 const WALLPAPERS = [
