@@ -54,5 +54,6 @@
   "circuit-sweep-analyst": "./applets/circuit-sweep-analyst/applet.json",
   "echotape-recorder": "./applets/echotape-recorder/applet.json",
   "serpent-sonata": "./applets/serpent-sonata/applet.json",
-  "pinball-mission-ops": "./applets/pinball-mission-ops/applet.json"
+  "pinball-mission-ops": "./applets/pinball-mission-ops/applet.json",
+  "harbor-ember-gambit": "./applets/harbor-ember-gambit/applet.json"
 }
