@@ -18,7 +18,6 @@
     chats: [],
     activeChatId: null,
     rememberKeys: false,
-    memoryEnabled: true,
     composerAttachments: [],
     typingTimer: null,
     voice: {
@@ -39,6 +38,51 @@
     },
   };
 
+  const STOPWORDS = new Set([
+    'that',
+    'with',
+    'have',
+    'about',
+    'your',
+    'from',
+    'there',
+    'their',
+    'would',
+    'could',
+    'should',
+    'just',
+    'really',
+    'this',
+    'then',
+    'into',
+    'been',
+    'were',
+    'will',
+    'what',
+    'when',
+    'where',
+    'which',
+    'while',
+    'after',
+    'before',
+    'because',
+    'again',
+    'once',
+    'even',
+    'also',
+    'like',
+    'thing',
+    'maybe',
+    'some',
+    'more',
+    'take',
+    'make',
+    'going',
+    'want',
+    'need',
+    'much',
+  ]);
+
   const elements = {};
 
   document.addEventListener('DOMContentLoaded', init);
@@ -57,7 +101,6 @@
     elements.newChatButton = document.getElementById('newChatButton');
     elements.clearAllButton = document.getElementById('clearAllButton');
     elements.conversationList = document.getElementById('conversationList');
-    elements.memoryToggle = document.getElementById('memoryToggle');
     elements.rememberKeysToggle = document.getElementById('rememberKeysToggle');
     elements.providerTabs = [...document.querySelectorAll('.provider-tab')];
     elements.apiKeyInput = document.getElementById('apiKeyInput');
@@ -65,9 +108,6 @@
     elements.modelStatus = document.getElementById('modelStatus');
     elements.modelSelect = document.getElementById('modelSelect');
     elements.temperatureInput = document.getElementById('temperatureInput');
-    elements.memoryEditor = document.getElementById('memoryEditor');
-    elements.memorySummary = document.getElementById('memorySummary');
-    elements.editMemoryButton = document.getElementById('editMemoryButton');
     elements.connectionStatus = document.getElementById('connectionStatus');
     elements.activeChatTitle = document.getElementById('activeChatTitle');
     elements.chatMeta = document.getElementById('chatMeta');
@@ -100,12 +140,6 @@
       const item = event.target.closest('[data-chat-id]');
       if (!item) return;
       selectChat(item.dataset.chatId);
-    });
-
-    elements.memoryToggle.addEventListener('change', () => {
-      state.memoryEnabled = elements.memoryToggle.checked;
-      persistSettings();
-      updateMemoryVisibility();
     });
 
     elements.rememberKeysToggle.addEventListener('change', () => {
@@ -150,8 +184,6 @@
       elements.temperatureInput.value = clamped.toFixed(1);
     });
 
-    elements.editMemoryButton.addEventListener('click', toggleMemoryEditor);
-
     elements.composer.addEventListener('submit', onSendMessage);
     elements.imageInput.addEventListener('change', onAttachmentsSelected);
 
@@ -182,7 +214,10 @@
     try {
       const savedChats = JSON.parse(localStorage.getItem(STORAGE_KEYS.chats) || '[]');
       if (Array.isArray(savedChats)) {
-        state.chats = savedChats;
+        state.chats = savedChats.map((chat) => {
+          const { memory, ...rest } = chat || {};
+          return { ...rest };
+        });
       }
     } catch (error) {
       console.error('Failed to load saved chats', error);
@@ -192,7 +227,6 @@
       const savedSettings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || '{}');
       if (savedSettings) {
         state.rememberKeys = Boolean(savedSettings.rememberKeys);
-        state.memoryEnabled = savedSettings.memoryEnabled !== false;
         if (state.rememberKeys) {
           state.openai.key = savedSettings.openaiKey || '';
           state.gemini.key = savedSettings.geminiKey || '';
@@ -229,7 +263,6 @@
   function persistSettings() {
     const payload = {
       rememberKeys: state.rememberKeys,
-      memoryEnabled: state.memoryEnabled,
       openaiSelectedModel: state.openai.selectedModel,
       geminiSelectedModel: state.gemini.selectedModel,
     };
@@ -245,7 +278,6 @@
   }
 
   function renderAll() {
-    elements.memoryToggle.checked = state.memoryEnabled;
     elements.rememberKeysToggle.checked = state.rememberKeys;
 
     if (state.provider === 'openai') {
@@ -260,7 +292,6 @@
     renderModelSelect();
     renderChatList();
     renderActiveChat();
-    updateMemoryVisibility();
     updateConnectionStatus();
   }
 
@@ -334,7 +365,6 @@
       elements.activeChatTitle.textContent = 'Untitled session';
       elements.chatMeta.textContent = '0 messages';
       elements.messageList.innerHTML = '';
-      elements.memorySummary.textContent = 'No memories captured yet.';
       return;
     }
 
@@ -372,21 +402,6 @@
       elements.messageList.append(bubble);
     });
 
-    elements.memorySummary.textContent = chat.memory?.trim() ? chat.memory : 'No memories captured yet.';
-    elements.memoryEditor.value = chat.memory || '';
-  }
-
-  function updateMemoryVisibility() {
-    const disabled = !state.memoryEnabled;
-    elements.memorySummary.style.opacity = disabled ? '0.5' : '1';
-    elements.editMemoryButton.disabled = disabled;
-    if (disabled) {
-      elements.memorySummary.dataset.pausedText = elements.memorySummary.textContent;
-      elements.memorySummary.textContent = 'Memory is paused for this workspace.';
-    } else {
-      const chat = state.chats.find((entry) => entry.id === state.activeChatId);
-      elements.memorySummary.textContent = chat?.memory?.trim() ? chat.memory : 'No memories captured yet.';
-    }
   }
 
   function switchProvider(provider) {
@@ -469,10 +484,6 @@
     renderActiveChat();
     updateChatMeta(chat);
 
-    if (state.memoryEnabled) {
-      autoUpdateMemory(chat, userMessage.content);
-    }
-
     simulateAssistantResponse(chat, userMessage);
   }
 
@@ -485,12 +496,11 @@
 
     const responseDelay = 800 + Math.random() * 1200;
     state.typingTimer = setTimeout(() => {
-      const summary = buildMemorySummary(chat);
       const [providerKey, modelId] = (userMessage.model || `${state.provider}:${getSelectedModel()}`).split(':');
       const providerName = providerKey === 'openai' ? 'OpenAI' : 'Gemini';
       const model = modelId || getSelectedModel();
       const temperature = parseFloat(elements.temperatureInput.value) || 0.7;
-      const reply = composeAssistantReply({ providerName, model, userMessage, summary, temperature });
+      const reply = composeAssistantReply({ chat, providerName, model, userMessage, temperature });
 
       const assistantMessage = {
         id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + 1),
@@ -502,9 +512,6 @@
       };
       chat.messages.push(assistantMessage);
       chat.updatedAt = assistantMessage.createdAt;
-      if (state.memoryEnabled) {
-        autoUpdateMemory(chat, assistantMessage.content);
-      }
       persistChats();
       if (state.activeChatId === chat.id) {
         renderActiveChat();
@@ -519,26 +526,94 @@
     }, responseDelay);
   }
 
-  function buildMemorySummary(chat) {
-    const memory = (chat.memory || '').trim();
-    if (memory) return memory;
-    const recentUserMessages = chat.messages.filter((msg) => msg.role === 'user').slice(-3);
-    if (!recentUserMessages.length) return '';
-    return recentUserMessages
-      .map((msg, index) => `${index + 1}. ${msg.content.slice(0, 140)}`)
-      .join('\n');
+  function composeAssistantReply({ chat, providerName, model, userMessage, temperature }) {
+    const text = (userMessage.content || '').trim();
+    const intro = `(${providerName} · ${model} · temp ${temperature.toFixed(1)})`;
+
+    if (!text) {
+      return `${intro} I'm tuned in and ready whenever you want to share something.`;
+    }
+
+    const lower = text.toLowerCase();
+    const greetingPattern = /\b(hi|hello|hey|hola|howdy)\b/;
+
+    if (greetingPattern.test(lower)) {
+      return `${intro} Hey there! I'm feeling extra neon tonight—what would you like to dive into?`;
+    }
+
+    if (lower.includes('thank')) {
+      return `${intro} Anytime! I'm glad the hub could help. What should we explore next?`;
+    }
+
+    if (lower.includes('how are you')) {
+      return `${intro} Running smooth and full of synth energy! How are things on your side?`;
+    }
+
+    const acknowledgement = pickRandom([
+      'Got it.',
+      'Understood.',
+      'I hear you.',
+      'Sounds good.',
+    ]);
+
+    const topic = extractTopic(text);
+    const summaryLine = topic
+      ? `${acknowledgement} It sounds like you're focusing on ${topic}.`
+      : `${acknowledgement} I’m following along with what you’re saying.`;
+
+    const previousUser = chat.messages
+      .filter((message) => message.role === 'user')
+      .slice(-2, -1)[0];
+
+    const contextLine = previousUser
+      ? `Thanks for building on your earlier point about "${truncate(previousUser.content, 60)}".`
+      : '';
+
+    const questionLike = /\?|\b(what|how|why|where|when|who|which|could|would|should)\b/.test(lower);
+
+    const guidanceLine = questionLike
+      ? pickRandom([
+          'One quick approach is to outline the goal, list the constraints, and tackle each piece step-by-step.',
+          'You might compare a couple of options side-by-side, jot down pros and cons, and follow the path that fits best.',
+          'Try sketching the outcome you want first—then work backward to the actions that get you there.',
+        ])
+      : pickRandom([
+          'If you’d like ideas, examples, or a plan, just say the word and we can spin one up.',
+          'Happy to brainstorm or break things down further whenever you’re ready.',
+          'Let me know if you want resources, bullet points, or a quick summary to keep things moving.',
+        ]);
+
+    const closing = pickRandom([
+      'What should we dig into next?',
+      'How can I support you further?',
+      'Ready when you are for the next detail.',
+    ]);
+
+    return [intro, summaryLine, contextLine, guidanceLine, closing]
+      .filter(Boolean)
+      .join(' ');
   }
 
-  function composeAssistantReply({ providerName, model, userMessage, summary, temperature }) {
-    const flavor = providerName === 'OpenAI' ? 'circuit-bright' : 'starlight';
-    const intro = `(${providerName} · ${model} · temp ${temperature.toFixed(1)})`;
-    const memoryLine = summary ? `I remember: ${summary.split('\n').slice(-2).join(' | ')}` : 'Nothing stored yet — starting fresh!';
-    const reflection = userMessage.content
-      ? `You said: "${userMessage.content.slice(0, 160)}"` + (userMessage.content.length > 160 ? '…' : '')
-      : 'You sent an attachment without text.';
-    const nextSteps = 'Here is a thoughtful reply crafted with retro flair.';
+  function extractTopic(text) {
+    return text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean)
+      .filter((word) => word.length > 3 && !STOPWORDS.has(word))
+      .slice(0, 3)
+      .join(' ');
+  }
 
-    return [intro, memoryLine, reflection, nextSteps, `Signature: ${flavor} assistant ready to continue.`].join('\n\n');
+  function truncate(text, maxLength = 80) {
+    if (!text) return '';
+    return text.length > maxLength ? `${text.slice(0, maxLength)}…` : text;
+  }
+
+  function pickRandom(list) {
+    if (!Array.isArray(list) || list.length === 0) return '';
+    const index = Math.floor(Math.random() * list.length);
+    return list[index];
   }
 
   function updateChatMeta(chat) {
@@ -547,46 +622,6 @@
       elements.activeChatTitle.textContent = chat.title || 'Untitled session';
     }
     renderChatList();
-  }
-
-  function autoUpdateMemory(chat, newMessage) {
-    const tokens = newMessage
-      .split(/[,.;!?:\n]/)
-      .map((piece) => piece.trim())
-      .filter(Boolean)
-      .slice(0, 4);
-    const memory = new Set((chat.memory || '').split('\n').filter(Boolean));
-    tokens.forEach((token) => {
-      if (token.length > 12) {
-        memory.add(token);
-      }
-    });
-    chat.memory = Array.from(memory).slice(0, 6).join('\n');
-    elements.memorySummary.textContent = chat.memory || 'No memories captured yet.';
-    persistChats();
-  }
-
-  function toggleMemoryEditor() {
-    const editing = elements.memoryEditor.style.display === 'block';
-    if (!editing) {
-      const chat = state.chats.find((entry) => entry.id === state.activeChatId);
-      if (!chat) return;
-      elements.memoryEditor.value = chat.memory || '';
-      elements.memoryEditor.style.display = 'block';
-      elements.memorySummary.style.display = 'none';
-      elements.editMemoryButton.textContent = 'Save';
-      elements.memoryEditor.focus();
-      return;
-    }
-
-    const chat = state.chats.find((entry) => entry.id === state.activeChatId);
-    if (!chat) return;
-    chat.memory = elements.memoryEditor.value.trim();
-    elements.memorySummary.textContent = chat.memory || 'No memories captured yet.';
-    elements.memoryEditor.style.display = 'none';
-    elements.memorySummary.style.display = 'block';
-    elements.editMemoryButton.textContent = 'Edit';
-    persistChats();
   }
 
   function selectChat(id) {
@@ -604,7 +639,6 @@
       updatedAt: now,
       title: 'New retro chat',
       messages: [],
-      memory: '',
     };
     state.chats.push(chat);
     state.activeChatId = chat.id;
