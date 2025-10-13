@@ -41,5 +41,6 @@
   "wiki-frame-carnival": "./applets/wiki-frame-carnival/applet.json",
   "echo-orchard": "./applets/echo-orchard/applet.json",
   "trickster-postmaster": "./applets/trickster-postmaster/applet.json",
-  "glyphsmith": "./applets/glyphsmith/applet.json"
+  "glyphsmith": "./applets/glyphsmith/applet.json",
+  "pocket-terrarium": "./applets/pocket-terrarium/applet.json"
 }

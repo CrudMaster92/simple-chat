@@ -1,0 +1,12 @@
+{
+  "slug": "pocket-terrarium",
+  "name": "Pocket Terrarium",
+  "description": "Paint cellular seeds, bias the weather, and watch a calm garden automaton bloom.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-05-09",
+  "tags": ["simulation", "creative", "cellular-automata"],
+  "author": "Pocket Terrarium Team",
+  "permissions": []
+}
