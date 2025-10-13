@@ -1,12 +1,12 @@
 {
   "slug": "signal-relay-playhouse",
-  "name": "Signal Relay Playhouse",
-  "description": "Stage tactile broadcast cues, shift lighting briefs, and stream curated YouTube artefacts.",
+  "name": "Signal Relay Studio",
+  "description": "Craft cinematic watch-party storyboards, adjust lighting briefs, and anchor sessions around curated YouTube relays.",
   "entry": "./index.html",
   "icon": "./assets/icon.svg",
-  "version": "1.0.0",
-  "lastUpdated": "2024-07-08",
-  "tags": ["media", "curation", "sound"],
+  "version": "2.0.0",
+  "lastUpdated": "2024-08-21",
+  "tags": ["media", "planning", "sound"],
   "author": "Signal Relay Collective",
   "permissions": []
 }

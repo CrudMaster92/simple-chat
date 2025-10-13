@@ -3,42 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Signal Relay Playhouse</title>
+    <title>Signal Relay Studio</title>
     <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="playhouse" aria-labelledby="appTitle">
+    <main class="studio" aria-labelledby="appTitle">
       <button
         class="close-button"
         type="button"
-        aria-label="Close Signal Relay Playhouse"
+        aria-label="Close Signal Relay Studio"
         onclick="window.location.href='../../index.html';"
       >
         ✕
       </button>
 
-      <header class="playhouse__intro">
-        <p class="playhouse__badge">Broadcast Ward · Issue 07</p>
-        <h1 id="appTitle">Signal Relay Playhouse</h1>
-        <p class="playhouse__lede">
-          Curate luminous transmissions, stage them with tactile lighting notes, and let the shared room pulse with a favorite YouTube artefact.
+      <header class="studio__intro">
+        <p class="studio__badge">Broadcast Architecture · Issue 11</p>
+        <h1 id="appTitle">Signal Relay Studio</h1>
+        <p class="studio__lede">
+          Rebuild your watch-party flow: pick a cinematic relay from YouTube, tint the room mood, and sketch the beats you want to spotlight.
         </p>
       </header>
 
-      <section class="playhouse__layout">
-        <section class="stage" aria-labelledby="stageTitle">
-          <div class="stage__header">
-            <h2 id="stageTitle">Broadcast Stage</h2>
-            <div class="stage__meta" aria-live="polite">
-              <span class="stage__label">Now transmitting:</span>
-              <span id="currentScene">—</span>
+      <section class="studio__layout">
+        <section class="stage" aria-labelledby="stageHeading">
+          <header class="stage__header">
+            <div class="stage__title">
+              <p id="collectionLabel" class="stage__collection">—</p>
+              <h2 id="stageHeading">Transmission Stage</h2>
             </div>
-          </div>
+            <button id="focusToggle" type="button" class="stage__focus">Enter focus mode</button>
+          </header>
 
           <div class="stage__screen">
             <iframe
-              id="sceneFrame"
+              id="stageFrame"
               title="Selected broadcast"
               src=""
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -46,65 +46,134 @@
             ></iframe>
           </div>
 
-          <div class="stage__controls">
-            <label for="sceneSelect" class="stage__control-label">Transmission cue</label>
-            <select id="sceneSelect" class="stage__select" aria-describedby="sceneDescription"></select>
-            <p id="sceneDescription" class="stage__description">Choose a cue to re-tone the playhouse.</p>
+          <div class="stage__toolbar">
+            <label for="transmissionSelect" class="stage__label">Broadcast stream</label>
+            <select id="transmissionSelect" class="stage__select" aria-describedby="stageDescription"></select>
+          </div>
 
-            <div class="stage__mood">
-              <p class="stage__mood-label">Stage mood</p>
-              <div id="moodSwatch" class="stage__mood-swatch" aria-hidden="true"></div>
-              <p id="moodText" class="stage__mood-text">—</p>
+          <p id="stageDescription" class="stage__summary">Pick a transmission to reshape the room palette.</p>
+
+          <dl class="stage__metrics">
+            <div class="metric">
+              <dt>Signal mood</dt>
+              <dd id="vibeValue">—</dd>
             </div>
-          </div>
+            <div class="metric">
+              <dt>Energy curve</dt>
+              <dd id="energyValue">—</dd>
+            </div>
+            <div class="metric">
+              <dt>Best use</dt>
+              <dd id="useValue">—</dd>
+            </div>
+            <div class="metric">
+              <dt>Instrumentation</dt>
+              <dd id="instrumentationValue">—</dd>
+            </div>
+          </dl>
+
+          <section class="chapters" aria-labelledby="chaptersTitle">
+            <div class="chapters__header">
+              <h3 id="chaptersTitle">Suggested chapters</h3>
+              <p class="chapters__hint">Jump to cues that keep the room synced.</p>
+            </div>
+            <ul id="chapterList" class="chapters__list" aria-live="polite"></ul>
+          </section>
         </section>
 
-        <section class="notes" aria-labelledby="noteTitle">
-          <div class="notes__header">
-            <h2 id="noteTitle">Cue Notebook</h2>
-            <p class="notes__hint">Sketch the room tone you felt during the screening.</p>
-          </div>
+        <aside class="studio__panels">
+          <section class="panel storyboard" aria-labelledby="storyboardTitle">
+            <div class="panel__header">
+              <h2 id="storyboardTitle">Storyboard builder</h2>
+              <p>Map the beats you want to amplify during the relay.</p>
+            </div>
 
-          <textarea
-            id="noteInput"
-            class="notes__field"
-            rows="4"
-            placeholder="The synth line blooms like…"
-            aria-label="Write a note about the transmission"
-          ></textarea>
-          <button id="addNote" type="button" class="notes__action">Archive Note</button>
-
-          <ul id="noteList" class="notes__list" aria-live="polite"></ul>
-        </section>
-
-        <aside class="playlist" aria-labelledby="playlistTitle">
-          <div class="playlist__header">
-            <h2 id="playlistTitle">Relay Cues</h2>
-            <p class="playlist__hint">Each cue remaps lighting, deck textures, and the screen above.</p>
-          </div>
-          <ul id="playlistItems" class="playlist__list"></ul>
-
-          <section class="playlist__details" aria-live="polite" aria-atomic="true">
-            <h3 class="playlist__details-title">Scene Details</h3>
-            <p id="sceneNotes">Select a transmission to view the staging brief.</p>
-            <dl class="playlist__telemetry">
-              <div class="telemetry__row">
-                <dt>Tempo notch</dt>
-                <dd id="tempoValue">—</dd>
+            <form id="segmentForm" class="segment-form">
+              <div class="segment-form__grid">
+                <label class="segment-field">
+                  <span>Timestamp</span>
+                  <input
+                    id="segmentTime"
+                    name="segmentTime"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    placeholder="mm:ss"
+                    pattern="\\d{1,2}:\\d{2}"
+                    required
+                  />
+                </label>
+                <label class="segment-field">
+                  <span>Beat title</span>
+                  <input
+                    id="segmentTitle"
+                    name="segmentTitle"
+                    type="text"
+                    maxlength="60"
+                    placeholder="Crowd swell intro"
+                    required
+                  />
+                </label>
+                <label class="segment-field">
+                  <span>Energy tag</span>
+                  <select id="segmentTone" name="segmentTone">
+                    <option value="Pulse">Pulse</option>
+                    <option value="Drift">Drift</option>
+                    <option value="Lift">Lift</option>
+                    <option value="Break">Break</option>
+                    <option value="Spotlight">Spotlight</option>
+                  </select>
+                </label>
               </div>
-              <div class="telemetry__row">
-                <dt>Lighting swatch</dt>
-                <dd id="lightingValue">—</dd>
+
+              <label class="segment-form__notes">
+                <span>Direction notes</span>
+                <textarea
+                  id="segmentNotes"
+                  name="segmentNotes"
+                  rows="2"
+                  placeholder="Dim panels, cue hush pads."
+                ></textarea>
+              </label>
+
+              <div class="segment-form__actions">
+                <button type="submit" class="button button--primary">Add to storyboard</button>
+                <button type="button" id="clearSegments" class="button button--ghost">Clear all</button>
               </div>
-              <div class="telemetry__row">
-                <dt>Best seat</dt>
-                <dd id="seatValue">—</dd>
+            </form>
+
+            <ul id="segmentList" class="segment-list" aria-live="polite"></ul>
+          </section>
+
+          <section class="panel palette" aria-labelledby="paletteTitle">
+            <div class="panel__header">
+              <h2 id="paletteTitle">Signal mood board</h2>
+              <p>Lighting anchors, pacing, and tactile cues adapt with each selection.</p>
+            </div>
+
+            <div id="paletteSwatch" class="palette__swatch" aria-hidden="true"></div>
+
+            <dl class="palette__metrics">
+              <div>
+                <dt>Lighting cue</dt>
+                <dd id="lightingCue">—</dd>
+              </div>
+              <div>
+                <dt>Room texture</dt>
+                <dd id="textureCue">—</dd>
+              </div>
+              <div>
+                <dt>Audience posture</dt>
+                <dd id="postureCue">—</dd>
               </div>
             </dl>
+
+            <ul id="cueList" class="palette__list"></ul>
           </section>
         </aside>
       </section>
     </main>
+
     <script src="./app.js" defer></script>
   </body>
 </html>

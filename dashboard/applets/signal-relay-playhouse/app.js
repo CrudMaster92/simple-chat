@@ -1,167 +1,378 @@
-const scenes = [
+const transmissions = [
   {
-    id: 'night-console',
-    title: 'Night Console Drift — Lofi Relay',
-    videoId: '5qap5aO4i9A',
-    description:
-      'Soft focus boards, evolving vinyl crackle, and a steady console glow for late edits or midnight journaling.',
-    mood: 'amber hush with blue undertones',
-    gradient: ['#12263a', '#3a7ca5'],
-    tempo: 'Lazy 72 bpm sway',
-    lighting: 'Desk lamps dimmed to 20%',
-    seat: 'Beanbag in the back corner'
+    id: 'tidal-lanterns',
+    title: 'Tidal Lanterns — Slow Motion Field Relay',
+    videoId: 'aqz-KE-bpKQ',
+    collection: 'Signal Tape · 204B',
+    summary:
+      'An underwater drift of bioluminescent lamps gliding past coral pylons. Perfect for easing the room into a slow, cinematic cadence.',
+    vibe: 'Briny dusk calm with shimmer trails',
+    energy: 'Gentle lift with a swell near the midpoint',
+    bestUse: 'Late-night research lounges or introspective watch parties',
+    instrumentation: 'Analog pads, bowed glass, and tide recordings',
+    gradient: ['#051726', '#6bb6c4'],
+    lightingCue: 'Lantern sconces at 30% amber with cool rim lights',
+    textureCue: 'Mist diffusers plus soft linen banners over the deck',
+    postureCue: 'Reclined pods with eyes toward the primary screen',
+    cues: [
+      'Loop chapter 02 to keep conversation anchored to the rising tide.',
+      'Pair with a low sub-bass pulse at -24 dB to give depth to the space.',
+      'Invite the room to breathe in sync with the lantern drifts.',
+    ],
+    chapters: [
+      {
+        time: '00:14',
+        label: 'Signal handshake',
+        summary: 'First lanterns crest the reef line and shimmer into frame.',
+      },
+      {
+        time: '02:48',
+        label: 'Midwater bloom',
+        summary: 'A flock of jelly coils rotate toward the camera in slow arcs.',
+      },
+      {
+        time: '06:35',
+        label: 'Tidal echo finale',
+        summary: 'Reflections multiply as the current pulls light toward the exit tunnel.',
+      },
+    ],
   },
   {
-    id: 'arena-surges',
-    title: 'Arena Surges — Piano & Breakbeats',
-    videoId: 'kXYiU_JCYtU',
-    description:
-      'A piano-lead surge layered with breakbeat grit, built for collective catharsis and bright crowd flashes.',
-    mood: 'charged bronze flicker',
-    gradient: ['#0b1b33', '#ff9f1c'],
-    tempo: '104 bpm march',
-    lighting: 'Sequential strobe, warm-to-white',
-    seat: 'Center balcony for full wave impact'
+    id: 'midnight-operators',
+    title: 'Midnight Operators — Lofi Relay Desk',
+    videoId: 'hHW1oY26kxQ',
+    collection: 'Night Office · Deck 3',
+    summary:
+      'Soft-focus city lights and cassette crackle for keeping the crew steady during late shifts.',
+    vibe: 'Warm tungsten haze with distant neon sparkle',
+    energy: 'Consistent lullaby groove',
+    bestUse: 'Overnight work blocks and gentle onboarding sessions',
+    instrumentation: 'Dusty drum loops, upright bass, layered keys',
+    gradient: ['#0b1b33', '#f2c57c'],
+    lightingCue: 'Desk lamps dimmed to 25% with a cool rim fill',
+    textureCue: 'Felt desk pads, flip notebooks, and warm ceramic mugs',
+    postureCue: 'Casual lean-in around the primary console',
+    cues: [
+      'Use chapter cues to trigger check-in prompts for the crew.',
+      'Fade background chatter loop to -18 dB for clarity during announcements.',
+      'Offer analog note cards so ideas don’t vanish between tracks.',
+    ],
+    chapters: [
+      {
+        time: '00:45',
+        label: 'Fader warm-up',
+        summary: 'Opening groove settles, a perfect moment to welcome arrivals.',
+      },
+      {
+        time: '13:20',
+        label: 'Skyline sweep',
+        summary: 'Cityscape pans across, ideal for ambient lighting adjustments.',
+      },
+      {
+        time: '27:05',
+        label: 'Notebook close-up',
+        summary: 'Use this beat to invite written reflections from the crew.',
+      },
+    ],
   },
   {
-    id: 'side-street-carnival',
-    title: 'Side Street Carnival — Kinetic Pop Relay',
-    videoId: '9bZkp7q19f0',
-    description:
-      'Spiraling neon choreography with brass bursts and sidewalk humor. Expect laughing floorboards.',
-    mood: 'citrus confetti whirlwind',
-    gradient: ['#184d47', '#ffbf69'],
-    tempo: '132 bpm sprint',
-    lighting: 'Ribbon lasers with confetti wash',
-    seat: 'Standing rail by the side stage'
+    id: 'orbit-accelerant',
+    title: 'Orbit Accelerant — Synthwave Pursuit',
+    videoId: 'MVPTGNGiI-4',
+    collection: 'Velocity Grid · Issue 19',
+    summary:
+      'A neon chase reel that keeps the momentum surging for energetic crowd moments.',
+    vibe: 'Chrome blue streaks with bronze sparks',
+    energy: 'High-voltage climb with punctuated drops',
+    bestUse: 'Kickoff hype sessions and sprint retrospectives',
+    instrumentation: 'Driving synth arpeggios, punchy drums, and soaring leads',
+    gradient: ['#031b3b', '#f9784b'],
+    lightingCue: 'Sequential LED bars sweeping in 1.5 second bursts',
+    textureCue: 'Glossy floor panels with metallic risers',
+    postureCue: 'Standing row with motion room to pulse along',
+    cues: [
+      'Trigger floor strobes on each chorus downbeat for dramatic contrast.',
+      'Keep hydration trays ready near chapter three — the pace spikes.',
+      'Layer crowd chants on the final run to land a collective cadence.',
+    ],
+    chapters: [
+      {
+        time: '01:10',
+        label: 'Launch ignition',
+        summary: 'First arpeggio run hits; perfect to cue lighting acceleration.',
+      },
+      {
+        time: '03:42',
+        label: 'Overdrive chase',
+        summary: 'Bass kicks double-time, ideal for a crowd energy call-out.',
+      },
+      {
+        time: '05:56',
+        label: 'Glide cooldown',
+        summary: 'Pads take over for a breather before the last ascent.',
+      },
+    ],
   },
   {
-    id: 'evergreen-promise',
-    title: 'Evergreen Promise — Retro Uplift',
-    videoId: 'dQw4w9WgXcQ',
-    description:
-      'Polished 80s optimism with glittered backbeats, perfect for boosting the control booth morale.',
-    mood: 'sunset brass shine',
-    gradient: ['#0f4c81', '#f4a259'],
-    tempo: '114 bpm strut',
-    lighting: 'Reflective floor with light curtain',
-    seat: 'Front row walkway to sing along'
-  }
+    id: 'sunrise-broadcast',
+    title: 'Sunrise Broadcast — Acoustic Bloom',
+    videoId: 'cHHLHGNpCSA',
+    collection: 'Daybreak Wing · Volume 05',
+    summary:
+      'Acoustic piano cascades with soft aerial footage to gently energize the room.',
+    vibe: 'Fresh dawn hues with golden rim light',
+    energy: 'Slow build to a confident, steady stride',
+    bestUse: 'Morning kick-offs and reflective wrap sessions',
+    instrumentation: 'Grand piano, subtle strings, and analog ambience',
+    gradient: ['#08344f', '#f9b468'],
+    lightingCue: 'Raise sheer blinds and flood with diffused daylight',
+    textureCue: 'Lightwood risers paired with woven throws',
+    postureCue: 'Open stance near windows with notebooks ready',
+    cues: [
+      'Invite the group to share intentions during the first crescendo.',
+      'Blend a gentle citrus diffuser to reinforce the sunrise mood.',
+      'Capture closing reflections as the melody settles back to quiet.',
+    ],
+    chapters: [
+      {
+        time: '00:32',
+        label: 'First light',
+        summary: 'Camera lifts above the horizon as piano theme blossoms.',
+      },
+      {
+        time: '02:24',
+        label: 'Flightpath focus',
+        summary: 'Aerial glide offers a natural pause for discussion prompts.',
+      },
+      {
+        time: '04:18',
+        label: 'Sunburst finale',
+        summary: 'Final chords land while light floods the scene.',
+      },
+    ],
+  },
 ];
 
-const sceneSelect = document.getElementById('sceneSelect');
-const sceneFrame = document.getElementById('sceneFrame');
-const currentScene = document.getElementById('currentScene');
-const moodSwatch = document.getElementById('moodSwatch');
-const moodText = document.getElementById('moodText');
-const playlistItems = document.getElementById('playlistItems');
-const sceneNotes = document.getElementById('sceneNotes');
-const tempoValue = document.getElementById('tempoValue');
-const lightingValue = document.getElementById('lightingValue');
-const seatValue = document.getElementById('seatValue');
-const noteInput = document.getElementById('noteInput');
-const noteList = document.getElementById('noteList');
-const addNoteButton = document.getElementById('addNote');
+const stageFrame = document.getElementById('stageFrame');
+const transmissionSelect = document.getElementById('transmissionSelect');
+const stageDescription = document.getElementById('stageDescription');
+const vibeValue = document.getElementById('vibeValue');
+const energyValue = document.getElementById('energyValue');
+const useValue = document.getElementById('useValue');
+const instrumentationValue = document.getElementById('instrumentationValue');
+const chapterList = document.getElementById('chapterList');
+const collectionLabel = document.getElementById('collectionLabel');
+const paletteSwatch = document.getElementById('paletteSwatch');
+const lightingCue = document.getElementById('lightingCue');
+const textureCue = document.getElementById('textureCue');
+const postureCue = document.getElementById('postureCue');
+const cueList = document.getElementById('cueList');
+const focusToggle = document.getElementById('focusToggle');
+const studio = document.querySelector('.studio');
 
-const notes = [];
+const segmentForm = document.getElementById('segmentForm');
+const segmentTime = document.getElementById('segmentTime');
+const segmentTitle = document.getElementById('segmentTitle');
+const segmentTone = document.getElementById('segmentTone');
+const segmentNotes = document.getElementById('segmentNotes');
+const segmentList = document.getElementById('segmentList');
+const clearSegmentsButton = document.getElementById('clearSegments');
 
-function setStage(scene) {
-  if (!scene) return;
+const storyboardSegments = [];
 
-  const embedUrl = `https://www.youtube.com/embed/${scene.videoId}?rel=0`;
-  sceneFrame.src = embedUrl;
-  sceneFrame.title = `${scene.title} video`;
-  currentScene.textContent = scene.title;
-  moodText.textContent = scene.mood;
-  moodSwatch.style.background = `linear-gradient(135deg, ${scene.gradient[0]}, ${scene.gradient[1]})`;
-  document.querySelector('.stage').style.boxShadow = `inset 0 0 0 1px ${scene.gradient[1]}33, 0 18px 40px ${scene.gradient[0]}33`;
+function normaliseTime(value) {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(value);
+  if (!match) {
+    return null;
+  }
 
-  sceneNotes.textContent = scene.description;
-  tempoValue.textContent = scene.tempo;
-  lightingValue.textContent = scene.lighting;
-  seatValue.textContent = scene.seat;
+  const minutes = Number(match[1]);
+  const seconds = Number(match[2]);
 
-  Array.from(playlistItems.children).forEach((li) => {
-    li.classList.toggle('playlist__item--active', li.dataset.sceneId === scene.id);
-  });
+  if (seconds > 59) {
+    return null;
+  }
+
+  const paddedMinutes = minutes.toString().padStart(2, '0');
+  const paddedSeconds = seconds.toString().padStart(2, '0');
+  return `${paddedMinutes}:${paddedSeconds}`;
 }
 
-function populateScenes() {
-  scenes.forEach((scene, index) => {
-    const option = document.createElement('option');
-    option.value = scene.id;
-    option.textContent = scene.title;
-    sceneSelect.append(option);
-
-    const item = document.createElement('li');
-    item.className = 'playlist__item';
-    item.tabIndex = 0;
-    item.dataset.sceneId = scene.id;
-    item.innerHTML = `
-      <div class="playlist__item-title">${scene.title}</div>
-      <p class="playlist__item-desc">${scene.description}</p>
-    `;
-
-    const activate = () => {
-      sceneSelect.value = scene.id;
-      setStage(scene);
-    };
-
-    item.addEventListener('click', activate);
-    item.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        activate();
-      }
-    });
-
-    playlistItems.append(item);
-
-    if (index === 0) {
-      sceneSelect.value = scene.id;
-      setStage(scene);
-    }
-  });
+function timeToSeconds(time) {
+  const [minutes, seconds] = time.split(':').map(Number);
+  return minutes * 60 + seconds;
 }
 
-sceneSelect.addEventListener('change', (event) => {
-  const scene = scenes.find((entry) => entry.id === event.target.value);
-  setStage(scene);
-});
+function renderSegments() {
+  segmentList.innerHTML = '';
 
-addNoteButton.addEventListener('click', () => {
-  const text = noteInput.value.trim();
-  if (!text) {
-    noteInput.focus();
+  if (storyboardSegments.length === 0) {
+    const empty = document.createElement('li');
+    empty.className = 'segment-list__empty';
+    empty.textContent = 'No beats pinned yet. Add a timestamp to sketch your run of show.';
+    segmentList.append(empty);
     return;
   }
 
-  const entry = {
-    id: crypto.randomUUID(),
-    text,
-    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  };
+  storyboardSegments
+    .slice()
+    .sort((a, b) => timeToSeconds(a.time) - timeToSeconds(b.time))
+    .forEach((segment) => {
+      const item = document.createElement('li');
+      item.className = 'segment-list__item';
+      item.innerHTML = `
+        <div class="segment-list__header">
+          <div>
+            <div class="segment-list__time">${segment.time}</div>
+            <div class="segment-list__title">${segment.title}</div>
+          </div>
+          <span class="segment-list__tag">${segment.tone}</span>
+        </div>
+        ${segment.notes ? `<p class="segment-list__notes">${segment.notes}</p>` : ''}
+        <div class="segment-list__actions">
+          <button class="segment-list__remove" type="button" data-segment-id="${segment.id}">Remove</button>
+        </div>
+      `;
 
-  notes.unshift(entry);
-  renderNotes();
-  noteInput.value = '';
-  noteInput.focus();
-});
+      const removeButton = item.querySelector('.segment-list__remove');
+      removeButton.addEventListener('click', () => {
+        const index = storyboardSegments.findIndex((entry) => entry.id === segment.id);
+        if (index >= 0) {
+          storyboardSegments.splice(index, 1);
+          renderSegments();
+        }
+      });
 
-function renderNotes() {
-  noteList.innerHTML = '';
-  notes.slice(0, 6).forEach((note) => {
+      segmentList.append(item);
+    });
+}
+
+function renderChapters(transmission) {
+  chapterList.innerHTML = '';
+
+  if (!transmission.chapters || transmission.chapters.length === 0) {
+    const placeholder = document.createElement('li');
+    placeholder.className = 'chapters__item';
+    placeholder.innerHTML = '<p class="chapters__summary">No suggested chapters for this broadcast yet.</p>';
+    chapterList.append(placeholder);
+    return;
+  }
+
+  transmission.chapters.forEach((chapter) => {
     const li = document.createElement('li');
-    li.innerHTML = `<strong>${note.time}</strong> — ${note.text}`;
-    noteList.append(li);
+    li.className = 'chapters__item';
+    li.innerHTML = `
+      <span class="chapters__time">${chapter.time}</span>
+      <span class="chapters__label">${chapter.label}</span>
+      <p class="chapters__summary">${chapter.summary}</p>
+    `;
+    chapterList.append(li);
+  });
+}
+
+function renderCues(transmission) {
+  cueList.innerHTML = '';
+  transmission.cues.forEach((cue) => {
+    const li = document.createElement('li');
+    li.textContent = cue;
+    cueList.append(li);
+  });
+}
+
+function setTransmission(transmission) {
+  if (!transmission) {
+    return;
+  }
+
+  const embedUrl = `https://www.youtube.com/embed/${transmission.videoId}?rel=0&modestbranding=1`;
+  stageFrame.src = embedUrl;
+  stageFrame.title = `${transmission.title} — YouTube playback`;
+
+  stageDescription.textContent = transmission.summary;
+  collectionLabel.textContent = transmission.collection;
+  vibeValue.textContent = transmission.vibe;
+  energyValue.textContent = transmission.energy;
+  useValue.textContent = transmission.bestUse;
+  instrumentationValue.textContent = transmission.instrumentation;
+
+  document.documentElement.style.setProperty('--bg-start', transmission.gradient[0]);
+  document.documentElement.style.setProperty('--bg-end', transmission.gradient[1]);
+  paletteSwatch.style.background = `linear-gradient(135deg, ${transmission.gradient[0]}, ${transmission.gradient[1]})`;
+
+  lightingCue.textContent = transmission.lightingCue;
+  textureCue.textContent = transmission.textureCue;
+  postureCue.textContent = transmission.postureCue;
+
+  renderCues(transmission);
+  renderChapters(transmission);
+}
+
+function populateTransmissions() {
+  transmissions.forEach((transmission) => {
+    const option = document.createElement('option');
+    option.value = transmission.id;
+    option.textContent = transmission.title;
+    transmissionSelect.append(option);
   });
 
-  if (notes.length === 0) {
-    const placeholder = document.createElement('li');
-    placeholder.textContent = 'No notes yet. Archive the room tone you catch.';
-    noteList.append(placeholder);
+  if (transmissions.length > 0) {
+    transmissionSelect.value = transmissions[0].id;
+    setTransmission(transmissions[0]);
   }
 }
 
-renderNotes();
-populateScenes();
+transmissionSelect.addEventListener('change', (event) => {
+  const transmission = transmissions.find((entry) => entry.id === event.target.value);
+  setTransmission(transmission);
+});
+
+focusToggle.addEventListener('click', () => {
+  const isFocus = studio.classList.toggle('studio--focus');
+  focusToggle.textContent = isFocus ? 'Exit focus mode' : 'Enter focus mode';
+  focusToggle.setAttribute('aria-pressed', String(isFocus));
+});
+
+segmentTime.addEventListener('input', () => {
+  segmentTime.setCustomValidity('');
+});
+
+segmentForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const normalizedTime = normaliseTime(segmentTime.value.trim());
+  if (!normalizedTime) {
+    segmentTime.setCustomValidity('Use the mm:ss format and keep seconds under 60.');
+    segmentTime.reportValidity();
+    return;
+  }
+
+  const title = segmentTitle.value.trim();
+  if (!title) {
+    segmentTitle.focus();
+    return;
+  }
+
+  const notes = segmentNotes.value.trim();
+
+  storyboardSegments.push({
+    id: crypto.randomUUID(),
+    time: normalizedTime,
+    title,
+    tone: segmentTone.value,
+    notes,
+  });
+
+  renderSegments();
+  segmentForm.reset();
+  segmentTone.value = 'Pulse';
+  segmentTime.focus();
+});
+
+clearSegmentsButton.addEventListener('click', () => {
+  storyboardSegments.splice(0, storyboardSegments.length);
+  renderSegments();
+  segmentTime.focus();
+});
+
+renderSegments();
+populateTransmissions();
