@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ceramic Ripple Kiln</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="kiln" aria-labelledby="appTitle">
+      <button
+        class="close-button"
+        type="button"
+        aria-label="Close Ceramic Ripple Kiln"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="kiln__intro">
+        <span class="kiln__badge">Studio Ledger · Batch 32</span>
+        <h1 id="appTitle">Ceramic Ripple Kiln</h1>
+        <p class="kiln__lede">
+          Blend clay bodies, layer glazes, and choreograph a firing curve that coaxes ripples, crazing, or hush-gloss finishes.
+        </p>
+      </header>
+
+      <section class="kiln__grid">
+        <section class="module module--preview" aria-labelledby="previewTitle">
+          <h2 id="previewTitle">Vessel Preview</h2>
+          <p class="module__hint">Drag the dial to inspect rim, belly, and base.</p>
+          <div class="vessel" role="img" aria-describedby="previewMeta">
+            <div class="vessel__body" id="vesselBody"></div>
+            <div class="vessel__dial">
+              <input type="range" id="previewDial" min="0" max="100" value="35" aria-label="Preview angle" />
+            </div>
+          </div>
+          <p id="previewMeta" class="preview__meta">Choose clay and glaze to start the kiln story.</p>
+        </section>
+
+        <section class="module module--controls" aria-labelledby="controlsTitle">
+          <h2 id="controlsTitle">Clay & Glaze Blend</h2>
+          <div class="control">
+            <label class="control__label" for="claySelect">Clay body</label>
+            <select id="claySelect"></select>
+          </div>
+
+          <fieldset class="control" aria-labelledby="glazeLegend">
+            <legend id="glazeLegend">Glaze layers</legend>
+            <div id="glazePalette" class="glaze-palette" role="list"></div>
+          </fieldset>
+
+          <fieldset class="control control--toggles" aria-labelledby="textureLegend">
+            <legend id="textureLegend">Surface textures</legend>
+            <label class="toggle">
+              <input type="checkbox" id="textureRipple" checked />
+              <span>Ripple comb</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="textureCraze" />
+              <span>Crazing nets</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="textureMatte" />
+              <span>Matte hush topcoat</span>
+            </label>
+          </fieldset>
+
+          <button type="button" class="primary-action" id="queueButton">Queue Kiln Cycle</button>
+        </section>
+
+        <section class="module module--schedule" aria-labelledby="scheduleTitle">
+          <h2 id="scheduleTitle">Firing Schedule</h2>
+          <p class="module__hint">Temperatures adjust as you layer glazes and textures.</p>
+          <table class="schedule" aria-live="polite">
+            <thead>
+              <tr>
+                <th scope="col">Phase</th>
+                <th scope="col">Ramp</th>
+                <th scope="col">Peak °C</th>
+                <th scope="col">Hold</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleBody"></tbody>
+          </table>
+        </section>
+
+        <section class="module module--log" aria-labelledby="logTitle">
+          <h2 id="logTitle">Kiln Queue</h2>
+          <p class="module__hint">The kiln fits up to four experiments at a time.</p>
+          <ul id="queueList" class="queue" aria-live="polite"></ul>
+        </section>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heirloom Envelope Atelier</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="atelier" aria-labelledby="appTitle">
+      <button
+        class="close-button"
+        type="button"
+        aria-label="Close Heirloom Envelope Atelier"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="atelier__intro">
+        <span class="atelier__badge">Correspondence Wing · Drawer L</span>
+        <h1 id="appTitle">Heirloom Envelope Atelier</h1>
+        <p class="atelier__lede">
+          Pair rare paper fibers with patterned linings, wax motifs, and secret phrases. Deliver a tiny relic ready for the drift post.
+        </p>
+      </header>
+
+      <section class="atelier__grid">
+        <section class="module module--preview" aria-labelledby="previewTitle">
+          <h2 id="previewTitle">Envelope Draft</h2>
+          <p class="module__hint">Shift fibers and seals to see the envelope breathe.</p>
+          <div class="envelope" role="img" aria-describedby="previewMeta">
+            <div class="envelope__paper" id="paperLayer">
+              <div class="envelope__lining" id="liningLayer"></div>
+              <div class="envelope__seal" id="sealLayer"></div>
+              <div class="envelope__string" id="stringLayer"></div>
+            </div>
+          </div>
+          <p id="previewMeta" class="preview__meta">Choose a fiber to begin.</p>
+        </section>
+
+        <section class="module module--controls" aria-labelledby="controlTitle">
+          <h2 id="controlTitle">Fiber, Lining, Seal</h2>
+
+          <label class="control" for="paperSelect">
+            <span class="control__label">Paper fiber</span>
+            <select id="paperSelect"></select>
+          </label>
+
+          <fieldset class="control" aria-labelledby="liningLegend">
+            <legend id="liningLegend">Lining swatches</legend>
+            <div id="liningPalette" class="palette" role="list"></div>
+          </fieldset>
+
+          <fieldset class="control control--toggles" aria-labelledby="sealLegend">
+            <legend id="sealLegend">Closure rituals</legend>
+            <label class="toggle">
+              <input type="checkbox" id="braidToggle" checked />
+              <span>Linen braid wrap</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="waxToggle" checked />
+              <span>Wax seal motif</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="inkToggle" />
+              <span>Edge ink burnish</span>
+            </label>
+          </fieldset>
+
+          <label class="control" for="phraseInput">
+            <span class="control__label">Hidden phrase</span>
+            <input id="phraseInput" type="text" placeholder="Whispered between folds…" maxlength="50" />
+          </label>
+
+          <button type="button" class="primary-action" id="ledgerButton">Add to Flight Ledger</button>
+        </section>
+
+        <section class="module module--ledger" aria-labelledby="ledgerTitle">
+          <h2 id="ledgerTitle">Flight Ledger</h2>
+          <p class="module__hint">Track the envelopes cleared for courier drift.</p>
+          <ul id="ledgerList" class="ledger" aria-live="polite"></ul>
+        </section>
+
+        <section class="module module--details" aria-labelledby="detailTitle">
+          <h2 id="detailTitle">Material Notes</h2>
+          <article class="details" aria-live="polite">
+            <h3 id="detailTitleText">No fiber selected.</h3>
+            <p id="detailDescription">Pick a fiber to reveal its provenance and letter lore.</p>
+            <dl class="details__stats">
+              <div class="stat">
+                <dt>Weight</dt>
+                <dd id="weightValue">—</dd>
+              </div>
+              <div class="stat">
+                <dt>Texture</dt>
+                <dd id="textureValue">—</dd>
+              </div>
+              <div class="stat">
+                <dt>Scent prompt</dt>
+                <dd id="scentValue">—</dd>
+              </div>
+            </dl>
+          </article>
+        </section>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

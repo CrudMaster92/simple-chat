@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>Signal Relay Playhouse icon</title>
+  <defs>
+    <linearGradient id="beam" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1b33" />
+      <stop offset="100%" stop-color="#ff9f1c" />
+    </linearGradient>
+  </defs>
+  <rect x="6" y="10" width="52" height="36" rx="10" fill="url(#beam)" />
+  <rect x="12" y="16" width="40" height="18" rx="6" fill="#f3f0e6" opacity="0.85" />
+  <circle cx="24" cy="25" r="4" fill="#3a7ca5" opacity="0.9" />
+  <circle cx="40" cy="25" r="4" fill="#ff9f1c" opacity="0.9" />
+  <path d="M16 50h32l-3 8H19z" fill="#0b1b33" opacity="0.8" />
+</svg>
