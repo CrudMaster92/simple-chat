@@ -19,6 +19,7 @@
 ## Overused Tropes to Avoid
 - Skip purple-forward or aurora-like glassmorphism palettes; we already have several experiences with that glowing purple style.
 - Avoid teal-and-amber "glassy" meteor dashboards or similar cosmic glassmorphism riffs like the Meteoric Mood Loom.
+- Retire the "sunlit sand and terracotta" vibe: parchment-to-cream gradients, pillowy rounded cards, soft inner shadows, and burnt sienna accent bars that mimic mindful productivity planners.
 - Refrain from shipping basic "story generator" tools that simply proxy OpenAI completions without deeper mechanics or twists.
 
 ## Applet Directory
