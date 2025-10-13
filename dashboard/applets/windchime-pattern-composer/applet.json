@@ -1,0 +1,12 @@
+{
+  "slug": "windchime-pattern-composer",
+  "name": "Windchime Pattern Composer",
+  "description": "Arrange resonant chimes, dial in breezes, and script a three-phase wind performance.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-05-09",
+  "tags": ["soundscape", "design"],
+  "author": "Simple Chat Team",
+  "permissions": []
+}

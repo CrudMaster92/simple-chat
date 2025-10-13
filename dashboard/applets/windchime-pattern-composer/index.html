@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Windchime Pattern Composer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app" role="application">
+      <a class="close-button" href="../../index.html" aria-label="Return to dashboard">✕</a>
+      <header class="app__header">
+        <img src="./assets/icon.svg" alt="Windchime Pattern Composer icon" class="app__icon" />
+        <div class="app__intro">
+          <h1>Windchime Pattern Composer</h1>
+          <p>
+            Craft a breezy soundscape by pairing chime materials with choreographed gusts. Sketch a
+            three-phase routine that sets your space gently in motion.
+          </p>
+        </div>
+      </header>
+
+      <main class="app__body">
+        <section class="control-panel" aria-label="Pattern controls">
+          <div class="panel-card">
+            <h2>Chime Materials</h2>
+            <p class="panel-sub">Select up to three featured voices.</p>
+            <div class="chip-group" id="materialChips" role="group" aria-label="Chime materials"></div>
+          </div>
+
+          <div class="panel-card">
+            <h2>Arrangement Shape</h2>
+            <p class="panel-sub">Choose how the chimes will hang together.</p>
+            <div class="layout-grid" id="layoutCards" role="radiogroup" aria-label="Arrangement options"></div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-card__header">
+              <h2 id="breezeLabel">Breeze Cadence</h2>
+              <span class="breeze-indicator" id="breezeIndicator">Measured</span>
+            </div>
+            <label for="breezeRange" class="panel-sub">Dial in how lively the wind should feel.</label>
+            <input
+              id="breezeRange"
+              type="range"
+              min="1"
+              max="5"
+              step="1"
+              value="3"
+              aria-labelledby="breezeLabel"
+            />
+          </div>
+
+          <div class="panel-card">
+            <h2>Ambient Surroundings</h2>
+            <p class="panel-sub">Optional details to color the narrative.</p>
+            <textarea
+              id="ambientNotes"
+              rows="3"
+              placeholder="E.g., cedar deck at dusk, lantern light flickering"
+            ></textarea>
+          </div>
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn--ghost" id="shuffleButton">Breeze Shuffle</button>
+            <button type="button" class="btn btn--primary" id="composeButton">Compose Pattern</button>
+          </div>
+        </section>
+
+        <section class="preview-panel" aria-live="polite">
+          <div class="rack-preview" aria-hidden="true">
+            <div class="rack-preview__bar"></div>
+            <div class="rack-preview__chimes" id="chimePreview"></div>
+            <div class="rack-preview__breeze" id="breezeTrails"></div>
+          </div>
+
+          <article class="pattern-card" id="patternCard">
+            <header>
+              <h2 id="patternTitle">Choose your materials to begin.</h2>
+              <p id="patternSubtitle">
+                Select chimes, arrangement, and cadence, then compose a performance to see the full
+                routine.
+              </p>
+            </header>
+            <ul class="pattern-tags" id="patternTags"></ul>
+            <section class="pattern-notes">
+              <h3>Sequence Routine</h3>
+              <ol id="patternSteps" class="pattern-steps"></ol>
+            </section>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
