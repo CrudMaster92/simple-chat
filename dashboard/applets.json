@@ -55,5 +55,12 @@
   "echotape-recorder": "./applets/echotape-recorder/applet.json",
   "serpent-sonata": "./applets/serpent-sonata/applet.json",
   "pinball-mission-ops": "./applets/pinball-mission-ops/applet.json",
-  "harbor-ember-gambit": "./applets/harbor-ember-gambit/applet.json"
+  "harbor-ember-gambit": "./applets/harbor-ember-gambit/applet.json",
+  "bang-bang-beat-barrage": "./applets/bang-bang-beat-barrage/applet.json",
+  "nebula-gear-emulator": "./applets/nebula-gear-emulator/applet.json",
+  "parallax-bloom-atelier": "./applets/parallax-bloom-atelier/applet.json",
+  "policy-pioneer-lab": "./applets/policy-pioneer-lab/applet.json",
+  "starlit-piano-observatory": "./applets/starlit-piano-observatory/applet.json",
+  "vector-bloom-forge": "./applets/vector-bloom-forge/applet.json",
+  "web-surf-club": "./applets/web-surf-club/applet.json"
 }
