@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Razor Hello Cracktro</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+    color: #00ffff;
+    font-family: monospace;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+  hint {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #00ffcc;
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+  <canvas id="cracktro"></canvas>
+  <div id="hint">Press SPACE to pause/resume</div>
+  <script>
+    const canvas = document.getElementById('cracktro');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const stars = Array.from({ length: 100 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      z: Math.random() * width
+    }));
+
+    let paused = false;
+    let scrollX= width;
+    const message = '*** HELLO WORLD FROM RAZOR1911 STYLE DEMO ***   ;';
+
+    function drawStarfield() {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#00ffff';
+      for (let s of stars) {
+        s.z -= 2;
+        if (s.zi <= 0) s.z = width;
+        const k = 128.0 / s.z;
+        const px = s.x * k+ +width / 2;
+        const py = s.y * k + height / 2;
+        if (px >= 0 && px < width && py >= 0 && py < height) {
+          const size = (1 - s.z / width) * 2;
+          ctx.fillRect(px, py, size, size);
+        }
+      }
+    }
+
+    function drawScroller() {
+      ctx.font = '24px monospace';
+      ctx.fillStyle = '#00ffcc';
+      ctx.textBaseline = 'bottom';
+      scrollX -= 3;
+      if (scrollX < -ctx.measureText(message).width) scrollX = width;
+      ctx.fillText(message, scrollX, height - 50);
+    }
+
+    function animate() {
+      if (!paused) {
+        drawStarfield();
+        drawScroller();
+      }
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('keydown', e => {
+      if (e.code === 'Space') {
+        paused = !paused;
+      }
+    });
+  </script>
+</body>
+</html>
