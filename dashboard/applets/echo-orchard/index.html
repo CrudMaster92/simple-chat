@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Echo Orchard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="close-button" href="../../index.html" aria-label="Return to dashboard">×</a>
+    <main class="orchard-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <h1>Echo Orchard</h1>
+          <p class="tagline">
+            Tap rhythms to grow melodic trees. Each beat bends branches, fans leaves, and keeps the grove alive.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="startStop" class="primary">Start Loop</button>
+          <button id="clearScene" class="ghost">Clear Scene</button>
+        </div>
+      </header>
+
+      <section class="controls" aria-label="Loop controls">
+        <div class="control">
+          <label for="tempo">Tempo <span id="tempoLabel">100</span> BPM</label>
+          <input type="range" id="tempo" min="60" max="160" value="100" />
+        </div>
+        <div class="control">
+          <label for="wind">Wind (Swing)</label>
+          <input type="range" id="wind" min="0" max="0.35" step="0.01" value="0.12" />
+        </div>
+        <div class="control">
+          <label for="season">Season Palette</label>
+          <select id="season">
+            <option value="spring">Spring Burst</option>
+            <option value="summer">Sunwarm Shade</option>
+            <option value="autumn">Amber Drift</option>
+            <option value="midnight">Midnight Bloom</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="sceneLength">Scene Length <span id="sceneLabel">4</span> bars</label>
+          <input type="range" id="sceneLength" min="4" max="8" step="1" value="4" />
+        </div>
+        <div class="control">
+          <button id="snapShot" class="secondary">Snap Orchard PNG</button>
+        </div>
+      </section>
+
+      <section class="status" aria-live="polite">
+        <p id="sceneStatus">Waiting to plant the first bar.</p>
+      </section>
+
+      <section class="tracks" aria-label="Track controls">
+        <div id="trackControls" class="track-controls"></div>
+      </section>
+
+      <section class="grid" aria-label="Step sequencer">
+        <div class="grid-labels" aria-hidden="true">
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+        </div>
+        <div id="stepGrid" class="step-grid"></div>
+      </section>
+
+      <section class="orchard-view" aria-label="Generative orchard">
+        <canvas id="orchardCanvas" width="960" height="420" role="img" aria-label="Animated orchard responding to rhythm"></canvas>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
