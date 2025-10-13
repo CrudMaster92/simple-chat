@@ -27,11 +27,7 @@
             <button id="newChatButton" class="pixel-button pixel-button--primary">New chat</button>
             <button id="clearAllButton" class="pixel-button" aria-label="Delete all saved chats">Clear all</button>
           </div>
-          <div class="sidebar__memory-toggle">
-            <label class="toggle">
-              <input type="checkbox" id="memoryToggle" checked />
-              <span>Persistent memory</span>
-            </label>
+          <div class="sidebar__toggles">
             <label class="toggle">
               <input type="checkbox" id="rememberKeysToggle" />
               <span>Remember API keys</span>
@@ -65,15 +61,6 @@
               </label>
             </div>
           </div>
-
-          <section class="memory-panel" aria-label="Conversation memory">
-            <div class="memory-panel__header">
-              <h2>Memory</h2>
-              <button id="editMemoryButton" class="pixel-button pixel-button--ghost">Edit</button>
-            </div>
-            <textarea id="memoryEditor" class="memory-panel__editor" rows="3" placeholder="Key facts we should remember..."></textarea>
-            <p id="memorySummary" class="memory-panel__summary">No memories captured yet.</p>
-          </section>
 
           <section class="chat-panel" aria-label="Chat timeline">
             <div class="chat-panel__header">
