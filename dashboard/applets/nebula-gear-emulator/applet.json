@@ -1,0 +1,12 @@
+{
+  "slug": "nebula-gear-emulator",
+  "name": "Nebula Gear Emulator",
+  "description": "Boot a prototype handheld and swap between experimental ROM cartridges inside a shimmering dev kit shell.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-07-08",
+  "tags": ["emulator", "arcade", "game"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
