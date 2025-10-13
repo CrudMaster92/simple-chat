@@ -1,0 +1,12 @@
+{
+  "slug": "policy-pioneer-lab",
+  "name": "Policy Pioneer Lab",
+  "description": "Tune Q-learning instincts, steer a scout through shifting rewards, and watch a policy emerge in real time.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-05",
+  "tags": ["simulation", "learning", "game"],
+  "author": "Policy Pioneer Lab Team",
+  "permissions": []
+}

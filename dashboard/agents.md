@@ -52,3 +52,4 @@
 - Vector Bloom Forge – Sculpt luminous vector petals by dragging nodes to match shimmering silhouettes and chase precision streaks.
 - Bang Bang Beat Barrage – Orchestrate dueling rhythm cannons, slam beats on cue, and trigger thunder slams to keep the crowd voltage spiking.
 - Hyperlink Surf Club – Spin a pace dial, surface playful web destinations, and log postcard notes from every spontaneous surf.
+- Policy Pioneer Lab – Tune Q-learning instincts for a nimble scout drone, shift reward fields, and track the policy coming to life.
