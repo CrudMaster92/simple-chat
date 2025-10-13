@@ -1,0 +1,11 @@
+{
+  "slug": "pinball-mission-ops",
+  "name": "Pinball Mission Ops",
+  "description": "Mission-control dashboard that modernizes 3D Space Cadet pinball with live telemetry and combo orchestration.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-07-09",
+  "tags": ["retro", "game", "dashboard"],
+  "author": "Simple Chat Contributors"
+}
