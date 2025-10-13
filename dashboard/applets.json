@@ -24,5 +24,9 @@
   "stormglass-kite-atelier": "./applets/stormglass-kite-atelier/applet.json",
   "resonant-crystal-cavern": "./applets/resonant-crystal-cavern/applet.json",
   "twilight-parade-choreography": "./applets/twilight-parade-choreography/applet.json",
-  "lunar-linked-explorers-compass": "./applets/lunar-linked-explorers-compass/applet.json"
+  "lunar-linked-explorers-compass": "./applets/lunar-linked-explorers-compass/applet.json",
+  "retro-warp-arcade": "./applets/retro-warp-arcade/applet.json",
+  "cassette-loop-challenge": "./applets/cassette-loop-challenge/applet.json",
+  "luminous-rift-garden": "./applets/luminous-rift-garden/applet.json",
+  "teacup-tempest-clicker": "./applets/teacup-tempest-clicker/applet.json"
 }
