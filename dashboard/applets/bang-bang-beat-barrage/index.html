@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bang Bang Beat Barrage</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Barlow:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-shell">
+      <a class="close-control" href="../../index.html" aria-label="Return to the dashboard">×</a>
+      <header class="hero">
+        <div class="hero__badge">Bang Bang Showcase</div>
+        <h1>Bang Bang Beat Barrage</h1>
+        <p>
+          Conduct a thunderous percussion duel by slamming left and right cannons on-beat. Nail the sequence, hype the
+          crowd, and trigger arena-shaking slams.
+        </p>
+        <div class="hero__meta">
+          <span>Press <strong>A</strong> or tap <strong>Left Bang</strong>.</span>
+          <span>Press <strong>L</strong> or tap <strong>Right Bang</strong>.</span>
+        </div>
+      </header>
+
+      <main class="main-grid">
+        <section class="stage" aria-label="Percussion stage">
+          <div class="tempo-panel">
+            <div class="tempo-panel__stat">
+              Tempo
+              <span id="tempoDisplay">104 BPM</span>
+            </div>
+            <div class="tempo-panel__stat">
+              Loop
+              <span id="loopDisplay">0 / 8</span>
+            </div>
+            <button id="slamButton" class="slam-button" type="button" disabled>
+              Build 8 combo to unleash Slam
+            </button>
+          </div>
+
+          <div class="beat-track" id="beatTrack" aria-label="Upcoming beat sequence"></div>
+
+          <div class="lanes">
+            <button id="leftPad" class="lane lane--left" type="button">
+              <span class="lane__label">Left Bang</span>
+              <span class="lane__hint">Key A</span>
+            </button>
+            <button id="rightPad" class="lane lane--right" type="button">
+              <span class="lane__label">Right Bang</span>
+              <span class="lane__hint">Key L</span>
+            </button>
+          </div>
+
+          <div class="crowd-meter" aria-live="polite">
+            <div class="crowd-meter__label">Crowd Voltage</div>
+            <div class="crowd-meter__bar">
+              <div id="energyFill" class="crowd-meter__fill" style="width: 50%"></div>
+            </div>
+            <div id="energyStatus" class="crowd-meter__status">Holding steady</div>
+          </div>
+        </section>
+
+        <section class="sidebar" aria-label="Match stats and commentary">
+          <div class="scoreboard">
+            <div class="scoreboard__stat">
+              <span class="label">Score</span>
+              <span id="scoreDisplay" class="value">000000</span>
+            </div>
+            <div class="scoreboard__stat">
+              <span class="label">Combo</span>
+              <span id="comboDisplay" class="value">x0</span>
+            </div>
+            <div class="scoreboard__stat">
+              <span class="label">Best Streak</span>
+              <span id="bestDisplay" class="value">x0</span>
+            </div>
+          </div>
+
+          <article class="commentary" aria-live="polite">
+            <h2>Bangline Commentary</h2>
+            <ul id="commentaryFeed" class="commentary__feed" aria-label="Recent announcer calls"></ul>
+          </article>
+
+          <section class="rules">
+            <h2>How to Hype</h2>
+            <ol>
+              <li>Watch the beat track — red sparks want a left bang, gold sparks want a right bang.</li>
+              <li>Hit the correct side as the active beat glows. Perfect hits raise the crowd voltage.</li>
+              <li>Chain eight perfect hits for a <strong>Thunder Slam</strong> to clear the loop and earn bonus points.</li>
+            </ol>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "slug": "bang-bang-beat-barrage",
+  "name": "Bang Bang Beat Barrage",
+  "description": "Slam dueling rhythm cannons on every glowing cue and unleash thunder slams to electrify the arena.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-05",
+  "tags": ["game", "music", "rhythm"],
+  "author": "Bangline Collective",
+  "permissions": []
+}
