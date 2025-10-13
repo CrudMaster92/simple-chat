@@ -52,5 +52,6 @@
   "maestro-clock-pavilion": "./applets/maestro-clock-pavilion/applet.json",
   "canvas-remix-studio": "./applets/canvas-remix-studio/applet.json",
   "circuit-sweep-analyst": "./applets/circuit-sweep-analyst/applet.json",
-  "echotape-recorder": "./applets/echotape-recorder/applet.json"
+  "echotape-recorder": "./applets/echotape-recorder/applet.json",
+  "serpent-sonata": "./applets/serpent-sonata/applet.json"
 }

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Serpent Sonata</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="close-button" href="../../index.html" aria-label="Return to dashboard">×</a>
+    <main class="layout" role="main">
+      <header class="hero">
+        <h1>Serpent Sonata</h1>
+        <p>
+          Conduct a living ribbon of light through lush stages, weave flawless patterns, and chase musical combos in this elevated
+          take on the classic snake hunt.
+        </p>
+      </header>
+
+      <section class="stage">
+        <div class="score-panel" aria-live="polite">
+          <div class="score-card">
+            <span class="label">Score</span>
+            <span id="scoreValue" class="value">0</span>
+          </div>
+          <div class="score-card">
+            <span class="label">High</span>
+            <span id="highScoreValue" class="value">0</span>
+          </div>
+          <div class="score-card">
+            <span class="label">Tempo</span>
+            <span id="tempoValue" class="value">1×</span>
+          </div>
+          <div class="score-card">
+            <span class="label">Combo</span>
+            <span id="comboValue" class="value">0</span>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="gameCanvas" width="560" height="560" aria-label="Snake playfield" role="img"></canvas>
+          <div id="pulseMeter" class="pulse-meter" aria-hidden="true"></div>
+          <div class="overlay hidden" id="introOverlay">
+            <div class="overlay-card">
+              <h2>Ready to Conduct?</h2>
+              <p>Use arrow keys or WASD to guide the serpent. Swipe on touch screens.</p>
+              <button id="startButton" class="primary" type="button">Begin Overture</button>
+            </div>
+          </div>
+          <div class="overlay hidden" id="gameOverOverlay" role="alertdialog" aria-modal="true" aria-labelledby="gameOverTitle">
+            <div class="overlay-card">
+              <h2 id="gameOverTitle">Final Chord</h2>
+              <p id="gameOverSummary">You reached 0 points.</p>
+              <div class="overlay-actions">
+                <button id="restartButton" class="primary" type="button">Play Again</button>
+                <button id="shareButton" class="ghost" type="button">Copy Highlight</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="control-room" aria-label="Control room">
+        <section class="control-group">
+          <h2>Tempo Suite</h2>
+          <label class="slider-label" for="speedSlider">
+            <span>Base tempo</span>
+            <span id="speedLabel">Medium</span>
+          </label>
+          <input type="range" id="speedSlider" min="1" max="3" step="1" value="2" />
+          <p class="control-tip">Tempo rises automatically as your combo flourishes.</p>
+        </section>
+
+        <section class="control-group">
+          <h2>Soundboard</h2>
+          <label class="switch">
+            <input id="soundToggle" type="checkbox" checked />
+            <span class="slider" aria-hidden="true"></span>
+            <span class="switch-label">Sound on</span>
+          </label>
+          <p class="control-tip">Apple bites, combo blooms, and finales are orchestrated with lightweight synth tones.</p>
+        </section>
+
+        <section class="control-group">
+          <h2>Moves</h2>
+          <ul class="move-list">
+            <li><strong>Arrow keys / WASD:</strong> Steer the serpent.</li>
+            <li><strong>Space:</strong> Pause &amp; resume.</li>
+            <li><strong>Swipe:</strong> Touch-friendly steering.</li>
+          </ul>
+        </section>
+
+        <section class="control-group accolades">
+          <h2>Masterful Play Awards</h2>
+          <ul>
+            <li><span class="badge" id="flowBadge">Unlit</span> <span>Flow State: Sustain a 5× combo.</span></li>
+            <li><span class="badge" id="precisionBadge">Unlit</span> <span>Precision: Finish a round without hitting walls.</span></li>
+            <li><span class="badge" id="foragerBadge">Unlit</span> <span>Forager: Collect 25 harvests.</span></li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <p>
+        Every fruit you gather adds a new instrument to the score. Keep the melody alive, and Serpent Sonata will sing back in kind.
+      </p>
+    </footer>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
