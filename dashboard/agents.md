@@ -16,6 +16,11 @@
 - Do not couple applets together unless the task requires shared behavior. Keep assets, metadata, and documentation scoped within each applet directory.
 - Never repurpose assets or configs from another applet without duplicating or clearly re-namespacing them.
 
+## Overused Tropes to Avoid
+- Skip purple-forward or aurora-like glassmorphism palettes; we already have several experiences with that glowing purple style.
+- Avoid teal-and-amber "glassy" meteor dashboards or similar cosmic glassmorphism riffs like the Meteoric Mood Loom.
+- Refrain from shipping basic "story generator" tools that simply proxy OpenAI completions without deeper mechanics or twists.
+
 ## Applet Directory
 - Razor Cracktro – Retro cracktro demo with raster bars and chiptune ambiance.
 - Simple Chat – Two-persona chat simulator with moderator tools and history.
