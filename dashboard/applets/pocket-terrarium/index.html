@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pocket Terrarium</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="title-block">
+          <h1>Pocket Terrarium</h1>
+          <p class="subtitle">
+            Paint cellular seeds, watch them bloom, and tend the weather in your pocket garden.
+          </p>
+        </div>
+        <button class="close-button" id="closeButton" aria-label="Return to dashboard">×</button>
+      </header>
+      <main class="app-body">
+        <section class="panel controls" aria-label="Garden controls">
+          <h2>Seed Palette</h2>
+          <div class="seed-options" role="radiogroup" aria-label="Seed species">
+            <label class="seed-option">
+              <input type="radio" name="seed" value="moss" checked />
+              <span class="swatch swatch-moss" aria-hidden="true"></span>
+              <span class="seed-label">Moss</span>
+            </label>
+            <label class="seed-option">
+              <input type="radio" name="seed" value="bloom" />
+              <span class="swatch swatch-bloom" aria-hidden="true"></span>
+              <span class="seed-label">Bloom</span>
+            </label>
+            <label class="seed-option">
+              <input type="radio" name="seed" value="fungus" />
+              <span class="swatch swatch-fungus" aria-hidden="true"></span>
+              <span class="seed-label">Fungus</span>
+            </label>
+          </div>
+
+          <div class="tool-row">
+            <button class="pill-button active" data-tool="paint">Paint</button>
+            <button class="pill-button" data-tool="erase">Erase</button>
+            <button class="pill-button" data-action="clear">Clear</button>
+          </div>
+
+          <h2>Weather</h2>
+          <div class="weather-options" role="radiogroup" aria-label="Weather bias">
+            <label class="weather-option">
+              <input type="radio" name="weather" value="normal" checked />
+              <span>Calm</span>
+            </label>
+            <label class="weather-option">
+              <input type="radio" name="weather" value="rain" />
+              <span>Rain</span>
+            </label>
+            <label class="weather-option">
+              <input type="radio" name="weather" value="drought" />
+              <span>Drought</span>
+            </label>
+          </div>
+
+          <h2>Playback</h2>
+          <div class="playback-controls">
+            <button class="primary" data-action="run">Run</button>
+            <button class="secondary" data-action="step">Tick</button>
+          </div>
+          <div class="speed-control">
+            <label for="speedSlider">Speed</label>
+            <input
+              id="speedSlider"
+              type="range"
+              min="80"
+              max="800"
+              step="20"
+              value="320"
+            />
+            <span id="speedLabel">320 ms</span>
+          </div>
+
+          <h2>Presets</h2>
+          <div class="preset-actions">
+            <button class="secondary" data-action="save-preset">Save to JSON</button>
+            <button class="secondary" data-action="load-preset">Load from JSON</button>
+            <button class="secondary" data-action="load-sample">Load Meadow Sample</button>
+          </div>
+          <textarea
+            id="presetArea"
+            rows="6"
+            placeholder="Preset JSON appears here. Paste JSON to load."
+          ></textarea>
+
+          <h2>Share</h2>
+          <div class="share-block">
+            <button class="primary" data-action="export-gif">Export GIF</button>
+            <label class="frame-count" for="frameCount">Frames</label>
+            <input id="frameCount" type="number" min="5" max="60" value="24" />
+            <p class="hint">Exports the most recent frames (≈3–5 seconds).</p>
+          </div>
+        </section>
+
+        <section class="panel canvas-panel" aria-label="Garden view">
+          <div class="canvas-wrapper">
+            <canvas id="terrarium" width="512" height="512" role="img" aria-label="Cellular garden grid"></canvas>
+            <div class="status-bar">
+              <span id="statusMessage">Paused</span>
+              <span id="generationLabel">Generation 0</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel info" aria-label="Seed rules">
+          <h2>Neighbor Rules</h2>
+          <ul class="rules-list">
+            <li>
+              <strong>Moss</strong>: survives with 2–4 moss neighbors, spreads with 3 or 4 nearby moss.
+            </li>
+            <li>
+              <strong>Bloom</strong>: keeps petals with 3–5 blooms, sprouts with 4–6 bloom neighbors.
+            </li>
+            <li>
+              <strong>Fungus</strong>: clings with 1–3 fungus allies, spores with 2–3 nearby fungus.
+            </li>
+          </ul>
+          <p class="weather-note">
+            Weather nudges the thresholds: rain lowers birth needs, drought makes survival pickier.
+          </p>
+          <details>
+            <summary>How to tend</summary>
+            <ol>
+              <li>Pick a seed type and paint a cluster onto the grid.</li>
+              <li>Tap <em>Tick</em> to step once or <em>Run</em> to watch the garden evolve.</li>
+              <li>Save favorite layouts to JSON or share a GIF bloom.</li>
+            </ol>
+          </details>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
