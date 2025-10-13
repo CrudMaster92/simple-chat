@@ -1,0 +1,12 @@
+{
+  "slug": "gridweave-analyst",
+  "name": "Gridweave Analyst",
+  "description": "Scenario-savvy grid workbook with sparklines, import validation, and AI-assisted formula explainers.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-18",
+  "tags": ["analytics", "spreadsheets", "utilities"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

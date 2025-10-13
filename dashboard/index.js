@@ -58,6 +58,13 @@ const PINNED_CONFIG = [
     emoji: '🗓️',
     categories: ['Utilities'],
   },
+  {
+    slug: 'gridweave-analyst',
+    label: 'Gridweave Analyst',
+    hint: 'Scenario grid workspace',
+    emoji: '📈',
+    categories: ['Utilities'],
+  },
 ];
 
 const CATEGORY_ORDER = ['All', 'Games', 'Creative', 'Chatbots', 'Utilities'];
