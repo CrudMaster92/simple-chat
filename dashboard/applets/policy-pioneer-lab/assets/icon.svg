@@ -1,0 +1,29 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Policy Pioneer Lab Icon</title>
+  <desc id="desc">Stylized grid with a highlighted path and goal star.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#16344b" />
+      <stop offset="100%" stop-color="#071a2d" />
+    </linearGradient>
+    <linearGradient id="trail" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff8a3d" />
+      <stop offset="100%" stop-color="#ffd166" />
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="url(#bg)" />
+  <g stroke="#1e3b52" stroke-width="3">
+    <path d="M30 38h68" />
+    <path d="M30 58h68" />
+    <path d="M30 78h68" />
+    <path d="M30 98h68" />
+    <path d="M40 28v80" />
+    <path d="M60 28v80" />
+    <path d="M80 28v80" />
+    <path d="M100 28v80" />
+  </g>
+  <path d="M38 92l20-34 16 10 20-32" fill="none" stroke="url(#trail)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="38" cy="92" r="8" fill="#f0f6fc" stroke="#ff8a3d" stroke-width="4" />
+  <circle cx="74" cy="68" r="7" fill="#10293d" stroke="#ffd166" stroke-width="3" />
+  <path d="M96 38l4.8 9.8 10.7 1.5-7.7 7.5 1.8 10.6-9.6-5-9.6 5 1.8-10.6-7.7-7.5 10.7-1.5z" fill="#31d17f" />
+</svg>

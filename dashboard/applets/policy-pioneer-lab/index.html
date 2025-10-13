@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Policy Pioneer Lab</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="lab-shell" aria-labelledby="appTitle">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Close Policy Pioneer Lab"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="lab-header">
+        <p class="lab-tag">Reinforcement Learning Expedition</p>
+        <h1 id="appTitle">Policy Pioneer Lab</h1>
+        <p class="lab-lede">
+          Shepherd a scout drone through a shifting reward field, tune its learning instincts, and watch a Q-learning policy take shape.
+        </p>
+      </header>
+
+      <main class="lab-layout">
+        <section class="lab-panel lab-panel--board" aria-labelledby="fieldTitle">
+          <div class="panel-header">
+            <h2 id="fieldTitle">Training Field</h2>
+            <span class="panel-subtitle">Live episode playback</span>
+          </div>
+          <div id="grid" class="field-grid" role="grid" aria-describedby="legendText"></div>
+          <div class="field-legend" id="legendText">
+            <span class="legend-item legend-start">Start</span>
+            <span class="legend-item legend-goal">Goal</span>
+            <span class="legend-item legend-hazard">Hazard</span>
+            <span class="legend-item legend-bonus">Bonus Cache</span>
+            <span class="legend-item legend-agent">Scout</span>
+          </div>
+        </section>
+
+        <section class="lab-panel lab-panel--controls" aria-labelledby="controlsTitle">
+          <div class="panel-header">
+            <h2 id="controlsTitle">Control Room</h2>
+            <span class="panel-subtitle">Shape the learning loop</span>
+          </div>
+          <form class="control-grid" id="parameterForm">
+            <label class="control-field">
+              <span>Learning Rate</span>
+              <input type="range" id="learningRate" min="0.05" max="1" step="0.05" value="0.35" />
+              <output for="learningRate" id="learningRateDisplay">0.35</output>
+            </label>
+            <label class="control-field">
+              <span>Discount Factor</span>
+              <input type="range" id="discountFactor" min="0.5" max="0.99" step="0.01" value="0.85" />
+              <output for="discountFactor" id="discountFactorDisplay">0.85</output>
+            </label>
+            <label class="control-field">
+              <span>Exploration Rate</span>
+              <input type="range" id="explorationRate" min="0" max="1" step="0.05" value="0.35" />
+              <output for="explorationRate" id="explorationRateDisplay">0.35</output>
+            </label>
+            <label class="control-field">
+              <span>Episode Limit</span>
+              <input type="number" id="episodeLimit" min="5" max="200" value="50" />
+            </label>
+            <div class="button-row">
+              <button type="button" id="stepEpisode" class="action-btn">Play 1 Episode</button>
+              <button type="button" id="trainBurst" class="action-btn action-btn--accent">Train 10 Episodes</button>
+              <button type="button" id="resetLab" class="action-btn action-btn--ghost">Reset Lab</button>
+            </div>
+          </form>
+          <div class="control-footnote" id="statusLine" role="status" aria-live="polite">
+            Ready for launch. Adjust parameters and start training.
+          </div>
+        </section>
+
+        <section class="lab-panel lab-panel--insight" aria-labelledby="insightTitle">
+          <div class="panel-header">
+            <h2 id="insightTitle">Policy Telemetry</h2>
+            <span class="panel-subtitle">Rewards, confidence, and notes</span>
+          </div>
+          <div class="insight-body">
+            <div class="telemetry-block" aria-labelledby="rewardTraceTitle">
+              <h3 id="rewardTraceTitle">Reward Trace</h3>
+              <div id="rewardSparkline" class="sparkline" aria-live="polite"></div>
+              <p class="sparkline-note">Recent episode returns. Higher bars mean better scouting.</p>
+            </div>
+            <div class="telemetry-block" aria-labelledby="policyTitle">
+              <h3 id="policyTitle">Policy Map</h3>
+              <div id="policyGrid" class="policy-grid" role="presentation"></div>
+              <p class="sparkline-note">Arrows show the scout's preferred action in each state.</p>
+            </div>
+            <div class="telemetry-block" aria-labelledby="logTitle">
+              <h3 id="logTitle">Mission Log</h3>
+              <ul id="missionLog" class="mission-log" aria-live="polite"></ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
