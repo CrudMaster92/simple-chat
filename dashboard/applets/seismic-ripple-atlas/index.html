@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seismic Ripple Atlas</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="atlas" aria-labelledby="appTitle">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Close Seismic Ripple Atlas"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="atlas__header">
+        <div class="header__badge" aria-live="polite">Streaming USGS feed</div>
+        <h1 id="appTitle">Seismic Ripple Atlas</h1>
+        <p class="header__lede">
+          Watch Earth’s daily tremors unfurl as animated wave bands and story cards. Magnitudes ripple across the panorama while
+          cards pin their epicenters, depths, and timestamps.
+        </p>
+      </header>
+
+      <section class="atlas__panorama" aria-label="Global ripple panorama">
+        <div class="panorama__strip" id="rippleBand" role="list" aria-live="polite">
+          <p class="panorama__placeholder">Gathering ripple pulses…</p>
+        </div>
+        <aside class="panorama__legend" aria-label="Magnitude legend">
+          <h2 class="legend__title">Magnitude Bands</h2>
+          <ul class="legend__scale">
+            <li><span data-band="micro"></span> Mag &lt; 2</li>
+            <li><span data-band="light"></span> 2 – 3.9</li>
+            <li><span data-band="strong"></span> 4 – 5.9</li>
+            <li><span data-band="major"></span> 6+</li>
+          </ul>
+          <p class="legend__note">Pulse width grows with magnitude; brighter bands mark shallow quakes.</p>
+        </aside>
+      </section>
+
+      <section class="atlas__summary" id="summaryPanel" aria-live="polite">
+        <div class="summary__stat">
+          <span class="stat__label">Events logged</span>
+          <span class="stat__value" id="eventCount">—</span>
+        </div>
+        <div class="summary__stat">
+          <span class="stat__label">Largest magnitude</span>
+          <span class="stat__value" id="maxMagnitude">—</span>
+          <span class="stat__detail" id="maxLocation"></span>
+        </div>
+        <div class="summary__stat">
+          <span class="stat__label">Freshest ripple</span>
+          <span class="stat__value" id="latestAgo">—</span>
+          <span class="stat__detail" id="latestLocation"></span>
+        </div>
+      </section>
+
+      <section class="atlas__grid" id="eventList" aria-label="Earthquake cards" aria-live="polite" aria-busy="true">
+        <p class="grid__placeholder">Loading quake pulses…</p>
+      </section>
+    </main>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

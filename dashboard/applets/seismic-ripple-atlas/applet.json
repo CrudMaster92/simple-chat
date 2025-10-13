@@ -1,0 +1,12 @@
+{
+  "slug": "seismic-ripple-atlas",
+  "name": "Seismic Ripple Atlas",
+  "description": "Track today’s earthquakes as animated ripples with live stats from the USGS feed.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-05",
+  "tags": ["data", "live", "visualization"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
