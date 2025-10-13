@@ -28,5 +28,6 @@
   "retro-warp-arcade": "./applets/retro-warp-arcade/applet.json",
   "cassette-loop-challenge": "./applets/cassette-loop-challenge/applet.json",
   "luminous-rift-garden": "./applets/luminous-rift-garden/applet.json",
-  "teacup-tempest-clicker": "./applets/teacup-tempest-clicker/applet.json"
+  "teacup-tempest-clicker": "./applets/teacup-tempest-clicker/applet.json",
+  "meteoric-mood-loom": "./applets/meteoric-mood-loom/applet.json"
 }

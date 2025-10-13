@@ -1,0 +1,12 @@
+{
+  "slug": "meteoric-mood-loom",
+  "name": "Meteoric Mood Loom",
+  "description": "Blend meteor streams, sonic moods, and cosmic instruments to weave bespoke constellation scores.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-05",
+  "tags": ["creative", "music", "generator"],
+  "author": "Meteoric Mood Loom Studio",
+  "permissions": []
+}
