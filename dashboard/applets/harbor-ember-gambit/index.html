@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harbor Ember Gambit</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="gambit-app">
+      <a class="close-button" href="../../index.html" aria-label="Return to dashboard">✕</a>
+      <header class="gambit-header">
+        <h1>Harbor Ember Gambit</h1>
+        <p class="subtitle">Sift the ember tides, outwit the dockside rival, and claim the luminous pennant.</p>
+      </header>
+      <main class="gambit-main">
+        <section class="scoreboard" aria-live="polite">
+          <div class="score-block">
+            <h2>Round</h2>
+            <span id="round-count">1</span>
+          </div>
+          <div class="score-block">
+            <h2>Player</h2>
+            <span id="player-score">0</span>
+          </div>
+          <div class="score-block">
+            <h2>Harbor Rival</h2>
+            <span id="ai-score">0</span>
+          </div>
+          <div class="score-block">
+            <h2>Cards Remaining</h2>
+            <span id="cards-remaining">48</span>
+          </div>
+        </section>
+        <section class="battlefield" aria-live="polite">
+          <div class="ai-area">
+            <h2>Rival's Move</h2>
+            <div id="ai-card" class="card-slot" aria-label="Rival card"></div>
+          </div>
+          <div class="result-banner" id="result-banner" role="status"></div>
+          <div class="player-area">
+            <h2>Your Hand</h2>
+            <div id="player-hand" class="hand" aria-label="Your hand"></div>
+            <button id="next-round" class="action-button" type="button">Next Hand</button>
+            <button id="restart" class="action-button" type="button">Restart Voyage</button>
+          </div>
+        </section>
+        <section class="rules-panel">
+          <h2>Dockside Rules</h2>
+          <p>Each wave you and the rival draw three cards. Choose one to commit; the rival secretly does the same. Highest modified value claims the pennant for that wave.</p>
+          <ul>
+            <li><strong>Tideglass</strong>: +1 strength from the steady current.</li>
+            <li><strong>Emberwake</strong>: Cards 8-12 gather +2 spark.</li>
+            <li><strong>Galeweave</strong>: Cards 1-5 gain a tailwind worth +3.</li>
+            <li><strong>Stonebound</strong>: On ties, Stonebound claims the wave.</li>
+          </ul>
+          <p>The first to seven pennants wins the match. If the deck runs dry, the leader claims the championship pennant.</p>
+        </section>
+      </main>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>

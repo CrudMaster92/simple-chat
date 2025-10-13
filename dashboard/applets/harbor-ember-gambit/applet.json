@@ -1,0 +1,12 @@
+{
+  "slug": "harbor-ember-gambit",
+  "name": "Harbor Ember Gambit",
+  "description": "Dockside dueling card game where ember-lit suits bend the odds each wave.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-09",
+  "tags": ["game", "card", "strategy"],
+  "author": "OpenAI Applet Crafter",
+  "permissions": []
+}
