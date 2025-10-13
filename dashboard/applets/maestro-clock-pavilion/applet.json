@@ -1,0 +1,12 @@
+{
+  "slug": "maestro-clock-pavilion",
+  "name": "Maestro Clock Pavilion",
+  "description": "Analog-digital command center with alarms, timers, laps, and orchestrated rhythm pulses.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-07-06",
+  "tags": ["productivity", "clock", "audio"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

@@ -48,5 +48,6 @@
   "aetherwave-convergence-lab": "./applets/aetherwave-convergence-lab/applet.json",
   "rooftop-apiary-planner": "./applets/rooftop-apiary-planner/applet.json",
   "windchime-pattern-composer": "./applets/windchime-pattern-composer/applet.json",
-  "seismic-ripple-atlas": "./applets/seismic-ripple-atlas/applet.json"
+  "seismic-ripple-atlas": "./applets/seismic-ripple-atlas/applet.json",
+  "maestro-clock-pavilion": "./applets/maestro-clock-pavilion/applet.json"
 }

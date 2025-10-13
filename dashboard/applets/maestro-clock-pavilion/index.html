@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maestro Clock Pavilion</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="pavilion" aria-labelledby="pavilion-title">
+      <a class="close-control" href="../../index.html" aria-label="Return to dashboard">×</a>
+      <header class="pavilion__header">
+        <div class="title-stack">
+          <p class="eyebrow">Precision time theatre</p>
+          <h1 id="pavilion-title">Maestro Clock Pavilion</h1>
+          <p class="subtitle" id="headline-status">Synchronizing chronometers…</p>
+        </div>
+        <div class="hero-clock" aria-live="polite">
+          <div class="analog-clock" aria-hidden="true">
+            <div class="dial dial-hour" id="hour-hand"></div>
+            <div class="dial dial-minute" id="minute-hand"></div>
+            <div class="dial dial-second" id="second-hand"></div>
+            <div class="dial hub"></div>
+          </div>
+          <div class="digital-stack">
+            <p class="digital-time" id="primary-time">--:--:--</p>
+            <p class="digital-date" id="primary-date">---</p>
+            <p class="next-alarm" id="next-alarm">No alarms scheduled</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="pavilion__grid">
+        <section class="panel world-time" aria-labelledby="world-time-title">
+          <header class="panel__header">
+            <h2 id="world-time-title">World Resonance</h2>
+            <button class="panel__action" id="refresh-world" type="button">Resync</button>
+          </header>
+          <ul class="world-list" id="world-clock-list" aria-live="polite"></ul>
+          <form class="world-form" id="world-clock-form" aria-label="Add another world clock">
+            <label class="field" for="world-zone">Time zone</label>
+            <select id="world-zone" name="zone">
+              <option value="Europe/London">London</option>
+              <option value="America/New_York">New York</option>
+              <option value="Europe/Paris">Paris</option>
+              <option value="Asia/Tokyo">Tokyo</option>
+              <option value="Asia/Singapore">Singapore</option>
+              <option value="Australia/Sydney">Sydney</option>
+              <option value="America/Los_Angeles">Los Angeles</option>
+              <option value="America/Sao_Paulo">São Paulo</option>
+              <option value="Africa/Johannesburg">Johannesburg</option>
+              <option value="Asia/Dubai">Dubai</option>
+            </select>
+            <button type="submit" class="panel__action">Add City</button>
+          </form>
+        </section>
+
+        <section class="panel alarms" aria-labelledby="alarm-title">
+          <header class="panel__header">
+            <h2 id="alarm-title">Alarm Atelier</h2>
+            <button class="panel__action" id="test-alarm" type="button">Soundcheck</button>
+          </header>
+          <form class="alarm-form" id="alarm-form">
+            <label class="field">
+              <span>Label</span>
+              <input type="text" name="label" maxlength="60" placeholder="Morning stretch" />
+            </label>
+            <label class="field">
+              <span>Time</span>
+              <input type="time" name="time" required />
+            </label>
+            <label class="field">
+              <span>Repeat</span>
+              <select name="repeat">
+                <option value="once">One time</option>
+                <option value="daily">Daily</option>
+                <option value="weekdays">Weekdays</option>
+              </select>
+            </label>
+            <label class="field field-inline">
+              <input type="checkbox" name="gentle" />
+              <span>Use gentle wake tone</span>
+            </label>
+            <button type="submit" class="submit-button">Schedule Alarm</button>
+          </form>
+          <ul class="alarm-list" id="alarm-list" aria-live="polite"></ul>
+          <div class="alarm-log" aria-live="polite" id="alarm-log" tabindex="0" aria-label="Alarm history"></div>
+        </section>
+
+        <section class="panel timer" aria-labelledby="timer-title">
+          <header class="panel__header">
+            <h2 id="timer-title">Countdown Forge</h2>
+            <div class="quick-buttons" role="group" aria-label="Quick timer presets">
+              <button type="button" data-minutes="5">5 min</button>
+              <button type="button" data-minutes="10">10 min</button>
+              <button type="button" data-minutes="25">25 min</button>
+            </div>
+          </header>
+          <div class="timer-face">
+            <p class="timer-remaining" id="timer-display">00:00</p>
+            <div class="progress-ring"><div class="progress-fill" id="timer-progress"></div></div>
+          </div>
+          <form class="timer-form" id="timer-form" aria-label="Custom timer">
+            <label class="field">
+              <span>Minutes</span>
+              <input type="number" name="minutes" min="0" max="720" value="0" />
+            </label>
+            <label class="field">
+              <span>Seconds</span>
+              <input type="number" name="seconds" min="0" max="59" value="30" />
+            </label>
+            <div class="timer-controls">
+              <button type="submit" class="submit-button">Start</button>
+              <button type="button" id="pause-timer">Pause</button>
+              <button type="button" id="reset-timer">Reset</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel stopwatch" aria-labelledby="stopwatch-title">
+          <header class="panel__header">
+            <h2 id="stopwatch-title">Precision Stopwatch</h2>
+            <p class="lap-count" id="lap-count">No laps yet</p>
+          </header>
+          <div class="stopwatch-face">
+            <p class="stopwatch-display" id="stopwatch-display">00:00.00</p>
+            <div class="stopwatch-controls">
+              <button type="button" id="start-stopwatch">Start</button>
+              <button type="button" id="lap-stopwatch">Lap</button>
+              <button type="button" id="reset-stopwatch">Reset</button>
+            </div>
+          </div>
+          <ol class="lap-list" id="lap-list"></ol>
+        </section>
+
+        <section class="panel ambience" aria-labelledby="ambience-title">
+          <header class="panel__header">
+            <h2 id="ambience-title">Rhythm Steward</h2>
+            <p class="panel__subtitle">Automate pacing cues for focus sessions.</p>
+          </header>
+          <form class="ambience-form" id="ambience-form">
+            <label class="field">
+              <span>Pulse every (minutes)</span>
+              <input type="number" name="interval" min="1" max="120" value="15" />
+            </label>
+            <label class="field field-inline">
+              <input type="checkbox" name="gentle" checked />
+              <span>Soft chime</span>
+            </label>
+            <div class="timer-controls">
+              <button type="submit" class="submit-button">Activate Pulse</button>
+              <button type="button" id="stop-pulse">Stop Pulse</button>
+            </div>
+          </form>
+          <p class="pulse-status" id="pulse-status">Pulse inactive</p>
+        </section>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
