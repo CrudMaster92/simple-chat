@@ -43,3 +43,12 @@ after the redirect; tiles each applet discovered in the registry.
 Once these steps are complete, a static host pointed at the repository root will
 immediately deliver the dashboard, and selecting the applet tile will navigate
 to your new experience.
+
+## How to use the taskbar window
+
+- Launch any applet from the desktop, Start menu, or Applets grid to open it
+  inside the dashboard window. Only one applet runs at a time.
+- Use the window's **Minimize** control or the taskbar button with the applet's
+  name to hide and restore the running experience without reloading it.
+- Select **Close** in the window chrome to return to the desktop; reopening the
+  applet starts it fresh.
