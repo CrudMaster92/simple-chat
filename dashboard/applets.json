@@ -50,5 +50,6 @@
   "windchime-pattern-composer": "./applets/windchime-pattern-composer/applet.json",
   "seismic-ripple-atlas": "./applets/seismic-ripple-atlas/applet.json",
   "maestro-clock-pavilion": "./applets/maestro-clock-pavilion/applet.json",
-  "canvas-remix-studio": "./applets/canvas-remix-studio/applet.json"
+  "canvas-remix-studio": "./applets/canvas-remix-studio/applet.json",
+  "circuit-sweep-analyst": "./applets/circuit-sweep-analyst/applet.json"
 }
