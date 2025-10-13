@@ -1,0 +1,12 @@
+{
+  "slug": "starlit-piano-observatory",
+  "name": "Starlit Piano Observatory",
+  "description": "Improvise piano constellations, capture their orbit trails, and replay nocturnal motifs on demand.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-07",
+  "tags": ["music", "creative", "visual"],
+  "author": "Starlit Piano Observatory Team",
+  "permissions": []
+}
