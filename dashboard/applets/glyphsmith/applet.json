@@ -1,0 +1,12 @@
+{
+  "slug": "glyphsmith",
+  "name": "Glyphsmith",
+  "description": "Forge a bespoke 5×7 micro alphabet, preview it live, and export sprite, JSON, and CSS bundles.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2025-10-13",
+  "tags": ["design", "tools", "type"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
