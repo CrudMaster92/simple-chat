@@ -1,0 +1,12 @@
+{
+  "slug": "circuit-sweep-analyst",
+  "name": "Circuit Sweep Analyst",
+  "description": "Reimagine classic Minesweeper as a circuit audit with heatmap insights, smart hints, and momentum scoring.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-08-17",
+  "tags": ["game", "strategy", "retro"],
+  "author": "OpenAI Applet Crafter",
+  "permissions": []
+}

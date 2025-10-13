@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Circuit Sweep Analyst</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="applet" aria-labelledby="appTitle">
+      <header class="top-bar">
+        <div class="title-block">
+          <p class="badge">Signal-Guided Minesweeper</p>
+          <h1 id="appTitle">Circuit Sweep Analyst</h1>
+          <p class="lede">
+            Modernize the classic Windows puzzle by surveying a circuit board for unstable nodes.
+            Chart risks with live heatmaps, stack safe streaks, and ride the momentum multiplier.
+          </p>
+        </div>
+        <button
+          class="close-control"
+          type="button"
+          aria-label="Close Circuit Sweep Analyst"
+          onclick="window.location.href='../../index.html';"
+        >
+          ✕
+        </button>
+      </header>
+
+      <main class="layout">
+        <section class="control-panel" aria-label="Configuration">
+          <form id="configForm" class="config">
+            <div class="field-group">
+              <label for="difficulty">Difficulty</label>
+              <select id="difficulty" name="difficulty">
+                <option value="intro">Intro Grid · 8×8 · 10 sparks</option>
+                <option value="analyst" selected>Analyst Grid · 12×12 · 22 sparks</option>
+                <option value="architect">Architect Grid · 16×16 · 40 sparks</option>
+              </select>
+            </div>
+
+            <div class="field-grid">
+              <label class="slider-label" for="density">Spark Density</label>
+              <input type="range" id="density" name="density" min="5" max="60" value="22" />
+              <output id="densityValue" for="density">22</output>
+            </div>
+
+            <div class="toggles" role="group" aria-label="Insight options">
+              <label class="toggle">
+                <input type="checkbox" id="autoHeatmap" checked />
+                <span>Auto-heatmap on reveal</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" id="mistFlagAssist" checked />
+                <span>Flag assist for deduced sparks</span>
+              </label>
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="btn primary">Deploy Scan</button>
+              <button type="button" id="pulseHint" class="btn ghost" disabled>Pulse Hint</button>
+            </div>
+          </form>
+
+          <section class="telemetry" aria-label="Telemetry">
+            <div class="telemetry-row">
+              <span class="label">Timer</span>
+              <span id="timer" class="value">00:00</span>
+            </div>
+            <div class="telemetry-row">
+              <span class="label">Cleared Tiles</span>
+              <span id="cleared" class="value">0</span>
+            </div>
+            <div class="telemetry-row">
+              <span class="label">Flags Placed</span>
+              <span id="flags" class="value">0</span>
+            </div>
+            <div class="telemetry-row">
+              <span class="label">Momentum</span>
+              <span id="momentum" class="value">1.0×</span>
+            </div>
+          </section>
+
+          <section class="insight" aria-label="Insight feed">
+            <h2>Insight Feed</h2>
+            <p id="insightMessage">Deploy a scan to begin sweeping.</p>
+            <ul id="insightList" class="insight-list" aria-live="polite"></ul>
+          </section>
+        </section>
+
+        <section class="board-panel" aria-label="Game board">
+          <div class="board-header">
+            <div class="board-status" id="boardStatus">Awaiting deployment.</div>
+            <button id="heatmapToggle" type="button" class="btn ghost" disabled>
+              Show Heatmap
+            </button>
+          </div>
+          <div id="board" class="board" role="grid" aria-describedby="boardStatus"></div>
+        </section>
+      </main>
+    </div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
