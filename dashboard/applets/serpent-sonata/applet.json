@@ -1,0 +1,12 @@
+{
+  "slug": "serpent-sonata",
+  "name": "Serpent Sonata",
+  "description": "Conduct a luminous serpent through living stages, weaving combos, blossoms, and awards with reactive synth flourishes.",
+  "entry": "./index.html",
+  "icon": "./icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-01",
+  "tags": ["arcade", "snake", "audio"],
+  "author": "OpenAI Serpent Ensemble",
+  "permissions": []
+}

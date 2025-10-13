@@ -1,0 +1,25 @@
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">Serpent Sonata icon</title>
+  <defs>
+    <linearGradient id="tail" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d7f08f" />
+      <stop offset="100%" stop-color="#ffcf6b" />
+    </linearGradient>
+    <linearGradient id="backdrop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c2d16" />
+      <stop offset="100%" stop-color="#0d1209" />
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="28" fill="url(#backdrop)" />
+  <path
+    d="M146 52c-18-16-54-22-78-10-20 10-32 30-26 50 6 22 32 32 52 26 18-6 26-20 18-34-8-14-30-14-40-4-8 8-6 22 4 28"
+    fill="none"
+    stroke="url(#tail)"
+    stroke-width="14"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="126" cy="48" r="12" fill="#f6ff9b" />
+  <circle cx="122" cy="44" r="4" fill="#0f140a" />
+  <circle cx="130" cy="50" r="4" fill="#0f140a" />
+</svg>
