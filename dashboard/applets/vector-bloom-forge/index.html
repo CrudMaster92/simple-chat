@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vector Bloom Forge</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="forge-shell" role="application" aria-label="Vector Bloom Forge interactive canvas">
+      <header class="forge-header">
+        <div class="title-block">
+          <h1>Vector Bloom Forge</h1>
+          <p>Shape luminous petals, chase the silhouette, and forge perfect vector blooms.</p>
+        </div>
+        <button
+          class="close-control"
+          type="button"
+          aria-label="Return to dashboard"
+          onclick="window.location.href='../../index.html'"
+        >
+          ×
+        </button>
+      </header>
+
+      <section class="status-board" aria-live="polite">
+        <div class="status-card">
+          <span class="label">Round</span>
+          <span class="value" id="roundValue">0</span>
+        </div>
+        <div class="status-card">
+          <span class="label">Time</span>
+          <span class="value" id="timerValue">0</span>
+        </div>
+        <div class="status-card">
+          <span class="label">Forge Score</span>
+          <span class="value" id="scoreValue">0</span>
+        </div>
+        <button id="startButton" class="cta" type="button">Start Bloom</button>
+      </section>
+
+      <section class="play-section">
+        <div class="canvas-panel">
+          <h2>Vector Bloom Chamber</h2>
+          <div class="canvas-wrapper">
+            <svg id="forgeCanvas" viewBox="0 0 100 100" role="img" aria-label="Interactive bloom editor">
+              <defs>
+                <radialGradient id="targetGlow" cx="0.5" cy="0.5" r="0.5">
+                  <stop offset="0%" stop-color="#f9f5d7" stop-opacity="0.6" />
+                  <stop offset="100%" stop-color="#f0a04b" stop-opacity="0.1" />
+                </radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="48" class="canvas-halo" aria-hidden="true"></circle>
+              <polygon id="targetShape" class="target-shape" points="" aria-hidden="true"></polygon>
+              <polygon id="playerShape" class="player-shape" points=""></polygon>
+              <g id="handleLayer" aria-hidden="true"></g>
+            </svg>
+          </div>
+          <div class="play-metrics">
+            <span id="matchLabel">Match: 0%</span>
+            <span id="stabilityLabel">Stability streak: 0</span>
+          </div>
+          <div class="instructions">
+            <p>
+              Drag the glowing nodes to reshape your bloom. Align it with the golden silhouette before time expires to earn a
+              higher forge score. Keep your streak alive by landing precision matches above 75%.
+            </p>
+          </div>
+        </div>
+
+        <aside class="log-panel" aria-label="Round history">
+          <h2>Forge Chronicle</h2>
+          <ol id="historyList" reversed></ol>
+        </aside>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

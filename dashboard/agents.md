@@ -49,3 +49,4 @@
 - Teacup Tempest Clicker – Conduct a glowing teacup lab where every click uncorks micro-squalls, harvests storm sips, and fuels eccentric weatherwork upgrades.
 - Parallax Bloom Atelier – Choreograph a drifting bouquet of 3D orbiters, blend hues, and weave parallax trails through a luminous depthfield.
 - Nebula Gear Emulator – Boot a prototype handheld shell, swap experimental ROM cartridges, and tackle twin microgames born from an imagined dev lab.
+- Vector Bloom Forge – Sculpt luminous vector petals by dragging nodes to match shimmering silhouettes and chase precision streaks.
