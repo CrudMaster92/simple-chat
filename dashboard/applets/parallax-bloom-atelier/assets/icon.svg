@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Parallax Bloom Atelier icon">
+  <defs>
+    <radialGradient id="bloom" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#33b6ff" stop-opacity="0.95" />
+      <stop offset="55%" stop-color="#1f6bff" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#06111c" stop-opacity="0.1" />
+    </radialGradient>
+    <linearGradient id="petal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff9a3c" />
+      <stop offset="100%" stop-color="#ffd28a" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="#06111c" />
+  <g transform="translate(32 32)">
+    <circle r="24" fill="url(#bloom)" />
+    <g fill="none" stroke="#ffb964" stroke-width="1.5" opacity="0.85">
+      <ellipse rx="22" ry="12" />
+      <ellipse rx="16" ry="26" transform="rotate(45)" />
+      <ellipse rx="26" ry="16" transform="rotate(-35)" />
+    </g>
+    <g>
+      <path d="M0 -16 Q6 -6 0 4 Q-6 -6 0 -16" fill="url(#petal)" opacity="0.9" />
+      <path d="M14 -2 Q4 2 0 12 Q6 4 14 -2" fill="url(#petal)" opacity="0.75" transform="rotate(60)" />
+      <path d="M14 -2 Q4 2 0 12 Q6 4 14 -2" fill="url(#petal)" opacity="0.75" transform="rotate(-60)" />
+    </g>
+    <circle r="5" fill="#ffffff" opacity="0.85" />
+  </g>
+</svg>

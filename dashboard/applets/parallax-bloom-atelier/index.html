@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parallax Bloom Atelier</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="atelier" aria-labelledby="appTitle">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Close Parallax Bloom Atelier"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="atelier__intro">
+        <p class="intro__badge">Depthloom Studio</p>
+        <h1 id="appTitle">Parallax Bloom Atelier</h1>
+        <p class="intro__lede">
+          Sculpt a drifting 3D bloom of orbiting forms, choreograph their parallax trails, and paint the void with layered light.
+        </p>
+      </header>
+
+      <section class="atelier__workspace" aria-label="Parallax bloom workspace">
+        <section class="controls" aria-labelledby="controlsTitle">
+          <h2 id="controlsTitle">Composition Controls</h2>
+          <p class="controls__hint">Design the bloom's layers, motion, and glow.</p>
+
+          <fieldset class="control-group">
+            <legend>Layer palette</legend>
+            <label class="control">
+              Accent hue
+              <input type="color" id="accentColor" value="#ff9a3c" />
+            </label>
+            <label class="control">
+              Bloom hue
+              <input type="color" id="bloomColor" value="#33b6ff" />
+            </label>
+          </fieldset>
+
+          <fieldset class="control-group">
+            <legend>Layer sculpting</legend>
+            <label class="control" for="layerCount">Layer count</label>
+            <input id="layerCount" type="range" min="2" max="12" value="6" />
+            <output id="layerCountValue" for="layerCount">6 layers</output>
+
+            <label class="control" for="trailLength">Trail depth</label>
+            <input id="trailLength" type="range" min="10" max="150" value="80" />
+            <output id="trailValue" for="trailLength">80 frames</output>
+          </fieldset>
+
+          <fieldset class="control-group">
+            <legend>Motion choreography</legend>
+            <label class="control" for="orbitSpeed">Orbit cadence</label>
+            <input id="orbitSpeed" type="range" min="5" max="60" value="22" />
+            <output id="speedValue" for="orbitSpeed">22°/s</output>
+
+            <label class="control" for="driftIntensity">Drift intensity</label>
+            <input id="driftIntensity" type="range" min="0" max="40" value="14" />
+            <output id="driftValue" for="driftIntensity">14%</output>
+          </fieldset>
+
+          <button id="reshuffle" class="primary-action" type="button">
+            Reshuffle Bloom
+          </button>
+
+          <section class="notes" aria-live="polite" aria-atomic="true">
+            <h3 class="notes__title">Bloom Notes</h3>
+            <p id="notesEntry">Layer phasing ready. Orbit cadence steady.</p>
+          </section>
+        </section>
+
+        <section class="viewport" aria-labelledby="viewportTitle">
+          <h2 id="viewportTitle" class="sr-only">Depth viewport</h2>
+          <div id="rendererRoot" class="viewport__canvas" role="presentation"></div>
+          <div class="hud">
+            <div class="hud__panel">
+              <span class="hud__label">Parallax Depth</span>
+              <span class="hud__value" id="hudDepth">1.00x</span>
+            </div>
+            <div class="hud__panel">
+              <span class="hud__label">Active Layers</span>
+              <span class="hud__value" id="hudLayers">6</span>
+            </div>
+            <div class="hud__panel">
+              <span class="hud__label">Trail Frames</span>
+              <span class="hud__value" id="hudTrail">80</span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-eZomY31GOCvt8e+glL3EqWG8lqb/iwr+gLe61/gf9MIod/6VYc7/azXeJvNVUhYh" crossorigin="anonymous"></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
