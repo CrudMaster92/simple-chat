@@ -1,0 +1,12 @@
+{
+  "slug": "echo-orchard",
+  "name": "Echo Orchard",
+  "description": "Plant percussive loops and watch them blossom into a swaying grove of musical trees.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-11",
+  "tags": ["audio", "generative", "creative"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
