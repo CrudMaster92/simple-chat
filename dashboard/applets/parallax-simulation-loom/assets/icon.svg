@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>Parallax Simulation Loom icon</title>
+  <defs>
+    <linearGradient id="grid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64a26f" />
+      <stop offset="100%" stop-color="#f2a154" />
+    </linearGradient>
+  </defs>
+  <rect x="6" y="10" width="52" height="36" rx="10" fill="#101820" />
+  <path d="M12 18h40M12 26h40M12 34h40" stroke="url(#grid)" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+  <circle cx="22" cy="26" r="4" fill="#64a26f" />
+  <circle cx="32" cy="34" r="4" fill="#f2a154" />
+  <circle cx="44" cy="22" r="4" fill="#e85d04" />
+  <path d="M16 50h32l-4 8H20z" fill="#1d2b2f" opacity="0.85" />
+</svg>

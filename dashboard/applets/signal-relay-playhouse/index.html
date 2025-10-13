@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signal Relay Playhouse</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="playhouse" aria-labelledby="appTitle">
+      <button
+        class="close-button"
+        type="button"
+        aria-label="Close Signal Relay Playhouse"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="playhouse__intro">
+        <p class="playhouse__badge">Broadcast Ward · Issue 07</p>
+        <h1 id="appTitle">Signal Relay Playhouse</h1>
+        <p class="playhouse__lede">
+          Curate luminous transmissions, stage them with tactile lighting notes, and let the shared room pulse with a favorite YouTube artefact.
+        </p>
+      </header>
+
+      <section class="playhouse__layout">
+        <section class="stage" aria-labelledby="stageTitle">
+          <div class="stage__header">
+            <h2 id="stageTitle">Broadcast Stage</h2>
+            <div class="stage__meta" aria-live="polite">
+              <span class="stage__label">Now transmitting:</span>
+              <span id="currentScene">—</span>
+            </div>
+          </div>
+
+          <div class="stage__screen">
+            <iframe
+              id="sceneFrame"
+              title="Selected broadcast"
+              src=""
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <div class="stage__controls">
+            <label for="sceneSelect" class="stage__control-label">Transmission cue</label>
+            <select id="sceneSelect" class="stage__select" aria-describedby="sceneDescription"></select>
+            <p id="sceneDescription" class="stage__description">Choose a cue to re-tone the playhouse.</p>
+
+            <div class="stage__mood">
+              <p class="stage__mood-label">Stage mood</p>
+              <div id="moodSwatch" class="stage__mood-swatch" aria-hidden="true"></div>
+              <p id="moodText" class="stage__mood-text">—</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="notes" aria-labelledby="noteTitle">
+          <div class="notes__header">
+            <h2 id="noteTitle">Cue Notebook</h2>
+            <p class="notes__hint">Sketch the room tone you felt during the screening.</p>
+          </div>
+
+          <textarea
+            id="noteInput"
+            class="notes__field"
+            rows="4"
+            placeholder="The synth line blooms like…"
+            aria-label="Write a note about the transmission"
+          ></textarea>
+          <button id="addNote" type="button" class="notes__action">Archive Note</button>
+
+          <ul id="noteList" class="notes__list" aria-live="polite"></ul>
+        </section>
+
+        <aside class="playlist" aria-labelledby="playlistTitle">
+          <div class="playlist__header">
+            <h2 id="playlistTitle">Relay Cues</h2>
+            <p class="playlist__hint">Each cue remaps lighting, deck textures, and the screen above.</p>
+          </div>
+          <ul id="playlistItems" class="playlist__list"></ul>
+
+          <section class="playlist__details" aria-live="polite" aria-atomic="true">
+            <h3 class="playlist__details-title">Scene Details</h3>
+            <p id="sceneNotes">Select a transmission to view the staging brief.</p>
+            <dl class="playlist__telemetry">
+              <div class="telemetry__row">
+                <dt>Tempo notch</dt>
+                <dd id="tempoValue">—</dd>
+              </div>
+              <div class="telemetry__row">
+                <dt>Lighting swatch</dt>
+                <dd id="lightingValue">—</dd>
+              </div>
+              <div class="telemetry__row">
+                <dt>Best seat</dt>
+                <dd id="seatValue">—</dd>
+              </div>
+            </dl>
+          </section>
+        </aside>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

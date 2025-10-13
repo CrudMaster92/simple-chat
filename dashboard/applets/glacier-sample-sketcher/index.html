@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glacier Sample Sketcher</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="sketcher" aria-labelledby="appTitle">
+      <button
+        class="close-button"
+        type="button"
+        aria-label="Close Glacier Sample Sketcher"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="sketcher__intro">
+        <span class="sketcher__badge">Archive Carton · Cryo-Lab C</span>
+        <h1 id="appTitle">Glacier Sample Sketcher</h1>
+        <p class="sketcher__lede">
+          Compose fictional ice cores, annotate microtextures, and decide which relics deserve a slot in the expedition display case.
+        </p>
+      </header>
+
+      <section class="sketcher__grid">
+        <section class="module module--profile" aria-labelledby="profileTitle">
+          <h2 id="profileTitle">Core Stack</h2>
+          <p class="module__hint">Each band thickens or thins as you adjust depth.</p>
+          <div class="core" role="img" aria-describedby="profileMeta">
+            <div id="coreLayers" class="core__layers"></div>
+          </div>
+          <p id="profileMeta" class="core__meta">Select a core recipe to begin.</p>
+        </section>
+
+        <section class="module module--controls" aria-labelledby="controlsTitle">
+          <h2 id="controlsTitle">Cryo Dial</h2>
+          <label class="control" for="profileSelect">
+            <span class="control__label">Sample recipe</span>
+            <select id="profileSelect"></select>
+          </label>
+
+          <div class="control">
+            <div class="control__header">
+              <label for="depth" class="control__label">Core depth (m)</label>
+              <output id="depthValue" for="depth">42</output>
+            </div>
+            <input type="range" id="depth" min="12" max="90" value="42" />
+          </div>
+
+          <fieldset class="control control--toggles" aria-labelledby="focusTitle">
+            <legend id="focusTitle">Focus toggles</legend>
+            <label class="toggle">
+              <input type="checkbox" id="focusStrata" checked />
+              <span>Highlight dust strata</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="focusBubbles" checked />
+              <span>Show trapped bubbles</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="focusFlora" />
+              <span>Display dormant spores</span>
+            </label>
+          </fieldset>
+
+          <label class="control control--text" for="annotation">
+            <span class="control__label">Field annotation</span>
+            <textarea id="annotation" rows="3" placeholder="Glows faintly under camp light…"></textarea>
+          </label>
+          <button type="button" id="pinButton" class="primary-action">Pin to Case Log</button>
+        </section>
+
+        <section class="module module--log" aria-labelledby="logTitle">
+          <h2 id="logTitle">Case Log</h2>
+          <p class="module__hint">Keep only the entries that deserve expedition awe.</p>
+          <ul id="logList" class="log"></ul>
+        </section>
+
+        <section class="module module--analysis" aria-labelledby="analysisTitle">
+          <h2 id="analysisTitle">Analysis Capsule</h2>
+          <article class="analysis" aria-live="polite">
+            <h3 id="analysisTitleText">No sample active.</h3>
+            <p id="analysisDescription">Dial a recipe to unlock mineral gossip.</p>
+            <dl class="analysis__stats">
+              <div class="stat">
+                <dt>Signal Density</dt>
+                <dd id="signalValue">—</dd>
+              </div>
+              <div class="stat">
+                <dt>Historic Echo</dt>
+                <dd id="echoValue">—</dd>
+              </div>
+              <div class="stat">
+                <dt>Preservation Risk</dt>
+                <dd id="riskValue">—</dd>
+              </div>
+            </dl>
+          </article>
+        </section>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

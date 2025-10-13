@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>Heirloom Envelope Atelier icon</title>
+  <defs>
+    <linearGradient id="paper" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f9f1df" />
+      <stop offset="100%" stop-color="#dcb68a" />
+    </linearGradient>
+  </defs>
+  <rect x="10" y="16" width="44" height="32" rx="6" fill="url(#paper)" />
+  <path d="M10 22l22 14 22-14" fill="none" stroke="#c56a2b" stroke-width="3" stroke-linecap="round" />
+  <circle cx="32" cy="32" r="6" fill="#c56a2b" />
+  <circle cx="32" cy="32" r="3" fill="#ffe5c4" />
+</svg>

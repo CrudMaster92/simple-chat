@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parallax Simulation Loom</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="loom" aria-labelledby="appTitle">
+      <button
+        class="close-button"
+        type="button"
+        aria-label="Close Parallax Simulation Loom"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="loom__intro">
+        <div class="loom__badge">Field Deck · Simulation A2</div>
+        <h1 id="appTitle">Parallax Simulation Loom</h1>
+        <p class="loom__lede">
+          Spin up layered environmental runs, thread metrics into parallax ribbons, and archive the stability bands you uncover.
+        </p>
+      </header>
+
+      <section class="loom__grid">
+        <section class="module module--controls" aria-labelledby="controlTitle">
+          <h2 id="controlTitle">Scenario Dial-In</h2>
+          <p class="module__hint">Balance the triad before pulsing a sim run.</p>
+
+          <div class="control" data-channel="complexity">
+            <div class="control__header">
+              <label for="complexity" class="control__label">System Complexity</label>
+              <output id="complexityValue" for="complexity">52</output>
+            </div>
+            <input type="range" id="complexity" min="10" max="90" value="52" />
+            <p class="control__note">Higher values weave in more nested agents and surprise constraints.</p>
+          </div>
+
+          <div class="control" data-channel="stability">
+            <div class="control__header">
+              <label for="stability" class="control__label">Ambient Stability</label>
+              <output id="stabilityValue" for="stability">60</output>
+            </div>
+            <input type="range" id="stability" min="15" max="95" value="60" />
+            <p class="control__note">Stability tempers drift. If it collapses, expect cascading resets.</p>
+          </div>
+
+          <div class="control" data-channel="anomaly">
+            <div class="control__header">
+              <label for="anomaly" class="control__label">Anomaly Charge</label>
+              <output id="anomalyValue" for="anomaly">38</output>
+            </div>
+            <input type="range" id="anomaly" min="5" max="75" value="38" />
+            <p class="control__note">Charge seeds rogue impulses that test your mitigation protocols.</p>
+          </div>
+
+          <fieldset class="control control--toggles" aria-labelledby="toggleTitle">
+            <legend id="toggleTitle">Parallax Anchors</legend>
+            <label class="toggle">
+              <input type="checkbox" id="anchorTerrain" checked />
+              <span class="toggle__label">Terrain imprint</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="anchorWeather" checked />
+              <span class="toggle__label">Weather signatures</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="anchorActors" />
+              <span class="toggle__label">Actor memory tokens</span>
+            </label>
+          </fieldset>
+
+          <button type="button" id="runButton" class="primary-action">Pulse Simulation</button>
+        </section>
+
+        <section class="module module--ribbons" aria-labelledby="ribbonTitle">
+          <h2 id="ribbonTitle">Parallax Ribbons</h2>
+          <p class="module__hint">Each ribbon captures a layer of the simulated stack.</p>
+          <div class="ribbon-stack" id="ribbonStack" role="list"></div>
+        </section>
+
+        <section class="module module--report" aria-labelledby="reportTitle">
+          <h2 id="reportTitle">Run Brief</h2>
+          <p class="module__hint">A synthesis of energy flow, vulnerabilities, and follow-up prompts.</p>
+
+          <article class="report" aria-live="polite">
+            <header class="report__header">
+              <h3 class="report__title" id="reportSummary">Awaiting first run…</h3>
+              <p class="report__meta" id="reportMeta">Tune the triad above and pulse the loom.</p>
+            </header>
+
+            <section class="report__grid">
+              <div class="report__metric">
+                <h4>Stability Band</h4>
+                <p id="bandValue">—</p>
+              </div>
+              <div class="report__metric">
+                <h4>Flux Yield</h4>
+                <p id="yieldValue">—</p>
+              </div>
+              <div class="report__metric">
+                <h4>Anchor Drift</h4>
+                <p id="driftValue">—</p>
+              </div>
+            </section>
+
+            <section class="report__log" aria-live="polite" aria-atomic="true">
+              <h4>Follow-Up Threads</h4>
+              <ul id="followUps"></ul>
+            </section>
+          </article>
+        </section>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

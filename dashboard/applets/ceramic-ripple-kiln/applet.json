@@ -1,0 +1,12 @@
+{
+  "slug": "ceramic-ripple-kiln",
+  "name": "Ceramic Ripple Kiln",
+  "description": "Layer glazes, tweak texture toggles, and script a kiln schedule for ripple-happy vessels.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-08",
+  "tags": ["craft", "design", "maker"],
+  "author": "Ripple Kiln Co-op",
+  "permissions": []
+}
