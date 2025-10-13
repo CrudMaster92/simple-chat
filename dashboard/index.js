@@ -16,6 +16,13 @@ const openAllAppsButton = document.querySelector('[data-role="open-all-apps"]');
 const closeAllAppsButton = document.querySelector('[data-role="close-all-apps"]');
 const clockDisplay = document.querySelector('[data-role="taskbar-clock"]');
 const taskbarSearchWrapper = document.querySelector('[data-role="taskbar-search-wrapper"]');
+const settingsToggle = document.querySelector('[data-role="settings-toggle"]');
+const settingsPanel = document.querySelector('[data-role="settings-panel"]');
+const settingsClose = document.querySelector('[data-role="close-settings"]');
+const wallpaperList = document.querySelector('[data-role="wallpaper-list"]');
+const wallpaperStatus = document.querySelector('[data-role="wallpaper-status"]');
+const wallpaperUpload = document.querySelector('[data-role="wallpaper-upload"]');
+const wallpaperClear = document.querySelector('[data-role="wallpaper-clear"]');
 
 const shortcutButtonMap = new Map();
 const deleteRevealTimers = new WeakMap();
@@ -60,6 +67,44 @@ const PINNED_CONFIG = [
   },
 ];
 
+const WALLPAPERS = [
+  {
+    id: 'deep-current',
+    label: 'Deep Current',
+    top: '#1d3b73',
+    bottom: '#1e7665',
+    accent: '#1d82d2',
+    accentLight: 'rgba(29, 130, 210, 0.12)',
+  },
+  {
+    id: 'citrus-pop',
+    label: 'Citrus Pop',
+    top: '#f6d365',
+    bottom: '#fda085',
+    accent: '#ff7e39',
+    accentLight: 'rgba(255, 126, 57, 0.18)',
+  },
+  {
+    id: 'lagoon-shift',
+    label: 'Lagoon Shift',
+    top: '#0f2027',
+    bottom: '#2c5364',
+    accent: '#36cfc9',
+    accentLight: 'rgba(54, 207, 201, 0.18)',
+  },
+  {
+    id: 'skyline-glow',
+    label: 'Skyline Glow',
+    top: '#0b63ce',
+    bottom: '#5ad4e6',
+    accent: '#0f8af0',
+    accentLight: 'rgba(15, 138, 240, 0.18)',
+  },
+];
+
+const THEME_STORAGE_KEY = 'applet-dashboard-theme';
+const DEFAULT_WALLPAPER = WALLPAPERS[0];
+
 const CATEGORY_ORDER = ['All', 'Games', 'Creative', 'Chatbots', 'Utilities'];
 
 const state = {
@@ -68,6 +113,10 @@ const state = {
   search: '',
   category: 'All',
   desktopShortcuts: [],
+  selectedWallpaperId: DEFAULT_WALLPAPER.id,
+  customImage: null,
+  wallpaper: DEFAULT_WALLPAPER,
+  isCustomWallpaper: false,
 };
 
 function updateClock() {
@@ -88,6 +137,24 @@ function toggleStartMenu(force) {
   startMenu.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
   if (shouldOpen) {
     requestAnimationFrame(() => startSearch?.focus());
+  }
+}
+
+function toggleSettings(force) {
+  if (!settingsPanel) return;
+  const wasOpen = settingsPanel.classList.contains('is-open');
+  const shouldOpen = typeof force === 'boolean' ? force : !wasOpen;
+  settingsPanel.classList.toggle('is-open', shouldOpen);
+  settingsPanel.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+  if (shouldOpen) {
+    const focusable = settingsPanel.querySelector(
+      'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable instanceof HTMLElement) {
+      requestAnimationFrame(() => focusable.focus());
+    }
+  } else if (wasOpen && settingsToggle instanceof HTMLElement) {
+    settingsToggle.focus();
   }
 }
 
@@ -149,6 +216,136 @@ function deriveCategories(slug, name = '', description = '', tags = [], fallback
 
 function fallbackGlyph(name) {
   return name ? name.trim().charAt(0).toUpperCase() : '🧩';
+}
+
+function updateWallpaperStatusMessage(message) {
+  if (wallpaperStatus) {
+    wallpaperStatus.textContent = message;
+  }
+}
+
+function setThemeVariables(theme) {
+  const root = document.documentElement;
+  if (!root) return;
+  root.style.setProperty('--wallpaper-top', theme.top);
+  root.style.setProperty('--wallpaper-bottom', theme.bottom);
+  if (theme.accent) {
+    root.style.setProperty('--accent', theme.accent);
+  }
+  if (theme.accentLight) {
+    root.style.setProperty('--accent-light', theme.accentLight);
+  }
+  root.style.setProperty('--wallpaper-image', 'none');
+  if (document.body) {
+    document.body.dataset.wallpaper = theme.id;
+    delete document.body.dataset.customWallpaper;
+  }
+}
+
+function renderWallpaperOptions() {
+  if (!wallpaperList) return;
+  wallpaperList.replaceChildren();
+  WALLPAPERS.forEach((wallpaper) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'settings__wallpaper';
+    button.style.setProperty('--preview-top', wallpaper.top);
+    button.style.setProperty('--preview-bottom', wallpaper.bottom);
+    const isActive = !state.isCustomWallpaper && state.selectedWallpaperId === wallpaper.id;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+    const preview = document.createElement('div');
+    preview.className = 'settings__wallpaper-preview';
+    const label = document.createElement('span');
+    label.textContent = wallpaper.label;
+    button.append(preview, label);
+    button.addEventListener('click', () => {
+      applyWallpaper(wallpaper);
+    });
+    wallpaperList.appendChild(button);
+  });
+}
+
+function persistTheme() {
+  try {
+    const payload = {
+      selectedWallpaperId: state.selectedWallpaperId,
+      customImage: state.customImage?.dataUrl ?? null,
+      isCustomWallpaper: state.isCustomWallpaper,
+    };
+    window.localStorage?.setItem(THEME_STORAGE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.warn('Unable to save theme settings', error);
+  }
+}
+
+function applyWallpaper(wallpaper, options = {}) {
+  if (!wallpaper) return;
+  state.wallpaper = wallpaper;
+  state.selectedWallpaperId = wallpaper.id;
+  state.isCustomWallpaper = false;
+  state.customImage = null;
+  setThemeVariables(wallpaper);
+  if (wallpaperClear) {
+    wallpaperClear.disabled = true;
+  }
+  updateWallpaperStatusMessage(`${wallpaper.label} wallpaper applied.`);
+  renderWallpaperOptions();
+  if (!options.skipPersist) {
+    persistTheme();
+  }
+}
+
+function applyCustomImage(dataUrl, options = {}) {
+  if (!dataUrl) return;
+  const root = document.documentElement;
+  if (!root) return;
+  state.isCustomWallpaper = true;
+  state.customImage = { dataUrl };
+  const fallback = WALLPAPERS.find((item) => item.id === state.selectedWallpaperId) ?? DEFAULT_WALLPAPER;
+  root.style.setProperty('--wallpaper-image', `url("${dataUrl}")`);
+  root.style.setProperty('--wallpaper-top', 'rgba(13, 34, 55, 0.78)');
+  root.style.setProperty('--wallpaper-bottom', 'rgba(8, 23, 41, 0.78)');
+  if (fallback.accent) {
+    root.style.setProperty('--accent', fallback.accent);
+  }
+  if (fallback.accentLight) {
+    root.style.setProperty('--accent-light', fallback.accentLight);
+  }
+  if (document.body) {
+    document.body.dataset.customWallpaper = 'true';
+  }
+  updateWallpaperStatusMessage('Custom image active. Stored locally on this device.');
+  if (wallpaperClear) {
+    wallpaperClear.disabled = false;
+  }
+  renderWallpaperOptions();
+  if (!options.skipPersist) {
+    persistTheme();
+  }
+}
+
+function clearCustomImage() {
+  if (!state.isCustomWallpaper) return;
+  const fallback = WALLPAPERS.find((item) => item.id === state.selectedWallpaperId) ?? DEFAULT_WALLPAPER;
+  applyWallpaper(fallback);
+}
+
+function restoreTheme() {
+  let saved;
+  try {
+    const stored = window.localStorage?.getItem(THEME_STORAGE_KEY);
+    if (stored) {
+      saved = JSON.parse(stored);
+    }
+  } catch (error) {
+    console.warn('Unable to restore theme settings', error);
+  }
+  const fallback = WALLPAPERS.find((item) => item.id === saved?.selectedWallpaperId) ?? DEFAULT_WALLPAPER;
+  applyWallpaper(fallback, { skipPersist: true });
+  if (saved?.customImage && saved.isCustomWallpaper) {
+    applyCustomImage(saved.customImage, { skipPersist: true });
+  }
 }
 
 function createIconElement({ iconUrl, emoji, label, className }) {
@@ -493,7 +690,8 @@ function renderCategories() {
     button.type = 'button';
     button.textContent = category;
     button.classList.toggle('is-active', state.category === category);
-    button.addEventListener('click', () => {
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
       state.category = category;
       renderCategories();
       renderStartMenu();
@@ -551,6 +749,45 @@ function renderStartMenu() {
   });
 
   renderMenuList(listRecords);
+}
+
+function initSettings() {
+  renderWallpaperOptions();
+  restoreTheme();
+  settingsToggle?.addEventListener('click', () => {
+    toggleSettings();
+    toggleStartMenu(false);
+  });
+  settingsClose?.addEventListener('click', () => toggleSettings(false));
+  settingsPanel?.addEventListener('click', (event) => {
+    if (event.target === settingsPanel) {
+      toggleSettings(false);
+    }
+  });
+  wallpaperUpload?.addEventListener('change', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !input.files?.length) return;
+    const [file] = input.files;
+    if (file.size > 6 * 1024 * 1024) {
+      updateWallpaperStatusMessage('Please choose an image smaller than 6 MB.');
+      input.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      if (typeof reader.result === 'string') {
+        applyCustomImage(reader.result);
+      }
+    });
+    reader.readAsDataURL(file);
+    input.value = '';
+  });
+  wallpaperClear?.addEventListener('click', () => {
+    clearCustomImage();
+  });
+  if (wallpaperClear) {
+    wallpaperClear.disabled = !state.isCustomWallpaper;
+  }
 }
 
 function createFallbackTile(title, description) {
@@ -858,10 +1095,15 @@ function initKeyboardShortcuts() {
       toggleStartMenu(false);
       allAppsPanel?.classList.remove('is-open');
       allAppsPanel?.setAttribute('aria-hidden', 'true');
+      toggleSettings(false);
     }
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'e') {
       event.preventDefault();
       toggleStartMenu(true);
+    }
+    if ((event.metaKey || event.ctrlKey) && event.key === ',') {
+      event.preventDefault();
+      toggleSettings(true);
     }
   });
 }
@@ -870,6 +1112,7 @@ async function init() {
   updateStatus('Loading applets…');
   initAllAppsPanel();
   initKeyboardShortcuts();
+  initSettings();
   let registry;
   try {
     const res = await fetch('./applets.json');
