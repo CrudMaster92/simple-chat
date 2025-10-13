@@ -1,0 +1,15 @@
+<svg width="144" height="144" viewBox="0 0 144 144" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="swirl" x1="20" y1="18" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF9A3C" />
+      <stop offset="0.5" stop-color="#FFEC99" />
+      <stop offset="1" stop-color="#5FFBF1" />
+    </linearGradient>
+  </defs>
+  <rect x="14" y="14" width="116" height="116" rx="28" fill="url(#swirl)" />
+  <path
+    d="M48 54C48 41.8497 58.4323 32 70.5826 32C82.7328 32 93.1651 41.8497 93.1651 54C93.1651 60.1169 90.7126 65.7716 86.4706 69.8808L80.8131 75.3491C77.3997 78.6596 75.4796 83.2257 75.4796 88.0203V108H62.7458V88.2573C62.7458 78.1147 66.855 68.4469 74.0825 61.2324L79.7401 55.7641C81.8933 53.6554 83.1651 50.9202 83.1651 48C83.1651 43.0294 79.2582 39 74.2876 39C69.3171 39 65.4102 43.0294 65.4102 48V53.9999H48V54Z"
+    fill="#1F2A35"
+    opacity="0.85"
+  />
+</svg>

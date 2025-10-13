@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wiki Frame Carnival</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&family=Space+Grotesk:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="carnival" data-app="wiki-frame-carnival">
+      <header class="carnival__header">
+        <div class="carnival__branding">
+          <span class="carnival__spark">✶</span>
+          <div>
+            <h1 class="carnival__title">Wiki Frame Carnival</h1>
+            <p class="carnival__tagline">Shimmy through knowledge lanes with neon fonts and rainbow trims.</p>
+          </div>
+        </div>
+        <a class="carnival__close" href="../../index.html" aria-label="Return to the dashboard">×</a>
+      </header>
+
+      <section class="carnival__content">
+        <aside class="carnival__controls" aria-label="Exploration controls">
+          <form id="searchForm" class="search">
+            <label class="search__label" for="searchInput">
+              <span>Spin up an article</span>
+              <input id="searchInput" type="search" name="query" placeholder="Try &ldquo;Dance&rdquo; or &ldquo;Apollo&rdquo;" autocomplete="off" />
+            </label>
+            <button type="submit" class="search__button">Launch!</button>
+          </form>
+
+          <div class="booster" aria-live="polite" id="statusTicker">Ready for liftoff. Drop a topic!</div>
+
+          <section class="quick-links" aria-label="Quick launch pads">
+            <h2 class="quick-links__title">Jump-in sparks</h2>
+            <div class="quick-links__grid" id="quickLinkShelf">
+              <button class="quick-link" data-search="History of video games">Pixel Past</button>
+              <button class="quick-link" data-search="Neon sign">Glow Glyphs</button>
+              <button class="quick-link" data-search="Color theory">Color Theory</button>
+              <button class="quick-link" data-search="Kaleidoscope">Kaleidoscope</button>
+              <button class="quick-link" data-search="Street art">Street Art</button>
+              <button class="quick-link" data-random="true">Surprise Me</button>
+            </div>
+          </section>
+
+          <section class="palette" aria-label="Accent palette">
+            <h2 class="palette__title">Accent vibes</h2>
+            <div class="palette__swatches">
+              <button type="button" class="swatch" data-accent="sunrise" aria-label="Switch to sunrise theme"></button>
+              <button type="button" class="swatch" data-accent="lagoon" aria-label="Switch to lagoon theme"></button>
+              <button type="button" class="swatch" data-accent="sherbet" aria-label="Switch to sherbet theme"></button>
+            </div>
+          </section>
+
+          <section class="history" aria-label="Visited pages">
+            <h2 class="history__title">Flipbook trail</h2>
+            <ol class="history__list" id="historyList"></ol>
+          </section>
+
+          <p class="carnival__hint">Wikipedia loads right inside the frame. Use the carnival controls for a color-soaked ride!</p>
+        </aside>
+
+        <section class="carnival__viewer" aria-label="Wikipedia viewport">
+          <div class="viewer__banner" role="status" aria-live="polite" id="viewerBanner">Viewing: Wikipedia Main Page</div>
+          <iframe
+            id="wikiFrame"
+            title="Wikipedia article"
+            src="https://en.wikipedia.org/wiki/Main_Page"
+            referrerpolicy="no-referrer"
+          ></iframe>
+          <div class="viewer__footer">Use in-frame links freely &mdash; we keep your history sparkling on the left.</div>
+        </section>
+      </section>
+    </main>
+    <script src="./app.js" type="module" defer></script>
+  </body>
+</html>

@@ -37,5 +37,6 @@
   "glacier-sample-sketcher": "./applets/glacier-sample-sketcher/applet.json",
   "heirloom-envelope-atelier": "./applets/heirloom-envelope-atelier/applet.json",
   "parallax-simulation-loom": "./applets/parallax-simulation-loom/applet.json",
-  "signal-relay-playhouse": "./applets/signal-relay-playhouse/applet.json"
+  "signal-relay-playhouse": "./applets/signal-relay-playhouse/applet.json",
+  "wiki-frame-carnival": "./applets/wiki-frame-carnival/applet.json"
 }

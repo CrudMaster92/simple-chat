@@ -1,0 +1,12 @@
+{
+  "slug": "wiki-frame-carnival",
+  "name": "Wiki Frame Carnival",
+  "description": "A frame-based Wikipedia explorer with candy fonts, accent palettes, and a glittery history trail.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2025-10-13",
+  "tags": ["exploration", "browsing", "playful"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
