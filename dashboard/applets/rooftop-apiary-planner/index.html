@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rooftop Apiary Planner</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="close-button" href="../../index.html" aria-label="Return to dashboard">×</a>
+    <main class="planner-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <h1>Rooftop Apiary Planner</h1>
+          <p>
+            Design a sun-warmed hive terrace, pace pollinator routes, and balance rooftop ecology with a steady honey rhythm.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="generatePlan" class="primary">Compose Plan Narrative</button>
+          <button id="resetPlanner" class="ghost">Reset Layout</button>
+        </div>
+      </header>
+
+      <section class="layout">
+        <section class="panel environment" aria-label="Roof conditions">
+          <h2>Roof Conditions</h2>
+          <div class="field">
+            <label for="area">Usable deck area</label>
+            <div class="value-row">
+              <input type="range" id="area" min="20" max="140" step="5" value="60" />
+              <span id="areaValue">60 m²</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="sunlight">Average sunlight</label>
+            <div class="value-row">
+              <input type="range" id="sunlight" min="3" max="10" step="0.5" value="6.5" />
+              <span id="sunlightValue">6.5 hrs</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="wind">Prevailing wind</label>
+            <select id="wind">
+              <option value="south">South breeze</option>
+              <option value="southwest">Southwest drift</option>
+              <option value="west">Western gust</option>
+              <option value="north">Northern push</option>
+              <option value="east">Eastern lift</option>
+            </select>
+          </div>
+          <div class="field checklist">
+            <span class="label">Support features</span>
+            <label><input type="checkbox" id="waterAccess" checked /> On-demand water line</label>
+            <label><input type="checkbox" id="windScreen" /> Reed wind screens</label>
+            <label><input type="checkbox" id="herbBorder" checked /> Herb border planters</label>
+          </div>
+          <div class="field">
+            <label for="height">Building height</label>
+            <div class="value-row">
+              <input type="range" id="height" min="1" max="35" step="1" value="12" />
+              <span id="heightValue">12 stories</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel hives" aria-label="Hive placements">
+          <div class="panel-header">
+            <h2>Hive Layout</h2>
+            <button id="addHive" class="secondary">Add Hive Slot</button>
+          </div>
+          <p class="hint">
+            Map each hive to a terrace zone, dial their temperament, and pin forage cues to keep foragers staggered.
+          </p>
+          <div id="hiveGrid" class="hive-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="panel blooms" aria-label="Forage calendar">
+          <h2>Forage Calendar</h2>
+          <p class="hint">Toggle bloom pairings to keep nectar lanes open across the seasons.</p>
+          <div class="season" data-season="spring">
+            <header>
+              <h3>Spring</h3>
+              <span class="season-span">March – May</span>
+            </header>
+            <div class="options">
+              <label><input type="checkbox" value="wild thyme" checked /> Wild thyme trays</label>
+              <label><input type="checkbox" value="hawthorn" /> Hawthorn espaliers</label>
+              <label><input type="checkbox" value="borage" /> Blue borage pots</label>
+            </div>
+          </div>
+          <div class="season" data-season="summer">
+            <header>
+              <h3>Summer</h3>
+              <span class="season-span">June – July</span>
+            </header>
+            <div class="options">
+              <label><input type="checkbox" value="lavandin" checked /> Lavandin rows</label>
+              <label><input type="checkbox" value="marjoram" /> Golden marjoram mats</label>
+              <label><input type="checkbox" value="bee balm" /> Bee balm towers</label>
+            </div>
+          </div>
+          <div class="season" data-season="late-summer">
+            <header>
+              <h3>Late Summer</h3>
+              <span class="season-span">August – September</span>
+            </header>
+            <div class="options">
+              <label><input type="checkbox" value="sunflower" checked /> Sunflower trellis</label>
+              <label><input type="checkbox" value="buckwheat" /> Buckwheat trays</label>
+              <label><input type="checkbox" value="zinnia" /> Zinnia berms</label>
+            </div>
+          </div>
+          <div class="season" data-season="autumn">
+            <header>
+              <h3>Autumn</h3>
+              <span class="season-span">October – November</span>
+            </header>
+            <div class="options">
+              <label><input type="checkbox" value="aster" checked /> Aster rings</label>
+              <label><input type="checkbox" value="ivy" /> Ivy curtain</label>
+              <label><input type="checkbox" value="rosemary" /> Rosemary pillars</label>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel analytics" aria-label="Planner insights">
+        <div class="insight">
+          <h2>Risk Watch</h2>
+          <div class="gauge" role="img" aria-label="Hive risk meter">
+            <div class="gauge-track">
+              <div id="riskNeedle" class="gauge-needle"></div>
+            </div>
+            <p id="riskLabel">Balanced &amp; breezy</p>
+          </div>
+        </div>
+        <div class="insight">
+          <h2>Traffic Bands</h2>
+          <ul id="trafficList" class="traffic-list"></ul>
+        </div>
+        <div class="insight narrative">
+          <h2>Plan Narrative</h2>
+          <p id="narrativeText">
+            Dial in terrace conditions and add hive slots to compose a narrative that keeps your rooftop colony flourishing.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

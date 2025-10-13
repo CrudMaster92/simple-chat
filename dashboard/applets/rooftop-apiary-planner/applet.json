@@ -1,0 +1,12 @@
+{
+  "slug": "rooftop-apiary-planner",
+  "name": "Rooftop Apiary Planner",
+  "description": "Compose rooftop hive layouts, tune colony temperaments, and choreograph bloom corridors for steady pollinator flow.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-02",
+  "tags": ["planning", "ecology", "creative"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

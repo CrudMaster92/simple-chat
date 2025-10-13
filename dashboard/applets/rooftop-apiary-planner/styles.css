@@ -1,0 +1,415 @@
+:root {
+  color-scheme: light;
+  --bg: #f5f1e6;
+  --panel: #ffffff;
+  --text: #253829;
+  --accent: #f0a202;
+  --accent-dark: #c77700;
+  --muted: #708c73;
+  --teal: #2a8572;
+  --border: #d9d2c3;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(255, 230, 173, 0.35), transparent 55%),
+    var(--bg);
+  color: var(--text);
+}
+
+.close-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: rgba(37, 56, 41, 0.15);
+  color: var(--text);
+  border: none;
+  font-size: 1.5rem;
+  text-decoration: none;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+  background: rgba(37, 56, 41, 0.3);
+}
+
+main.planner-shell {
+  padding: 4.5rem 6vw 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, rgba(255, 217, 129, 0.4), rgba(42, 133, 114, 0.15));
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(112, 140, 115, 0.25);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.hero p {
+  margin: 0.5rem 0 0;
+  max-width: 32ch;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+button.primary,
+button.secondary,
+button.ghost {
+  font: inherit;
+  border-radius: 999px;
+  padding: 0.65rem 1.4rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+button.primary {
+  background: var(--accent);
+  color: #fffaf2;
+  box-shadow: 0 10px 22px rgba(240, 162, 2, 0.25);
+}
+
+button.primary:hover,
+button.primary:focus {
+  transform: translateY(-1px);
+  background: var(--accent-dark);
+}
+
+button.secondary {
+  background: rgba(42, 133, 114, 0.12);
+  color: var(--teal);
+  border: 1px solid rgba(42, 133, 114, 0.3);
+}
+
+button.secondary:hover,
+button.secondary:focus {
+  transform: translateY(-1px);
+  background: rgba(42, 133, 114, 0.2);
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid rgba(37, 56, 41, 0.2);
+}
+
+button.ghost:hover,
+button.ghost:focus {
+  background: rgba(37, 56, 41, 0.08);
+}
+
+.layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.panel {
+  background: var(--panel);
+  border-radius: 20px;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 35px rgba(17, 34, 25, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.panel h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field label,
+.field .label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.value-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.value-row input[type="range"] {
+  flex: 1;
+}
+
+.value-row span {
+  min-width: 5.5rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.checklist label {
+  font-weight: 500;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: rgba(37, 56, 41, 0.8);
+}
+
+select,
+input,
+textarea {
+  font: inherit;
+}
+
+select,
+input[type="text"],
+input[type="number"] {
+  border: 1px solid rgba(37, 56, 41, 0.2);
+  border-radius: 12px;
+  padding: 0.55rem 0.75rem;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(37, 56, 41, 0.7);
+}
+
+.hive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.hive-card {
+  border: 1px dashed rgba(37, 56, 41, 0.25);
+  border-radius: 16px;
+  padding: 1rem;
+  display: grid;
+  gap: 0.75rem;
+  background: linear-gradient(160deg, rgba(255, 237, 200, 0.45), rgba(255, 255, 255, 0.85));
+  position: relative;
+}
+
+.hive-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hive-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.hive-card button.remove {
+  border: none;
+  background: transparent;
+  color: rgba(37, 56, 41, 0.5);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.hive-card button.remove:hover,
+.hive-card button.remove:focus {
+  color: rgba(37, 56, 41, 0.8);
+}
+
+.hive-card .row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hive-card .row label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(37, 56, 41, 0.7);
+}
+
+.hive-card select,
+.hive-card input[type="text"],
+.hive-card input[type="range"] {
+  width: 100%;
+}
+
+.hive-card .traits {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  background: rgba(42, 133, 114, 0.15);
+  color: var(--teal);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.season {
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 16px;
+  border: 1px dashed rgba(42, 133, 114, 0.3);
+  padding: 1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.season header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.season h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.season-span {
+  font-size: 0.85rem;
+  color: rgba(37, 56, 41, 0.6);
+}
+
+.options {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: rgba(37, 56, 41, 0.75);
+}
+
+.analytics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.insight {
+  background: var(--panel);
+  border-radius: 20px;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 30px rgba(17, 34, 25, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.insight h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.gauge {
+  display: grid;
+  gap: 1rem;
+}
+
+.gauge-track {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #9bcf53, #f0a202, #ef5d28);
+  overflow: hidden;
+}
+
+.gauge-needle {
+  position: absolute;
+  top: -6px;
+  width: 3px;
+  height: 24px;
+  background: #253829;
+  border-radius: 3px;
+  transition: left 0.3s ease;
+}
+
+#riskLabel {
+  font-weight: 600;
+  color: rgba(37, 56, 41, 0.75);
+}
+
+.traffic-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.traffic-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px;
+  padding: 0.6rem 0.8rem;
+  background: rgba(42, 133, 114, 0.1);
+  border: 1px solid rgba(42, 133, 114, 0.2);
+}
+
+.traffic-item span {
+  font-weight: 600;
+}
+
+.narrative p,
+#narrativeText {
+  margin: 0;
+  line-height: 1.6;
+  color: rgba(37, 56, 41, 0.8);
+}
+
+@media (max-width: 720px) {
+  main.planner-shell {
+    padding: 4rem 1.25rem 3rem;
+  }
+
+  .hero {
+    padding: 1.5rem;
+  }
+
+  .panel {
+    padding: 1.25rem;
+  }
+}
