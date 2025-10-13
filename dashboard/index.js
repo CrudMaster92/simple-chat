@@ -31,6 +31,8 @@ const osFrame = document.querySelector('[data-role="os-frame"]');
 const osMinimizeButton = document.querySelector('[data-action="minimize"]');
 const osCloseButton = document.querySelector('[data-action="close"]');
 const taskbarSessions = document.querySelector('[data-role="taskbar-sessions"]');
+const taskbar = document.querySelector('[data-role="taskbar"]');
+const osResizeButton = document.querySelector('[data-action="resize"]');
 
 const shortcutButtonMap = new Map();
 const deleteRevealTimers = new WeakMap();
@@ -130,9 +132,33 @@ const state = {
 const osState = {
   current: null,
   minimized: false,
+  isFullSize: true,
 };
 
 let activeTaskbarButton = null;
+
+function updateTaskbarSafeArea() {
+  const safeArea = taskbar ? Math.round(taskbar.getBoundingClientRect().height) : 0;
+  document.documentElement?.style.setProperty('--taskbar-safe-area', `${safeArea}px`);
+}
+
+function syncWindowLayout() {
+  updateTaskbarSafeArea();
+  const shouldFullscreen = Boolean(osState.current) && osState.isFullSize;
+  if (osShell) {
+    osShell.classList.toggle('is-fullscreen', shouldFullscreen);
+  }
+  if (osResizeButton) {
+    const label = osState.isFullSize ? 'Restore window size' : 'Maximize window';
+    osResizeButton.setAttribute('aria-label', label);
+    osResizeButton.setAttribute('title', osState.isFullSize ? 'Restore' : 'Maximize');
+    osResizeButton.setAttribute('aria-pressed', String(osState.isFullSize));
+    osResizeButton.textContent = osState.isFullSize ? '❐' : '▢';
+  }
+}
+
+syncWindowLayout();
+window.addEventListener('resize', syncWindowLayout);
 
 function updateClock() {
   if (!clockDisplay) return;
@@ -240,6 +266,7 @@ function restoreActiveApplet() {
   osShell.classList.add('is-active');
   osShell.classList.remove('is-minimized');
   osShell.setAttribute('aria-hidden', 'false');
+  syncWindowLayout();
   updateTaskbarSessionButton();
   requestAnimationFrame(() => {
     try {
@@ -256,6 +283,7 @@ function closeActiveApplet() {
   if (!osState.current) return;
   osState.current = null;
   osState.minimized = false;
+  osState.isFullSize = true;
   if (osShell) {
     osShell.classList.remove('is-active', 'is-minimized');
     osShell.setAttribute('aria-hidden', 'true');
@@ -273,6 +301,7 @@ function closeActiveApplet() {
     osFrame.src = 'about:blank';
     osFrame.title = '';
   }
+  syncWindowLayout();
   updateTaskbarSessionButton();
   startButton?.focus();
 }
@@ -283,12 +312,15 @@ function launchApplet(record) {
   const isSameApplet = osState.current?.slug === normalized.slug;
   osState.current = normalized;
   osState.minimized = false;
+  osState.isFullSize = true;
 
   if (osShell) {
     osShell.classList.add('is-active');
     osShell.classList.remove('is-minimized');
     osShell.setAttribute('aria-hidden', 'false');
   }
+
+  syncWindowLayout();
 
   const currentSrc = osFrame?.getAttribute('src');
   if (osFrame && (!isSameApplet || !currentSrc || currentSrc === 'about:blank')) {
@@ -357,6 +389,12 @@ osMinimizeButton?.addEventListener('click', () => {
   if (osState.current) {
     minimizeActiveApplet();
   }
+});
+
+osResizeButton?.addEventListener('click', () => {
+  if (!osState.current) return;
+  osState.isFullSize = !osState.isFullSize;
+  syncWindowLayout();
 });
 
 osCloseButton?.addEventListener('click', () => {

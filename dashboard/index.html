@@ -943,6 +943,15 @@
             </button>
             <button
               type="button"
+              class="os-window__action os-window__action--resize"
+              data-action="resize"
+              aria-label="Toggle window size"
+              title="Resize"
+            >
+              ❐
+            </button>
+            <button
+              type="button"
               class="os-window__action os-window__action--close"
               data-action="close"
               aria-label="Close window"
@@ -1030,7 +1039,7 @@
       </div>
     </div>
 
-    <footer class="taskbar" aria-label="Taskbar">
+    <footer class="taskbar" aria-label="Taskbar" data-role="taskbar">
       <button class="taskbar__start" type="button" data-role="start-button">
         <span>☰</span>
         <span>Start</span>
