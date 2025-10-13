@@ -1,0 +1,12 @@
+{
+  "slug": "aetherwave-convergence-lab",
+  "name": "Aetherwave Convergence Lab",
+  "description": "Sculpt resonant expeditions with live particle fields, telemetry broadcasts, and an imprintable blueprint chronicle.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-08",
+  "tags": ["simulation", "creative", "ambitious"],
+  "author": "Aetherwave Studio",
+  "permissions": []
+}

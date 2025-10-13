@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aetherwave Convergence Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="header-left">
+          <img src="./assets/icon.svg" alt="Aetherwave icon" class="app-icon" />
+          <div class="title-block">
+            <h1>Aetherwave Convergence Lab</h1>
+            <p>
+              Sculpt resonant expedition blueprints where tidal harmonics, living diagrams, and speculative field reports merge
+              into one living control room.
+            </p>
+          </div>
+        </div>
+        <a href="../index.html" class="close-button" aria-label="Return to dashboard">✕</a>
+      </header>
+
+      <main class="app-grid">
+        <section class="panel controls" aria-labelledby="controls-title">
+          <div class="panel-header">
+            <h2 id="controls-title">Phase Controls</h2>
+            <p>Curate the harmonic sequence and sculpt the resonance signature.</p>
+          </div>
+
+          <div class="control-group">
+            <label for="sequence-select">Energy Sequence</label>
+            <select id="sequence-select" class="input"></select>
+            <p class="control-hint" id="sequence-hint"></p>
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label for="resonance-range">Resonance Depth</label>
+              <span class="value-pill" id="resonance-value">5</span>
+            </div>
+            <input type="range" id="resonance-range" min="1" max="10" step="1" value="5" />
+            <p class="control-hint">
+              Modulates orbital spread, pulse density, and the intensity of the emergent field diagrams.
+            </p>
+          </div>
+
+          <div class="control-group">
+            <span class="label">Pulse Motifs</span>
+            <div class="chip-grid" id="motif-grid"></div>
+            <p class="control-hint">Select up to four motifs to weave into this convergence pass.</p>
+          </div>
+
+          <div class="control-group">
+            <span class="label">Phase Catalysts</span>
+            <div class="catalyst-buttons">
+              <button class="btn btn-ghost" id="randomize-btn">Pulse Shuffle</button>
+              <button class="btn btn-ghost" id="cycle-btn">Auto Cycle</button>
+            </div>
+          </div>
+
+          <div class="control-group action-group">
+            <button class="btn btn-primary" id="sculpt-btn">Sculpt Convergence</button>
+            <button class="btn btn-secondary" id="imprint-btn">Imprint Blueprint</button>
+          </div>
+        </section>
+
+        <section class="panel stage" aria-labelledby="stage-title">
+          <div class="panel-header">
+            <h2 id="stage-title">Convergence Stage</h2>
+            <p>Observe the living diagram and the spectral telemetry streaming from your configuration.</p>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="constellation-canvas" width="640" height="480" aria-label="Convergence field visualization"></canvas>
+            <div class="canvas-overlay">
+              <div class="overlay-pills" id="overlay-pills"></div>
+            </div>
+          </div>
+          <div class="telemetry">
+            <div>
+              <h3>Telemetry Broadcast</h3>
+              <p id="telemetry-readout">Select an energy sequence to begin the resonance scan.</p>
+            </div>
+            <div class="spectral-grid">
+              <div class="spectral-card">
+                <span class="spectral-label">Flux Spiral</span>
+                <span class="spectral-value" id="flux-value">—</span>
+              </div>
+              <div class="spectral-card">
+                <span class="spectral-label">Echo Delay</span>
+                <span class="spectral-value" id="echo-value">—</span>
+              </div>
+              <div class="spectral-card">
+                <span class="spectral-label">Aperture Drift</span>
+                <span class="spectral-value" id="drift-value">—</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel chronicle" aria-labelledby="chronicle-title">
+          <div class="panel-header">
+            <h2 id="chronicle-title">Blueprint Chronicle</h2>
+            <p>Archive convergences, revisit imprints, and chain them into an expedition playlist.</p>
+          </div>
+          <div class="chronicle-actions">
+            <button class="btn btn-ghost" id="clear-chronicle-btn">Clear Chronicle</button>
+            <button class="btn btn-ghost" id="export-btn">Export Manifest</button>
+          </div>
+          <ul class="chronicle-list" id="chronicle-list"></ul>
+          <article class="manifest" id="manifest-card" hidden>
+            <header>
+              <h3>Expedition Manifest</h3>
+              <button class="manifest-close" id="manifest-close" aria-label="Close manifest">✕</button>
+            </header>
+            <pre id="manifest-output"></pre>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
