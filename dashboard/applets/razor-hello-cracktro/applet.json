@@ -1,0 +1,12 @@
+{
+  "slug": "razor-hello-cracktro",
+  "name": "Razor Hello Cracktro",
+  "description": "Lightweight hello-world cracktro with a perspective starfield and scrolling greeting banner.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.1",
+  "lastUpdated": "2024-05-12",
+  "tags": ["retro", "demo"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
