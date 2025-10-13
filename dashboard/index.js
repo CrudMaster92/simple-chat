@@ -15,6 +15,12 @@ const allAppsPanel = document.querySelector('[data-role="all-apps"]');
 const openAllAppsButton = document.querySelector('[data-role="open-all-apps"]');
 const closeAllAppsButton = document.querySelector('[data-role="close-all-apps"]');
 const clockDisplay = document.querySelector('[data-role="taskbar-clock"]');
+const taskbarSearchWrapper = document.querySelector('[data-role="taskbar-search-wrapper"]');
+
+const shortcutButtonMap = new Map();
+const deleteRevealTimers = new WeakMap();
+let draggedShortcutSlug = null;
+const DELETE_REVEAL_DELAY = 1200;
 
 const PINNED_CONFIG = [
   {
@@ -61,6 +67,7 @@ const state = {
   pinned: [],
   search: '',
   category: 'All',
+  desktopShortcuts: [],
 };
 
 function updateClock() {
@@ -87,6 +94,9 @@ function toggleStartMenu(force) {
 function handleOutsideClick(event) {
   if (!startMenu?.classList.contains('is-open')) return;
   if (startMenu.contains(event.target) || startButton?.contains(event.target)) {
+    return;
+  }
+  if (taskbarSearchWrapper?.contains(event.target) || taskbarSearch?.contains(event.target)) {
     return;
   }
   toggleStartMenu(false);
@@ -232,20 +242,221 @@ function createMenuItem(record) {
   return button;
 }
 
-function createShortcut(record) {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'shortcut';
-  if (!record.entryUrl) {
-    button.classList.add('is-disabled');
-    button.title = `${record.name} (coming soon)`;
-    button.setAttribute('aria-disabled', 'true');
+function clearDeleteTimer(element) {
+  const timerId = deleteRevealTimers.get(element);
+  if (typeof timerId === 'number') {
+    window.clearTimeout(timerId);
+  }
+  deleteRevealTimers.delete(element);
+}
+
+function hasDesktopShortcut(slug) {
+  return state.desktopShortcuts.some((shortcut) => shortcut.slug === slug);
+}
+
+function getShortcutRecord(slug) {
+  return (
+    state.records.find((record) => record.slug === slug) ||
+    state.pinned.find((record) => record.slug === slug) ||
+    null
+  );
+}
+
+function syncShortcutButton(slug) {
+  const button = shortcutButtonMap.get(slug);
+  if (!button) return;
+  const isAdded = hasDesktopShortcut(slug);
+  button.disabled = isAdded;
+  button.textContent = isAdded ? 'Shortcut added' : 'Add shortcut';
+  const appName = button.dataset.appName || 'this applet';
+  const addTitle = button.dataset.titleAdd;
+  const addedTitle = button.dataset.titleAdded;
+  if (isAdded) {
+    button.title = addedTitle || button.title;
+    button.setAttribute('aria-label', `${appName} already has a desktop shortcut`);
   } else {
-    button.title = `Open ${record.name}`;
-    button.addEventListener('dblclick', () => {
+    button.title = addTitle || button.title;
+    button.setAttribute('aria-label', `Add ${appName} to desktop`);
+  }
+}
+
+function syncShortcutButtons() {
+  shortcutButtonMap.forEach((_, slug) => {
+    syncShortcutButton(slug);
+  });
+}
+
+function addDesktopShortcut(slug, fallbackRecord) {
+  if (hasDesktopShortcut(slug)) return;
+  const source = getShortcutRecord(slug) || fallbackRecord;
+  if (!source) return;
+  const entry = {
+    slug: source.slug ?? slug,
+    name: source.name ?? slug,
+    entryUrl: source.entryUrl ?? null,
+    iconUrl: source.iconUrl ?? null,
+    emoji: source.emoji ?? fallbackGlyph(source.name ?? slug),
+  };
+  state.desktopShortcuts.push(entry);
+  renderShortcuts();
+}
+
+function removeDesktopShortcut(slug) {
+  const index = state.desktopShortcuts.findIndex((shortcut) => shortcut.slug === slug);
+  if (index === -1) return;
+  state.desktopShortcuts.splice(index, 1);
+  renderShortcuts();
+}
+
+function moveDesktopShortcut(slug, targetSlug = null, placeAfter = false) {
+  if (slug === targetSlug) return;
+  const currentIndex = state.desktopShortcuts.findIndex((shortcut) => shortcut.slug === slug);
+  if (currentIndex === -1) return;
+  const [entry] = state.desktopShortcuts.splice(currentIndex, 1);
+  let nextIndex;
+  if (!targetSlug) {
+    nextIndex = state.desktopShortcuts.length;
+  } else {
+    nextIndex = state.desktopShortcuts.findIndex((shortcut) => shortcut.slug === targetSlug);
+    if (nextIndex === -1) {
+      nextIndex = state.desktopShortcuts.length;
+    } else if (placeAfter) {
+      nextIndex += 1;
+    }
+  }
+  state.desktopShortcuts.splice(nextIndex, 0, entry);
+  renderShortcuts();
+}
+
+function handleShortcutDragStart(event) {
+  const shortcut = event.currentTarget;
+  if (!(shortcut instanceof HTMLElement)) return;
+  const slug = shortcut.dataset.slug;
+  if (!slug) return;
+  draggedShortcutSlug = slug;
+  shortcut.classList.add('is-dragging');
+  if (event.dataTransfer) {
+    event.dataTransfer.setData('text/plain', slug);
+    event.dataTransfer.effectAllowed = 'move';
+  }
+}
+
+function handleShortcutDragEnd(event) {
+  const shortcut = event.currentTarget;
+  if (shortcut instanceof HTMLElement) {
+    shortcut.classList.remove('is-dragging');
+  }
+  draggedShortcutSlug = null;
+}
+
+function handleShortcutDragOver(event) {
+  event.preventDefault();
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = 'move';
+  }
+}
+
+function handleShortcutDrop(event) {
+  event.preventDefault();
+  const slug = draggedShortcutSlug || event.dataTransfer?.getData('text/plain');
+  if (!slug) return;
+  const target = event.target instanceof Element ? event.target.closest('.shortcut') : null;
+  if (target && target instanceof HTMLElement && target.dataset.slug) {
+    const bounds = target.getBoundingClientRect();
+    const isAfter = event.clientY > bounds.top + bounds.height / 2;
+    moveDesktopShortcut(slug, target.dataset.slug, isAfter);
+  } else {
+    moveDesktopShortcut(slug, null, false);
+  }
+  draggedShortcutSlug = null;
+}
+
+function createShortcut(record) {
+  const shortcut = document.createElement('div');
+  shortcut.className = 'shortcut';
+  shortcut.dataset.slug = record.slug;
+  shortcut.setAttribute('role', 'button');
+  shortcut.setAttribute('tabindex', '0');
+  shortcut.draggable = true;
+
+  const deleteButton = document.createElement('button');
+  deleteButton.type = 'button';
+  deleteButton.className = 'shortcut__delete';
+  deleteButton.setAttribute('aria-label', `Remove ${record.name} shortcut`);
+  deleteButton.textContent = '×';
+  deleteButton.tabIndex = -1;
+
+  const showDelete = () => {
+    clearDeleteTimer(shortcut);
+    shortcut.classList.add('show-delete');
+    deleteButton.tabIndex = 0;
+  };
+
+  const hideDelete = () => {
+    clearDeleteTimer(shortcut);
+    shortcut.classList.remove('show-delete');
+    deleteButton.tabIndex = -1;
+  };
+
+  if (!record.entryUrl) {
+    shortcut.classList.add('is-disabled');
+    shortcut.title = `${record.name} (coming soon)`;
+    shortcut.setAttribute('aria-disabled', 'true');
+  } else {
+    shortcut.title = `Open ${record.name}`;
+    const openShortcut = () => {
       window.open(record.entryUrl, '_blank', 'noopener');
+    };
+    shortcut.addEventListener('dblclick', openShortcut);
+    shortcut.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openShortcut();
+      }
     });
   }
+
+  shortcut.addEventListener('mouseenter', () => {
+    if (shortcut.classList.contains('show-delete')) return;
+    clearDeleteTimer(shortcut);
+    const timerId = window.setTimeout(() => {
+      showDelete();
+    }, DELETE_REVEAL_DELAY);
+    deleteRevealTimers.set(shortcut, timerId);
+  });
+
+  shortcut.addEventListener('mouseleave', (event) => {
+    const next = event.relatedTarget;
+    if (next instanceof HTMLElement && shortcut.contains(next)) {
+      return;
+    }
+    hideDelete();
+  });
+
+  shortcut.addEventListener('focus', () => {
+    showDelete();
+  });
+
+  shortcut.addEventListener('focusout', (event) => {
+    const next = event.relatedTarget;
+    if (next instanceof HTMLElement && shortcut.contains(next)) {
+      return;
+    }
+    hideDelete();
+  });
+
+  shortcut.addEventListener('dragstart', handleShortcutDragStart);
+  shortcut.addEventListener('dragend', (event) => {
+    handleShortcutDragEnd(event);
+    hideDelete();
+  });
+
+  deleteButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+    removeDesktopShortcut(record.slug);
+  });
+
+  deleteButton.addEventListener('focus', showDelete);
 
   const icon = createIconElement({
     iconUrl: record.iconUrl,
@@ -258,8 +469,8 @@ function createShortcut(record) {
   label.className = 'shortcut__label';
   label.textContent = record.name;
 
-  button.append(icon, label);
-  return button;
+  shortcut.append(deleteButton, icon, label);
+  return shortcut;
 }
 
 function renderPinned() {
@@ -308,11 +519,15 @@ function renderMenuList(records) {
 function renderShortcuts() {
   if (!shortcutContainer) return;
   shortcutContainer.replaceChildren();
-  state.pinned.forEach((record) => {
+  state.desktopShortcuts.forEach((record) => {
     const shortcut = createShortcut(record);
     shortcutContainer.appendChild(shortcut);
   });
+  syncShortcutButtons();
 }
+
+shortcutContainer?.addEventListener('dragover', handleShortcutDragOver);
+shortcutContainer?.addEventListener('drop', handleShortcutDrop);
 
 function renderStartMenu() {
   const query = state.search;
@@ -360,7 +575,7 @@ function applyFallbackIcon(wrapper) {
   wrapper.appendChild(span);
 }
 
-function createTile(metadata, resolvedEntryUrl, iconUrl) {
+function createTile(slug, metadata, resolvedEntryUrl, iconUrl) {
   const tile = document.createElement('article');
   tile.className = 'tile';
   tile.setAttribute('tabindex', '-1');
@@ -405,15 +620,50 @@ function createTile(metadata, resolvedEntryUrl, iconUrl) {
     }
   }
 
+  const actions = document.createElement('div');
+  actions.className = 'tile__actions';
+
+  const shortcutButton = document.createElement('button');
+  shortcutButton.type = 'button';
+  shortcutButton.className = 'tile__action tile__action--ghost';
+  shortcutButton.dataset.slug = slug;
+  shortcutButton.textContent = 'Add shortcut';
+  const addTitle = `Create a desktop shortcut for ${metadata.name}`;
+  const addedTitle = `${metadata.name} is already on the desktop`;
+  shortcutButton.title = addTitle;
+  shortcutButton.dataset.titleAdd = addTitle;
+  shortcutButton.dataset.titleAdded = addedTitle;
+  shortcutButton.dataset.appName = metadata.name;
+  shortcutButton.setAttribute('aria-label', `Add ${metadata.name} to desktop`);
+
+  const fallbackRecord = {
+    slug,
+    name: metadata.name,
+    description: metadata.description,
+    entryUrl: resolvedEntryUrl,
+    iconUrl,
+    emoji: fallbackGlyph(metadata.name),
+  };
+
+  shortcutButton.addEventListener('click', () => {
+    addDesktopShortcut(slug, fallbackRecord);
+  });
+
+  if (slug) {
+    shortcutButtonMap.set(slug, shortcutButton);
+    syncShortcutButton(slug);
+  }
+
   const openLink = document.createElement('a');
-  openLink.className = 'tile__action';
+  openLink.className = 'tile__action tile__action--primary';
   openLink.href = resolvedEntryUrl;
   openLink.target = '_blank';
   openLink.rel = 'noopener noreferrer';
   openLink.setAttribute('aria-label', `Open ${metadata.name}`);
   openLink.textContent = 'Open';
 
-  tile.appendChild(openLink);
+  actions.append(shortcutButton, openLink);
+  tile.appendChild(actions);
   return tile;
 }
 
@@ -493,7 +743,7 @@ async function loadApplet(slug, metadataPath) {
     }
   }
 
-  const tile = createTile(metadata, resolvedEntryUrl, iconUrl);
+  const tile = createTile(slug, metadata, resolvedEntryUrl, iconUrl);
 
   return {
     status: 'ok',
@@ -565,6 +815,13 @@ function initializeDesktop(results) {
   const map = new Map(results.map((result) => [result.slug, result]));
   state.pinned = buildPinnedRecords(map);
   state.records = buildAllRecords(map, state.pinned);
+  state.desktopShortcuts = state.pinned.map((record) => ({
+    slug: record.slug,
+    name: record.name,
+    entryUrl: record.entryUrl,
+    iconUrl: record.iconUrl,
+    emoji: record.emoji,
+  }));
   renderPinned();
   renderCategories();
   renderStartMenu();

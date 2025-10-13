@@ -54,22 +54,28 @@
       }
 
       .shortcut {
-        background: transparent;
-        border: none;
         color: inherit;
         font: inherit;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 0.75rem;
-        cursor: pointer;
+        cursor: grab;
         padding: 0;
         text-align: center;
+        position: relative;
+        user-select: none;
+        transition: transform 120ms ease, opacity 120ms ease;
       }
 
       .shortcut:focus-visible {
         outline: 3px solid var(--accent);
         outline-offset: 4px;
+      }
+
+      .shortcut.is-dragging {
+        opacity: 0.55;
+        cursor: grabbing;
       }
 
       .shortcut__icon {
@@ -105,6 +111,43 @@
         cursor: not-allowed;
       }
 
+      .shortcut__delete {
+        position: absolute;
+        top: -0.35rem;
+        right: -0.35rem;
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 36, 64, 0.2);
+        background: rgba(15, 36, 64, 0.75);
+        color: #e2e8f0;
+        font-size: 0.9rem;
+        line-height: 1;
+        display: grid;
+        place-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition: opacity 120ms ease, transform 120ms ease;
+      }
+
+      .shortcut.show-delete .shortcut__delete,
+      .shortcut__delete:focus-visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+
+      .shortcut__delete:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .shortcut__delete:hover {
+        background: rgba(206, 63, 63, 0.85);
+        border-color: rgba(206, 63, 63, 0.95);
+      }
+
       .taskbar {
         position: sticky;
         bottom: 0;
@@ -136,8 +179,8 @@
       }
 
       .taskbar__search {
-        flex: 1;
-        max-width: 420px;
+        flex: 1 1 240px;
+        max-width: none;
         position: relative;
       }
 
@@ -163,6 +206,7 @@
 
       .taskbar__clock {
         min-width: 80px;
+        margin-left: auto;
         text-align: right;
         color: rgba(241, 245, 249, 0.85);
         font-feature-settings: "tnum" 1;
@@ -583,15 +627,55 @@
         font-size: 0.75rem;
       }
 
-      .tile__action {
+      .tile__actions {
         margin-top: auto;
-        align-self: flex-start;
-        padding: 0.55rem 1.1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .tile__action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1.05rem;
         border-radius: 999px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 160ms ease, background 160ms ease;
+      }
+
+      .tile__action--primary {
         background: var(--accent);
         color: #fff;
-        text-decoration: none;
-        font-weight: 600;
+        box-shadow: 0 12px 24px rgba(29, 130, 210, 0.25);
+      }
+
+      .tile__action--ghost {
+        background: rgba(29, 130, 210, 0.12);
+        color: var(--accent);
+        border-color: rgba(29, 130, 210, 0.18);
+        font-size: 0.85rem;
+      }
+
+      .tile__action:not(:disabled):hover,
+      .tile__action.tile__action--primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 15px 30px rgba(15, 36, 64, 0.2);
+      }
+
+      .tile__action:disabled {
+        opacity: 0.6;
+        cursor: default;
+        box-shadow: none;
+      }
+
+      .tile__action--ghost:disabled {
+        background: rgba(15, 36, 64, 0.08);
+        color: var(--text-secondary);
+        border-color: transparent;
       }
 
       .start-menu__close {
@@ -679,7 +763,7 @@
         <span>☰</span>
         <span>Start</span>
       </button>
-      <label class="taskbar__search">
+      <label class="taskbar__search" data-role="taskbar-search-wrapper">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 5L20.5 19l-5-5Zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Z" /></svg>
         <input type="search" placeholder="Search apps" autocomplete="off" data-role="taskbar-search" />
       </label>
