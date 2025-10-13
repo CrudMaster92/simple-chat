@@ -24,28 +24,35 @@
       </header>
 
       <main class="applet-main" role="main">
-        <section class="control-panel" aria-label="Search controls">
-          <form class="api-key-form" autocomplete="off">
-            <label for="apiKey">YouTube API key</label>
-            <div class="api-key-row">
-              <input id="apiKey" name="apiKey" type="password" placeholder="Paste your API key" />
-              <button type="submit">Save</button>
+        <section class="player-panel" aria-label="Video player">
+          <div class="player-frame" data-player-shell>
+            <div class="player-placeholder">
+              <div class="placeholder-mark">🍿</div>
+              <h2>Queue up a video</h2>
+              <p>Select any result to play it here, compare metrics, and keep your search alongside the player.</p>
             </div>
-            <label class="remember-toggle">
-              <input type="checkbox" id="rememberKey" />
-              <span>Remember this key on this device</span>
-            </label>
-            <p class="helper-text">
-              We store the key in your browser only when you opt in. It’s required for YouTube Data API requests.
-            </p>
-            <p class="api-status" role="status" aria-live="polite"></p>
-          </form>
+          </div>
+          <article class="video-meta" aria-live="polite"></article>
+        </section>
 
+        <section class="search-panel" aria-label="Search and results">
           <form class="search-form" autocomplete="off">
-            <label for="query">Search videos</label>
-            <div class="search-row">
-              <input id="query" name="query" type="search" placeholder="Try “productivity playlists”" required />
+            <div class="search-form-header">
+              <div>
+                <label for="query">Search videos</label>
+                <p class="search-helper">Look up playlists, tutorials, or anything else without leaving the theater.</p>
+              </div>
               <button type="submit">Search</button>
+            </div>
+            <div class="search-row">
+              <input
+                id="query"
+                name="query"
+                type="search"
+                placeholder="Try “productivity playlists”"
+                required
+                aria-label="Search query"
+              />
             </div>
             <div class="search-options">
               <label>
@@ -67,29 +74,18 @@
               </label>
             </div>
           </form>
-        </section>
 
-        <section class="results-panel" aria-label="Search results">
-          <div class="results-header">
-            <h2>Results</h2>
-            <div class="result-actions">
-              <button class="nav-button" type="button" data-direction="prev" disabled>Prev</button>
-              <button class="nav-button" type="button" data-direction="next" disabled>Next</button>
+          <div class="results-card">
+            <div class="results-header">
+              <h2>Results</h2>
+              <div class="result-actions">
+                <button class="nav-button" type="button" data-direction="prev" disabled>Prev</button>
+                <button class="nav-button" type="button" data-direction="next" disabled>Next</button>
+              </div>
             </div>
+            <div class="results-status" role="status" aria-live="polite"></div>
+            <div class="results-grid" role="list"></div>
           </div>
-          <div class="results-status" role="status" aria-live="polite"></div>
-          <div class="results-grid" role="list"></div>
-        </section>
-
-        <section class="player-panel" aria-label="Video player">
-          <div class="player-frame" data-player-shell>
-            <div class="player-placeholder">
-              <div class="placeholder-mark">🍿</div>
-              <h2>Queue up a video</h2>
-              <p>Select any result to play it here, compare metrics, and keep your search alongside the player.</p>
-            </div>
-          </div>
-          <article class="video-meta" aria-live="polite"></article>
         </section>
       </main>
     </div>

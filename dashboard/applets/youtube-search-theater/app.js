@@ -1,8 +1,7 @@
-const KEY_STORAGE = "youtube-search-theater:api-key";
+const API_KEY = "sk-proj-X8U3_Ax-rLUXFgUiwReW2Gc8VWW3WPxefsYJkpJJu8TgyJuf3Nt26T0xIFNJk_KPGI4";
 
 const state = {
-  apiKey: "",
-  remember: false,
+  apiKey: API_KEY,
   query: "",
   order: "relevance",
   safeSearch: "moderate",
@@ -13,10 +12,6 @@ const state = {
 };
 
 const elements = {
-  apiKeyForm: document.querySelector(".api-key-form"),
-  apiKeyInput: document.querySelector("#apiKey"),
-  rememberToggle: document.querySelector("#rememberKey"),
-  apiStatus: document.querySelector(".api-status"),
   searchForm: document.querySelector(".search-form"),
   queryInput: document.querySelector("#query"),
   orderSelect: document.querySelector("#order"),
@@ -29,17 +24,6 @@ const elements = {
 };
 
 function init() {
-  const storedKey = window.localStorage.getItem(KEY_STORAGE);
-  if (storedKey) {
-    state.apiKey = storedKey;
-    state.remember = true;
-    elements.apiKeyInput.value = storedKey;
-    elements.rememberToggle.checked = true;
-    setStatus(elements.apiStatus, "API key restored from this browser's storage.");
-  }
-
-  elements.apiKeyForm.addEventListener("submit", handleApiKeySubmit);
-  elements.rememberToggle.addEventListener("change", handleRememberChange);
   elements.searchForm.addEventListener("submit", handleSearchSubmit);
   elements.orderSelect.addEventListener("change", (event) => {
     state.order = event.target.value;
@@ -67,41 +51,11 @@ function init() {
   });
 }
 
-function handleRememberChange(event) {
-  state.remember = event.target.checked;
-  if (!state.remember) {
-    window.localStorage.removeItem(KEY_STORAGE);
-  } else if (state.apiKey) {
-    window.localStorage.setItem(KEY_STORAGE, state.apiKey);
-  }
-}
-
-function handleApiKeySubmit(event) {
-  event.preventDefault();
-  const value = elements.apiKeyInput.value.trim();
-  if (!value) {
-    state.apiKey = "";
-    setStatus(elements.apiStatus, "Cleared the key. Provide a valid key before searching.");
-    window.localStorage.removeItem(KEY_STORAGE);
-    return;
-  }
-
-  state.apiKey = value;
-  if (state.remember) {
-    window.localStorage.setItem(KEY_STORAGE, value);
-  }
-  setStatus(elements.apiStatus, "API key saved. You're ready to search.");
-}
-
 function handleSearchSubmit(event) {
   event.preventDefault();
   const query = elements.queryInput.value.trim();
   if (!query) {
     setStatus(elements.resultsStatus, "Type a topic or phrase to explore videos.");
-    return;
-  }
-  if (!state.apiKey) {
-    setStatus(elements.resultsStatus, "Provide a valid YouTube Data API key above to search.");
     return;
   }
 
@@ -181,10 +135,7 @@ async function performSearch({ pageToken = "", isPageChange = false } = {}) {
     console.error(error);
     state.nextPageToken = null;
     state.prevPageToken = null;
-    setStatus(
-      elements.resultsStatus,
-      "We couldn't reach YouTube right now. Double-check your key and network, then try again."
-    );
+    setStatus(elements.resultsStatus, "We couldn't reach YouTube right now. Try again in a moment.");
     toggleNavButtons(false);
   }
 }
