@@ -1,0 +1,12 @@
+{
+  "slug": "vector-bloom-forge",
+  "name": "Vector Bloom Forge",
+  "description": "Drag bezier nodes to sculpt luminous petals, chase target silhouettes, and chain precision streaks.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-09",
+  "tags": ["art", "game", "vector"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
