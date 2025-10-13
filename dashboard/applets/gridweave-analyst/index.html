@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gridweave Analyst</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <button
+        class="close-control"
+        type="button"
+        aria-label="Return to dashboard"
+        onclick="window.location.href='../../index.html';"
+      >
+        ✕
+      </button>
+
+      <header class="app-header">
+        <div class="title-block">
+          <div class="title-glyph" aria-hidden="true">🧵</div>
+          <div>
+            <h1 id="appTitle">Gridweave Analyst</h1>
+            <p>
+              Stitch together scenario-ready financial stories with braided grids, live sparklines,
+              and guarded data imports.
+            </p>
+          </div>
+        </div>
+        <div class="scenario-switcher" role="radiogroup" aria-label="Scenario toggles">
+          <!-- Scenario buttons injected here -->
+        </div>
+      </header>
+
+      <main class="app-main">
+        <nav class="sheet-nav" aria-label="Workbook sheets">
+          <h2 class="nav-title">Sheets</h2>
+          <ul class="sheet-list" data-role="sheet-list"></ul>
+          <div class="nav-footer">
+            <p>
+              Toggle scenarios to see multipliers ripple across revenue, efficiency, and cash surfaces.
+            </p>
+          </div>
+        </nav>
+
+        <section class="grid-panel" aria-labelledby="gridHeading">
+          <div class="grid-panel__header">
+            <div>
+              <h2 id="gridHeading" class="grid-title">Sheet view</h2>
+              <p id="sheetDescription" class="muted"></p>
+            </div>
+            <div class="selection-status" id="selectionStatus" aria-live="polite"></div>
+          </div>
+
+          <div class="formula-bar" role="group" aria-label="Formula bar">
+            <span class="formula-badge" aria-hidden="true">fx</span>
+            <input
+              id="formulaInput"
+              class="formula-input"
+              type="text"
+              spellcheck="false"
+              aria-label="Formula input"
+            />
+            <button id="commitFormula" class="btn primary" type="button">Apply</button>
+            <button id="explainFormula" class="btn ghost" type="button" aria-expanded="false">
+              Explain formula
+            </button>
+            <div class="ai-tooltip" id="aiTooltip" hidden>
+              <div class="ai-tooltip__section">
+                <div class="ai-tooltip__title">Formula whisperer</div>
+                <p id="explainContext">Select a formula cell to see what the weave is doing.</p>
+              </div>
+              <div class="ai-tooltip__section">
+                <label class="ai-label" for="openaiKeyInput">OpenAI API key</label>
+                <div class="ai-row">
+                  <input id="openaiKeyInput" type="password" placeholder="sk-..." autocomplete="off" />
+                  <button id="storeKey" class="btn secondary" type="button">Store</button>
+                </div>
+                <button id="refreshModels" class="btn secondary" type="button">Refresh models</button>
+                <p id="modelStatus" class="ai-status" role="status"></p>
+              </div>
+              <div class="ai-tooltip__section">
+                <label class="ai-label" for="modelSelect">Preferred model</label>
+                <select id="modelSelect" aria-label="Select model"></select>
+                <div class="model-hint" id="modelHint"></div>
+              </div>
+              <div class="ai-tooltip__section ai-tooltip__section--explanation">
+                <h3 class="ai-subtitle">Explanation</h3>
+                <div id="formulaExplanation"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scenario-note" id="scenarioNote" aria-live="polite"></div>
+
+          <div class="grid-wrapper" tabindex="0">
+            <table class="data-grid" aria-describedby="gridHeading">
+              <thead>
+                <tr data-role="header-row"></tr>
+              </thead>
+              <tbody data-role="grid-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="insight-panel">
+          <section class="spark-section" aria-labelledby="sparkHeading">
+            <div class="section-header">
+              <h2 id="sparkHeading">Sparkline previews</h2>
+              <span class="muted" id="sparkContext"></span>
+            </div>
+            <ul class="spark-list" data-role="spark-list"></ul>
+          </section>
+
+          <section class="conditional-section" aria-labelledby="formatHeading">
+            <div class="section-header">
+              <h2 id="formatHeading">Conditional presets</h2>
+              <p class="muted">Apply quick styling passes to spot the extremes.</p>
+            </div>
+            <div class="field">
+              <label for="conditionalColumn">Numeric column</label>
+              <select id="conditionalColumn"></select>
+            </div>
+            <div class="field">
+              <label for="conditionalPreset">Preset</label>
+              <select id="conditionalPreset"></select>
+            </div>
+          </section>
+
+          <section class="import-teaser" aria-labelledby="importHeading">
+            <div class="section-header">
+              <h2 id="importHeading">Data import</h2>
+              <p class="muted">Validate CSV or JSON before weaving into sheets.</p>
+            </div>
+            <button id="openImport" class="btn secondary" type="button">Open import drawer</button>
+            <p class="muted" id="importStatusPreview"></p>
+          </section>
+        </aside>
+      </main>
+
+      <div class="import-drawer" id="importDrawer" aria-hidden="true">
+        <div class="drawer-panel" role="dialog" aria-modal="false" aria-labelledby="drawerHeading">
+          <header class="drawer-header">
+            <div>
+              <h2 id="drawerHeading">Validate incoming data</h2>
+              <p class="muted">
+                Paste CSV rows or JSON arrays. We check headers, schema shape, and obvious gaps before
+                you blend them into the grid.
+              </p>
+            </div>
+            <button id="closeImport" class="btn ghost" type="button" aria-label="Close import drawer">✕</button>
+          </header>
+          <form class="drawer-form" id="importForm">
+            <fieldset class="drawer-mode">
+              <legend>File type</legend>
+              <label><input type="radio" name="importMode" value="csv" checked /> CSV</label>
+              <label><input type="radio" name="importMode" value="json" /> JSON</label>
+            </fieldset>
+            <label class="drawer-label" for="importText">Paste data</label>
+            <textarea id="importText" rows="8" spellcheck="false" placeholder="region,units,price\nNorth,120,45"></textarea>
+            <div class="drawer-actions">
+              <button id="validateImport" class="btn primary" type="submit">Validate</button>
+              <button id="clearImport" class="btn ghost" type="button">Clear</button>
+            </div>
+            <div id="importFeedback" class="drawer-feedback" aria-live="polite"></div>
+          </form>
+        </div>
+        <div class="drawer-backdrop" id="drawerBackdrop" tabindex="-1"></div>
+      </div>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

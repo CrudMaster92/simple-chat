@@ -31,5 +31,6 @@
   "luminous-rift-garden": "./applets/luminous-rift-garden/applet.json",
   "teacup-tempest-clicker": "./applets/teacup-tempest-clicker/applet.json",
   "meteoric-mood-loom": "./applets/meteoric-mood-loom/applet.json",
-  "retro-chat-hub": "./applets/retro-chat-hub/applet.json"
+  "retro-chat-hub": "./applets/retro-chat-hub/applet.json",
+  "gridweave-analyst": "./applets/gridweave-analyst/applet.json"
 }
