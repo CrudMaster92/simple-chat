@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Canvas Remix Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="remix-app" role="application" aria-label="Canvas Remix Studio painting workstation">
+      <header class="remix-header">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+          </div>
+          <div class="brand-copy">
+            <h1>Canvas Remix Studio</h1>
+            <p>A modern remix of Microsoft Paint with layered vibes and responsive tools.</p>
+          </div>
+        </div>
+        <div class="header-actions" role="toolbar" aria-label="Canvas actions">
+          <button id="downloadButton" type="button">Export PNG</button>
+          <button id="resetButton" type="button" data-variant="ghost">Clear Canvas</button>
+        </div>
+        <a class="close-button" href="../../index.html" aria-label="Return to dashboard">✕</a>
+      </header>
+
+      <main class="remix-main">
+        <section class="control-column" aria-label="Creative controls">
+          <section class="control-group" aria-label="Color palette">
+            <div class="group-header">
+              <h2>Color Flow</h2>
+              <span id="activeColor" class="chip" aria-live="polite">#1F7A8C</span>
+            </div>
+            <div class="swatch-grid" id="swatchGrid" role="listbox" aria-label="Choose color"></div>
+            <div class="blend-row">
+              <label for="harmonyToggle">Twin stroke mirror</label>
+              <input type="checkbox" id="harmonyToggle" />
+            </div>
+          </section>
+
+          <section class="control-group" aria-label="Brush and tool settings">
+            <div class="group-header">
+              <h2>Tool Kit</h2>
+              <span id="activeTool" aria-live="polite">Sketch</span>
+            </div>
+            <div class="tool-buttons" role="radiogroup" aria-label="Paint tools">
+              <button type="button" class="tool-button" role="radio" data-tool="sketch" aria-checked="true">Sketch</button>
+              <button type="button" class="tool-button" role="radio" data-tool="highlight" aria-checked="false">Highlight</button>
+              <button type="button" class="tool-button" role="radio" data-tool="line" aria-checked="false">Vector Line</button>
+              <button type="button" class="tool-button" role="radio" data-tool="fill" aria-checked="false">Canvas Fill</button>
+            </div>
+            <label class="slider-label" for="brushSize">Brush size <span id="brushLabel">16 px</span></label>
+            <input type="range" id="brushSize" min="4" max="64" step="2" value="16" />
+          </section>
+
+          <section class="control-group" aria-label="Background presets">
+            <div class="group-header">
+              <h2>Backdrop Scenes</h2>
+            </div>
+            <div class="scene-grid" id="sceneGrid"></div>
+          </section>
+
+          <section class="control-group info" aria-label="Shortcuts">
+            <h2>Remix Tips</h2>
+            <ul>
+              <li>Hold and drag for smooth strokes; release for crisp vector lines.</li>
+              <li>Toggle mirror strokes to echo each move with a modern split-screen flourish.</li>
+              <li>Use Backdrop Scenes to swap in gradients reminiscent of late-90s palettes.</li>
+            </ul>
+          </section>
+        </section>
+
+        <section class="canvas-column" aria-label="Interactive canvas">
+          <div class="canvas-shell">
+            <canvas id="remixCanvas" width="1200" height="800" role="img" aria-label="Digital canvas workspace"></canvas>
+            <div class="hud">
+              <span id="statusText" aria-live="polite">Sketch freely — every stroke is saved instantly.</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="remix-footer">
+        <div>
+          Crafted for stylus, touch, and mouse. Canvas Remix Studio revives Paint nostalgia with live mirroring and gradient-ready stages.
+        </div>
+        <div>
+          Tip: Use Export PNG to share your modern masterpiece instantly.
+        </div>
+      </footer>
+    </div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "slug": "canvas-remix-studio",
+  "name": "Canvas Remix Studio",
+  "description": "Modern take on Microsoft Paint featuring live mirroring, gradient backdrops, and highlight-friendly brushes.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-11",
+  "tags": ["art", "creative", "modern"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
