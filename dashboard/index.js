@@ -39,6 +39,104 @@ const deleteRevealTimers = new WeakMap();
 let draggedShortcutSlug = null;
 const DELETE_REVEAL_DELAY = 1200;
 
+let audioContext = null;
+let audioMasterGain = null;
+const audioThrottleMarks = new Map();
+
+const SOUND_THEMES = {
+  menuOpen: [
+    { frequency: 520, duration: 0.12, volume: 0.35 },
+    { frequency: 740, duration: 0.1, volume: 0.25, gap: 0.04 },
+  ],
+  menuClose: [
+    { frequency: 420, duration: 0.08, volume: 0.3 },
+    { frequency: 280, duration: 0.14, volume: 0.22 },
+  ],
+  appLaunch: [
+    { frequency: 660, duration: 0.1, volume: 0.35 },
+    { frequency: 880, duration: 0.12, volume: 0.28, gap: 0.05 },
+  ],
+  appClose: [
+    { frequency: 360, duration: 0.14, volume: 0.32 },
+    { frequency: 240, duration: 0.12, volume: 0.24 },
+  ],
+  appMinimize: [
+    { frequency: 520, duration: 0.08, volume: 0.26 },
+  ],
+  appRestore: [
+    { frequency: 640, duration: 0.08, volume: 0.26 },
+    { frequency: 780, duration: 0.09, volume: 0.22, gap: 0.03 },
+  ],
+  search: [
+    { frequency: 720, duration: 0.06, volume: 0.18 },
+  ],
+  settingsToggleOn: [
+    { frequency: 540, duration: 0.1, volume: 0.24 },
+  ],
+  settingsToggleOff: [
+    { frequency: 340, duration: 0.1, volume: 0.22 },
+  ],
+};
+
+function ensureAudioContext() {
+  if (audioContext) {
+    return audioContext;
+  }
+  const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+  if (typeof AudioContextConstructor !== 'function') {
+    return null;
+  }
+  audioContext = new AudioContextConstructor();
+  audioMasterGain = audioContext.createGain();
+  audioMasterGain.gain.value = 0.4;
+  audioMasterGain.connect(audioContext.destination);
+  return audioContext;
+}
+
+function scheduleToneStep(context, masterGain, startTime, step) {
+  const duration = typeof step.duration === 'number' ? Math.max(step.duration, 0.01) : 0.12;
+  const oscillator = context.createOscillator();
+  oscillator.type = step.type || 'triangle';
+  oscillator.frequency.value = Math.max(step.frequency || 440, 40);
+  const gainNode = context.createGain();
+  const volume = typeof step.volume === 'number' ? Math.max(Math.min(step.volume, 0.8), 0) : 0.2;
+  const attack = 0.01;
+  const release = 0.08;
+  gainNode.gain.setValueAtTime(0.0001, startTime);
+  gainNode.gain.linearRampToValueAtTime(volume, startTime + attack);
+  gainNode.gain.linearRampToValueAtTime(0.0001, startTime + duration + release);
+  oscillator.connect(gainNode).connect(masterGain);
+  oscillator.start(startTime);
+  oscillator.stop(startTime + duration + release + 0.02);
+  return duration + (step.gap ?? 0);
+}
+
+function playSound(name, options = {}) {
+  const pattern = SOUND_THEMES[name];
+  if (!pattern?.length) return;
+  const context = ensureAudioContext();
+  if (!context || !audioMasterGain) return;
+
+  const throttleKey = options.throttleKey ?? name;
+  const throttleInterval = typeof options.throttleMs === 'number' ? options.throttleMs : 0;
+  if (throttleInterval > 0) {
+    const lastTime = audioThrottleMarks.get(throttleKey) ?? 0;
+    if (performance.now() - lastTime < throttleInterval) {
+      return;
+    }
+    audioThrottleMarks.set(throttleKey, performance.now());
+  }
+
+  if (context.state === 'suspended') {
+    context.resume().catch(() => {});
+  }
+
+  let cursor = context.currentTime;
+  pattern.forEach((step) => {
+    cursor += scheduleToneStep(context, audioMasterGain, cursor, step);
+  });
+}
+
 const PINNED_CONFIG = [
   {
     slug: 'retrocalc-console',
@@ -255,6 +353,7 @@ function minimizeActiveApplet() {
   osShell.classList.add('is-minimized');
   osShell.setAttribute('aria-hidden', 'true');
   updateTaskbarSessionButton();
+  playSound('appMinimize');
   requestAnimationFrame(() => {
     activeTaskbarButton?.focus();
   });
@@ -268,6 +367,7 @@ function restoreActiveApplet() {
   osShell.setAttribute('aria-hidden', 'false');
   syncWindowLayout();
   updateTaskbarSessionButton();
+  playSound('appRestore');
   requestAnimationFrame(() => {
     try {
       osFrame?.contentWindow?.focus();
@@ -281,6 +381,7 @@ function restoreActiveApplet() {
 
 function closeActiveApplet() {
   if (!osState.current) return;
+  playSound('appClose');
   osState.current = null;
   osState.minimized = false;
   osState.isFullSize = true;
@@ -321,6 +422,7 @@ function launchApplet(record) {
   }
 
   syncWindowLayout();
+  playSound('appLaunch');
 
   const currentSrc = osFrame?.getAttribute('src');
   if (osFrame && (!isSameApplet || !currentSrc || currentSrc === 'about:blank')) {
@@ -346,9 +448,15 @@ function launchApplet(record) {
 
 function toggleStartMenu(force) {
   if (!startMenu) return;
-  const shouldOpen = typeof force === 'boolean' ? force : !startMenu.classList.contains('is-open');
+  const wasOpen = startMenu.classList.contains('is-open');
+  const shouldOpen = typeof force === 'boolean' ? force : !wasOpen;
   startMenu.classList.toggle('is-open', shouldOpen);
   startMenu.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+  if (shouldOpen && !wasOpen) {
+    playSound('menuOpen');
+  } else if (!shouldOpen && wasOpen) {
+    playSound('menuClose');
+  }
   if (shouldOpen) {
     requestAnimationFrame(() => startSearch?.focus());
   }
@@ -360,6 +468,11 @@ function toggleSettings(force) {
   const shouldOpen = typeof force === 'boolean' ? force : !wasOpen;
   settingsPanel.classList.toggle('is-open', shouldOpen);
   settingsPanel.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+  if (shouldOpen && !wasOpen) {
+    playSound('settingsToggleOn');
+  } else if (!shouldOpen && wasOpen) {
+    playSound('settingsToggleOff');
+  }
   if (shouldOpen) {
     const focusable = settingsPanel.querySelector(
       'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
@@ -409,6 +522,7 @@ startClose?.addEventListener('click', () => toggleStartMenu(false));
 [startSearch, taskbarSearch].forEach((input) => {
   input?.addEventListener('input', (event) => {
     state.search = event.target.value.trim().toLowerCase();
+    playSound('search', { throttleMs: 120, throttleKey: input === taskbarSearch ? 'taskbar-search' : 'menu-search' });
     if (input === taskbarSearch) {
       if (state.search) toggleStartMenu(true);
       if (startSearch && startSearch !== input) {
