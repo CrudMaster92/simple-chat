@@ -32,5 +32,10 @@
   "teacup-tempest-clicker": "./applets/teacup-tempest-clicker/applet.json",
   "meteoric-mood-loom": "./applets/meteoric-mood-loom/applet.json",
   "retro-chat-hub": "./applets/retro-chat-hub/applet.json",
-  "gridweave-analyst": "./applets/gridweave-analyst/applet.json"
+  "gridweave-analyst": "./applets/gridweave-analyst/applet.json",
+  "ceramic-ripple-kiln": "./applets/ceramic-ripple-kiln/applet.json",
+  "glacier-sample-sketcher": "./applets/glacier-sample-sketcher/applet.json",
+  "heirloom-envelope-atelier": "./applets/heirloom-envelope-atelier/applet.json",
+  "parallax-simulation-loom": "./applets/parallax-simulation-loom/applet.json",
+  "signal-relay-playhouse": "./applets/signal-relay-playhouse/applet.json"
 }
