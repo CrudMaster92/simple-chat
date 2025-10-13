@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">SNES Emulator Icon</title>
+  <desc id="desc">A stylised SNES controller silhouette.</desc>
+  <defs>
+    <linearGradient id="body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2b5c7b" />
+      <stop offset="100%" stop-color="#0f2334" />
+    </linearGradient>
+  </defs>
+  <rect x="10" y="26" width="76" height="44" rx="22" fill="url(#body)" stroke="#9cc8de" stroke-width="2" />
+  <circle cx="32" cy="48" r="12" fill="#0b1f2d" stroke="#9cc8de" stroke-width="2" />
+  <rect x="30" y="40" width="4" height="16" rx="2" fill="#9cc8de" />
+  <rect x="24" y="46" width="16" height="4" rx="2" fill="#9cc8de" />
+  <circle cx="64" cy="42" r="6" fill="#ff6b35" />
+  <circle cx="74" cy="52" r="6" fill="#ffc857" />
+  <circle cx="54" cy="52" r="6" fill="#4caf7c" />
+  <circle cx="64" cy="62" r="6" fill="#7f9cf5" />
+</svg>

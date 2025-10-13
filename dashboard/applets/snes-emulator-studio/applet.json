@@ -1,0 +1,12 @@
+{
+  "slug": "snes-emulator-studio",
+  "name": "SNES Emulator Studio",
+  "description": "Upload your own Super Nintendo ROMs and play them instantly through the EmulatorJS web core.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-09",
+  "tags": ["retro", "emulator", "snes"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
