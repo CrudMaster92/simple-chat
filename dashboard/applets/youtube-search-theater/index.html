@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Search Theater</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="applet-shell">
+      <header class="applet-header" role="banner">
+        <div class="title-block">
+          <div class="title-mark">
+            <span class="title-icon" aria-hidden="true">▶</span>
+          </div>
+          <div>
+            <h1>YouTube Search Theater</h1>
+            <p>Find clips fast, compare details, and settle into a focused viewing space.</p>
+          </div>
+        </div>
+        <button class="close-button" type="button" aria-label="Close applet" data-close-applet>
+          ✕
+        </button>
+      </header>
+
+      <main class="applet-main" role="main">
+        <section class="control-panel" aria-label="Search controls">
+          <form class="api-key-form" autocomplete="off">
+            <label for="apiKey">YouTube API key</label>
+            <div class="api-key-row">
+              <input id="apiKey" name="apiKey" type="password" placeholder="Paste your API key" />
+              <button type="submit">Save</button>
+            </div>
+            <label class="remember-toggle">
+              <input type="checkbox" id="rememberKey" />
+              <span>Remember this key on this device</span>
+            </label>
+            <p class="helper-text">
+              We store the key in your browser only when you opt in. It’s required for YouTube Data API requests.
+            </p>
+            <p class="api-status" role="status" aria-live="polite"></p>
+          </form>
+
+          <form class="search-form" autocomplete="off">
+            <label for="query">Search videos</label>
+            <div class="search-row">
+              <input id="query" name="query" type="search" placeholder="Try “productivity playlists”" required />
+              <button type="submit">Search</button>
+            </div>
+            <div class="search-options">
+              <label>
+                <span>Sort</span>
+                <select id="order" name="order">
+                  <option value="relevance">Relevance</option>
+                  <option value="date">Newest</option>
+                  <option value="viewCount">Most viewed</option>
+                  <option value="rating">Top rated</option>
+                </select>
+              </label>
+              <label>
+                <span>Safe search</span>
+                <select id="safeSearch" name="safeSearch">
+                  <option value="moderate">Moderate</option>
+                  <option value="strict">Strict</option>
+                  <option value="none">Off</option>
+                </select>
+              </label>
+            </div>
+          </form>
+        </section>
+
+        <section class="results-panel" aria-label="Search results">
+          <div class="results-header">
+            <h2>Results</h2>
+            <div class="result-actions">
+              <button class="nav-button" type="button" data-direction="prev" disabled>Prev</button>
+              <button class="nav-button" type="button" data-direction="next" disabled>Next</button>
+            </div>
+          </div>
+          <div class="results-status" role="status" aria-live="polite"></div>
+          <div class="results-grid" role="list"></div>
+        </section>
+
+        <section class="player-panel" aria-label="Video player">
+          <div class="player-frame" data-player-shell>
+            <div class="player-placeholder">
+              <div class="placeholder-mark">🍿</div>
+              <h2>Queue up a video</h2>
+              <p>Select any result to play it here, compare metrics, and keep your search alongside the player.</p>
+            </div>
+          </div>
+          <article class="video-meta" aria-live="polite"></article>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

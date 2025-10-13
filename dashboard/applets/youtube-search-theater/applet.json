@@ -1,0 +1,12 @@
+{
+  "slug": "youtube-search-theater",
+  "name": "YouTube Search Theater",
+  "description": "Search YouTube, review rich result details, and watch videos without leaving the dashboard.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-01",
+  "tags": ["media", "video", "search"],
+  "author": "Simple Chat Team",
+  "permissions": []
+}
