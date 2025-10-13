@@ -76,7 +76,26 @@ body {
 .playhouse__layout {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "stage"
+    "notes"
+    "playlist";
+}
+
+.stage {
+  grid-area: stage;
+  min-width: 0;
+}
+
+.notes {
+  grid-area: notes;
+  min-width: 0;
+}
+
+.playlist {
+  grid-area: playlist;
+  min-width: 0;
 }
 
 .stage {
@@ -175,6 +194,10 @@ body {
   border: 1px solid rgba(11, 27, 51, 0.08);
   display: grid;
   gap: 1rem;
+}
+
+.stage__screen iframe {
+  display: block;
 }
 
 .notes__field {
@@ -290,6 +313,23 @@ body {
   margin: 0;
   font-weight: 600;
   color: rgba(11, 27, 51, 0.85);
+}
+
+@media (min-width: 880px) {
+  .playhouse__layout {
+    grid-template-columns: minmax(360px, 1.6fr) minmax(240px, 1fr);
+    grid-template-areas:
+      "stage stage"
+      "notes playlist";
+  }
+}
+
+@media (min-width: 1200px) {
+  .playhouse__layout {
+    grid-template-columns: minmax(420px, 1.8fr) minmax(220px, 1fr) minmax(260px, 1.1fr);
+    grid-template-areas: "stage notes playlist";
+    align-items: start;
+  }
 }
 
 @media (max-width: 960px) {
