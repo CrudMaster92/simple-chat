@@ -1,0 +1,12 @@
+{
+  "slug": "trickster-postmaster",
+  "name": "Trickster Postmaster",
+  "description": "Shift the chutes as the rules keep changing in this whimsical mailroom drag-and-drop puzzle.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-05",
+  "tags": ["game", "puzzle", "daily"],
+  "author": "OpenAI Applet Crafter",
+  "permissions": []
+}

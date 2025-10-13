@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trickster Postmaster</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <h1>Trickster Postmaster</h1>
+        <button class="close-button" type="button" aria-label="Close Trickster Postmaster" onclick="window.location.href='../../index.html'">✕</button>
+      </header>
+      <main>
+        <section class="mode-switcher" aria-label="Mode selector">
+          <button class="mode-button active" data-mode="daily">Daily Dispatch</button>
+          <button class="mode-button" data-mode="zen">Zen Sort</button>
+          <div class="daily-seed" aria-live="polite"></div>
+        </section>
+
+        <section class="scoreboard" aria-label="Scoreboard">
+          <div class="score-item">
+            <span class="label">Score</span>
+            <span class="value" id="score-value">0</span>
+          </div>
+          <div class="score-item">
+            <span class="label">Streak</span>
+            <span class="value" id="streak-value">0</span>
+          </div>
+          <div class="score-item">
+            <span class="label">Accuracy</span>
+            <span class="value" id="accuracy-value">100%</span>
+          </div>
+          <div class="score-item">
+            <span class="label">Timer</span>
+            <span class="value" id="timer-value">--</span>
+          </div>
+          <div class="score-item personal-best">
+            <span class="label">Personal Best</span>
+            <span class="value" id="personal-best">--</span>
+          </div>
+          <div class="score-item last-fail">
+            <span class="label">Explain last fail</span>
+            <button id="fail-hint" class="hint-button" type="button" aria-haspopup="true" aria-expanded="false">?</button>
+            <div id="fail-tooltip" class="hint-tooltip" role="tooltip">No mistakes yet. Keep it up!</div>
+          </div>
+        </section>
+
+        <section class="rule-board" aria-label="Current sorting rule">
+          <div class="rule-card real-rule">
+            <h2>Official Rule</h2>
+            <p id="rule-text">Loading today’s trick...</p>
+          </div>
+          <div class="rule-card trick-rule">
+            <h2>Trickster Whisper</h2>
+            <p id="trick-text">Loading...</p>
+          </div>
+        </section>
+
+        <section class="play-area" aria-label="Sorting floor">
+          <div class="envelope-bin" aria-live="polite">
+            <h3>Incoming Mail</h3>
+            <div id="envelope-list" class="envelope-list"></div>
+          </div>
+          <div class="chute-area" aria-live="polite">
+            <h3>Chutes</h3>
+            <div id="chute-row" class="chute-row"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="envelope-template">
+      <div class="envelope" draggable="true">
+        <div class="stamp"></div>
+        <div class="details"></div>
+        <div class="postmark"></div>
+      </div>
+    </template>
+
+    <template id="chute-template">
+      <div class="chute" data-chute="">
+        <div class="chute-lip"></div>
+        <div class="chute-body">
+          <span class="chute-label"></span>
+        </div>
+      </div>
+    </template>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
