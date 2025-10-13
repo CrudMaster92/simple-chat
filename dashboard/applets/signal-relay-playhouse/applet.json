@@ -1,0 +1,12 @@
+{
+  "slug": "signal-relay-playhouse",
+  "name": "Signal Relay Playhouse",
+  "description": "Stage tactile broadcast cues, shift lighting briefs, and stream curated YouTube artefacts.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-08",
+  "tags": ["media", "curation", "sound"],
+  "author": "Signal Relay Collective",
+  "permissions": []
+}

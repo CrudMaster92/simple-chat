@@ -1,0 +1,12 @@
+{
+  "slug": "heirloom-envelope-atelier",
+  "name": "Heirloom Envelope Atelier",
+  "description": "Mix rare fibers, lining swatches, wax motifs, and phrases to prep courier-worthy envelopes.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-08",
+  "tags": ["craft", "story", "design"],
+  "author": "Correspondence Atelier", 
+  "permissions": []
+}

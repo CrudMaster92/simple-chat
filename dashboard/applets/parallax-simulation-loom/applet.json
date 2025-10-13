@@ -1,0 +1,12 @@
+{
+  "slug": "parallax-simulation-loom",
+  "name": "Parallax Simulation Loom",
+  "description": "Balance complexity, stability, and anomaly charge to weave layered simulation ribbons.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-08",
+  "tags": ["simulation", "systems", "strategy"],
+  "author": "Parallax Loom Studio",
+  "permissions": []
+}

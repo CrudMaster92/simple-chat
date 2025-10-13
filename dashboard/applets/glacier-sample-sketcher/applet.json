@@ -1,0 +1,12 @@
+{
+  "slug": "glacier-sample-sketcher",
+  "name": "Glacier Sample Sketcher",
+  "description": "Shape fictional ice cores, tune depth bands, and log the expedition-worthy finds.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-07-08",
+  "tags": ["exploration", "science", "creative"],
+  "author": "Glacier Sample Studio",
+  "permissions": []
+}
