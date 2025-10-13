@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Starlit Piano Observatory</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="observatory" role="application" aria-label="Starlit Piano Observatory">
+      <button
+        class="close-button"
+        type="button"
+        aria-label="Return to dashboard"
+        id="closeButton"
+      >
+        ×
+      </button>
+      <header class="observatory__header">
+        <h1 class="observatory__title">Starlit Piano Observatory</h1>
+        <p class="observatory__tagline">
+          Sketch luminous constellations with every piano tone, weave orbit trails, and replay your night-sky motifs.
+        </p>
+      </header>
+      <main class="observatory__main">
+        <section class="observatory__skymap" aria-labelledby="skymapTitle">
+          <div class="skymap__header">
+            <h2 id="skymapTitle">Constellation Loom</h2>
+            <p class="skymap__hint">Tap a key to release a starburst. Capture a sequence to replay your cosmic nocturne.</p>
+          </div>
+          <canvas id="constellationCanvas" width="720" height="420" role="presentation"></canvas>
+        </section>
+        <aside class="observatory__console" aria-labelledby="consoleTitle">
+          <h2 id="consoleTitle">Orbit Console</h2>
+          <div class="console__controls">
+            <button type="button" class="console__button" id="recordButton">Start Constellation Capture</button>
+            <button type="button" class="console__button" id="playButton" disabled>Replay Orbit</button>
+            <button type="button" class="console__button console__button--ghost" id="clearButton">Clear Starfield</button>
+          </div>
+          <div class="console__status" role="status" aria-live="polite">
+            <span id="statusLabel">Waiting for your opening chord.</span>
+          </div>
+          <div class="console__feed" aria-live="polite" aria-label="Constellation log">
+            <ul id="orbitFeed"></ul>
+          </div>
+        </aside>
+      </main>
+      <section class="observatory__keyboard" aria-labelledby="keyboardTitle">
+        <div class="keyboard__header">
+          <h2 id="keyboardTitle">Celestial Keys</h2>
+          <p>Play with your pointer or use the home row (A–L) to spark orbit trails.</p>
+        </div>
+        <div class="keyboard__grid" id="keyGrid" role="group" aria-label="Interactive piano keys"></div>
+      </section>
+    </div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
