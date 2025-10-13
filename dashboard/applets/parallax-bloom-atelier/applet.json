@@ -1,0 +1,9 @@
+{
+  "id": "parallax-bloom-atelier",
+  "title": "Parallax Bloom Atelier",
+  "description": "Sculpt a drifting 3D bloom, blend hues, and orchestrate orbiting layers with luminous parallax trails.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "tags": ["visual", "3d", "creative"],
+  "category": "Creative"
+}
