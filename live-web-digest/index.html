@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Web Digest</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="branding">
+        <div class="logo-circle" aria-hidden="true">🌐</div>
+        <div>
+          <h1>Live Web Digest</h1>
+          <p>Track the latest stories from around the web in real time.</p>
+        </div>
+      </div>
+      <form id="search-form" class="search-form" novalidate>
+        <label class="field">
+          <span>Topic</span>
+          <input
+            type="text"
+            id="search-input"
+            name="query"
+            placeholder="Search technology, science, startups..."
+            autocomplete="off"
+            required
+          />
+        </label>
+        <label class="field">
+          <span>Sort</span>
+          <select id="sort-select" name="sort">
+            <option value="date">Most recent</option>
+            <option value="popularity">Trending</option>
+          </select>
+        </label>
+        <button type="submit" class="action-button">Fetch stories</button>
+      </form>
+    </header>
+
+    <main>
+      <section class="status" role="status" aria-live="polite" id="status"></section>
+      <section id="results" class="results" aria-label="Stories"></section>
+    </main>
+
+    <template id="story-template">
+      <article class="story">
+        <header>
+          <h2>
+            <a href="#" target="_blank" rel="noopener" class="story-link"></a>
+          </h2>
+          <p class="story-meta"></p>
+        </header>
+        <p class="story-excerpt"></p>
+        <footer class="story-footer">
+          <span class="badge">Score <span class="story-score"></span></span>
+          <span class="badge">Comments <span class="story-comments"></span></span>
+        </footer>
+      </article>
+    </template>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
