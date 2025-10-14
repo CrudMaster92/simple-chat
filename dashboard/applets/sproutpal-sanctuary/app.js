@@ -9,16 +9,113 @@ const state = {
   careStreak: 0,
   environment: "grove",
   exploreReadyAt: 0,
+  ritualCooldowns: {
+    sunsoak: 0,
+    storytime: 0,
+    breezestretch: 0
+  },
   lastTick: Date.now()
 };
 
 const statKeys = ["hunger", "joy", "energy", "hygiene"];
-const degradeRates = {
+const baseDegradeRates = {
   hunger: 2.2,
   joy: 1.9,
   energy: 2.0,
   hygiene: 1.6
 };
+
+const environments = {
+  grove: {
+    label: "Grove Glow",
+    description: "Grove Glow keeps nutrition and freshness steady beneath a gentle canopy.",
+    modifiers: { hunger: 0.8, joy: 1, energy: 1, hygiene: 0.85 },
+    actionBoosts: {
+      feed: { joy: 2 },
+      clean: { hygiene: 3 }
+    }
+  },
+  coast: {
+    label: "Coast Breeze",
+    description: "Coast Breeze ushers in playful gusts — energy restores faster while joy needs tending.",
+    modifiers: { hunger: 1, joy: 1.1, energy: 0.85, hygiene: 1 },
+    actionBoosts: {
+      play: { joy: 3 },
+      rest: { energy: 4 }
+    }
+  },
+  mesa: {
+    label: "Mesa Bloom",
+    description: "Mesa Bloom basks in sunbursts — joy soars, but nutrition wanes a touch quicker.",
+    modifiers: { hunger: 1.15, joy: 0.9, energy: 1, hygiene: 1 },
+    actionBoosts: {
+      feed: { hunger: 4 },
+      explore: { hygiene: 4 }
+    }
+  }
+};
+
+const rituals = {
+  sunsoak: {
+    cooldown: 45000,
+    delay: 1100,
+    effects: { energy: 14, joy: 8, hunger: -4 },
+    xp: 22,
+    inProgress: "Channeling sunlight...",
+    message: () => `${state.name} bathes in gentle light and hums with warmth.`
+  },
+  storytime: {
+    cooldown: 52000,
+    delay: 1200,
+    effects: { joy: 16, energy: 6 },
+    xp: 24,
+    inProgress: "Gathering echoes...",
+    message: () => `${state.name} leans close for a story and settles into calm focus.`
+  },
+  breezestretch: {
+    cooldown: 48000,
+    delay: 1000,
+    effects: { hygiene: 18, energy: 8 },
+    xp: 20,
+    inProgress: "Tuning the breeze...",
+    message: () => `${state.name} sways with the breeze, leaves polished and lively.`
+  }
+};
+
+const milestones = [2, 4, 6, 8];
+
+const milestoneDescriptions = {
+  2: "Sprout begins documenting feelings in the journal.",
+  4: "Daily rituals recharge 5s faster.",
+  6: "Forage voyages return with +5 bonus xp.",
+  8: "Care streak celebrations grant extra xp."
+};
+
+const journalEntries = [
+  {
+    level: 2,
+    title: "Awakening",
+    text: "I blinked into the canopy today and felt your steady presence nearby."
+  },
+  {
+    level: 3,
+    title: "Ribbon Laughter",
+    text: "The ribbon chase painted giggles in the air — thank you for spinning alongside me."
+  },
+  {
+    level: 5,
+    title: "Coastline Echo",
+    text: "Sea breezes taught me to sway with change; I hope you felt the calm too."
+  },
+  {
+    level: 7,
+    title: "Mesa Promise",
+    text: "Sunset embers warmed my leaves — together we'll glow through every season."
+  }
+];
+
+const defaultModifiers = { hunger: 1, joy: 1, energy: 1, hygiene: 1 };
+const ritualTimers = {};
 
 const statElements = statKeys.reduce((acc, key) => {
   acc[key] = {
@@ -37,18 +134,26 @@ const careStreakEl = document.getElementById("care-streak");
 const logEl = document.getElementById("log");
 const exploreCooldownEl = document.getElementById("explore-cooldown");
 const sanctuaryApp = document.querySelector(".sanctuary-app");
+const environmentInsightEl = document.getElementById("environment-insight");
+
+const ritualStatusEls = {
+  sunsoak: document.getElementById("ritual-sunsoak-status"),
+  storytime: document.getElementById("ritual-storytime-status"),
+  breezestretch: document.getElementById("ritual-breezestretch-status")
+};
 
 const nameInput = document.getElementById("name-input");
 const renameBtn = document.getElementById("rename-btn");
 
 const envButtons = Array.from(document.querySelectorAll(".env-option"));
 const actionButtons = Array.from(document.querySelectorAll(".care-btn"));
+const ritualButtons = Array.from(document.querySelectorAll(".ritual-btn"));
 
-const environmentLabels = {
-  grove: "Grove Glow",
-  coast: "Coast Breeze",
-  mesa: "Mesa Bloom"
-};
+const milestoneProgressFill = document.getElementById("milestone-progress-fill");
+const milestoneProgressValue = document.getElementById("milestone-progress-value");
+const nextMilestoneEl = document.getElementById("next-milestone");
+const milestoneListEl = document.getElementById("milestone-list");
+const journalEntriesEl = document.getElementById("journal-entries");
 
 const TICK_INTERVAL = 4000;
 const EXPLORE_COOLDOWN = 25000;
@@ -101,6 +206,17 @@ function clampStat(value) {
   return Math.max(0, Math.min(100, value));
 }
 
+function adjustStats(deltas, boosts = {}) {
+  statKeys.forEach((key) => {
+    const baseChange = typeof deltas[key] === "number" ? deltas[key] : 0;
+    const boostChange = typeof boosts[key] === "number" ? boosts[key] : 0;
+    const total = baseChange + boostChange;
+    if (total !== 0) {
+      state[key] = clampStat(state[key] + total);
+    }
+  });
+}
+
 function updateStatsDisplay() {
   statKeys.forEach((key) => {
     const value = Math.round(state[key]);
@@ -148,6 +264,8 @@ function grantXp(amount) {
   }
   petLevelEl.textContent = state.level;
   petXpEl.textContent = Math.round(state.xp);
+  updateMilestones();
+  updateJournal();
   if (leveled) {
     logEvent(`🎉 ${state.name} reached level ${state.level}!`);
   }
@@ -163,21 +281,108 @@ function logEvent(message) {
   }
 }
 
+function updateMilestones() {
+  if (!milestoneProgressFill || !milestoneProgressValue || !nextMilestoneEl || !milestoneListEl) {
+    return;
+  }
+  const xpGoal = xpNeededForLevel(state.level);
+  const progressPercent = xpGoal > 0 ? Math.min(100, Math.round((state.xp / xpGoal) * 100)) : 0;
+  milestoneProgressFill.style.width = `${progressPercent}%`;
+  milestoneProgressValue.textContent = `${Math.round(state.xp)} / ${xpGoal} xp`;
+
+  const upcoming = milestones.find((level) => level > state.level);
+  if (upcoming) {
+    nextMilestoneEl.textContent = `Next milestone: Level ${upcoming}`;
+  } else {
+    nextMilestoneEl.textContent = `Next milestone: Level ${state.level + 1}`;
+  }
+
+  milestoneListEl.innerHTML = "";
+  milestones.forEach((level) => {
+    const li = document.createElement("li");
+    const achieved = state.level >= level;
+    const description = milestoneDescriptions[level];
+    li.className = achieved ? "milestone achieved" : "milestone";
+    const badgeClass = achieved ? "milestone-badge achieved" : "milestone-badge";
+    li.innerHTML = `<span class="${badgeClass}">${achieved ? "✔" : level}</span><div><h5>Level ${level}</h5><p>${description}</p></div>`;
+    milestoneListEl.appendChild(li);
+  });
+}
+
+function updateJournal() {
+  if (!journalEntriesEl) return;
+  journalEntriesEl.innerHTML = "";
+  const unlocked = journalEntries.filter((entry) => state.level >= entry.level);
+  if (unlocked.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "Keep caring to record Sprout's reflections.";
+    journalEntriesEl.appendChild(li);
+    return;
+  }
+  unlocked.forEach((entry) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<strong>${entry.title}</strong><span>${entry.text}</span>`;
+    journalEntriesEl.appendChild(li);
+  });
+}
+
+function updateEnvironmentInsight() {
+  if (!environmentInsightEl) return;
+  const env = environments[state.environment];
+  if (env) {
+    environmentInsightEl.textContent = env.description;
+  }
+}
+
+function getRitualCooldown(key) {
+  const ritual = rituals[key];
+  if (!ritual) return 0;
+  let cooldown = ritual.cooldown;
+  if (state.level >= 4) {
+    cooldown = Math.max(20000, cooldown - 5000);
+  }
+  return cooldown;
+}
+
+function disableRitualButton(key, disabled) {
+  const btn = ritualButtons.find((button) => button.dataset.ritual === key);
+  if (btn) {
+    btn.disabled = disabled;
+  }
+}
+
+function startRitualCountdown(key) {
+  const statusEl = ritualStatusEls[key];
+  if (!statusEl) return;
+  if (ritualTimers[key]) {
+    clearInterval(ritualTimers[key]);
+  }
+  ritualTimers[key] = setInterval(() => {
+    const remaining = state.ritualCooldowns[key] - Date.now();
+    if (remaining <= 0) {
+      clearInterval(ritualTimers[key]);
+      ritualTimers[key] = null;
+      statusEl.textContent = "Ready";
+      disableRitualButton(key, false);
+    } else {
+      statusEl.textContent = `${Math.ceil(remaining / 1000)}s to reset`;
+    }
+  }, 500);
+}
+
 function applyAction(actionKey) {
   const action = actionEffects[actionKey];
   if (!action) return;
 
-  statKeys.forEach((key) => {
-    if (action[key]) {
-      state[key] = clampStat(state[key] + action[key]);
-    }
-  });
+  const envBoost = environments[state.environment]?.actionBoosts?.[actionKey] || {};
+  adjustStats(action, envBoost);
 
   grantXp(action.xp);
   updateCareStreak();
   updateStatsDisplay();
   updateMoodDisplay();
   logEvent(action.message());
+  checkCriticalStates();
 }
 
 function handleExplore() {
@@ -191,18 +396,51 @@ function handleExplore() {
 
   setTimeout(() => {
     const find = exploreFindings[Math.floor(Math.random() * exploreFindings.length)];
-    statKeys.forEach((key) => {
-      if (find[key]) {
-        state[key] = clampStat(state[key] + find[key]);
-      }
-    });
-    grantXp(find.xp);
+    const envBoost = environments[state.environment]?.actionBoosts?.explore || {};
+    adjustStats(find, envBoost);
+    const bonusXp = state.level >= 6 ? 5 : 0;
+    const totalXp = find.xp + bonusXp;
+    grantXp(totalXp);
     updateCareStreak();
     updateStatsDisplay();
     updateMoodDisplay();
-    logEvent(`🧭 ${find.message()}`);
+    let message = find.message();
+    if (bonusXp > 0) {
+      message += " Seasoned explorer bonus!";
+    }
+    logEvent(`🧭 ${message}`);
+    checkCriticalStates();
     countdownExplore();
   }, 2800);
+}
+
+function handleRitual(key) {
+  const ritual = rituals[key];
+  if (!ritual) return;
+  const now = Date.now();
+  if (now < state.ritualCooldowns[key]) {
+    return;
+  }
+
+  const statusEl = ritualStatusEls[key];
+  if (statusEl) {
+    statusEl.textContent = ritual.inProgress;
+  }
+  disableRitualButton(key, true);
+
+  const cooldown = getRitualCooldown(key);
+  state.ritualCooldowns[key] = now + cooldown;
+
+  setTimeout(() => {
+    adjustStats(ritual.effects);
+    grantXp(ritual.xp);
+    updateCareStreak();
+    updateStatsDisplay();
+    updateMoodDisplay();
+    logEvent(`🌀 ${ritual.message()}`);
+    checkCriticalStates();
+    startRitualCountdown(key);
+  }, ritual.delay);
 }
 
 function disableExplore(disabled) {
@@ -230,8 +468,10 @@ function tick() {
   if (now - state.lastTick < TICK_INTERVAL) return;
   state.lastTick = now;
 
+  const modifiers = environments[state.environment]?.modifiers || defaultModifiers;
   statKeys.forEach((key) => {
-    state[key] = clampStat(state[key] - degradeRates[key]);
+    const modifier = typeof modifiers[key] === "number" ? modifiers[key] : 1;
+    state[key] = clampStat(state[key] - baseDegradeRates[key] * modifier);
   });
 
   updateStatsDisplay();
@@ -245,8 +485,9 @@ function updateCareStreak() {
   if (average >= 70) {
     state.careStreak += 1;
     if (state.careStreak % 3 === 0) {
+      const bonusXp = state.level >= 8 ? 18 : 12;
       logEvent(`🌱 Care streak bonus! ${state.name} blossoms with gratitude.`);
-      grantXp(12);
+      grantXp(bonusXp);
     }
   } else {
     state.careStreak = 0;
@@ -286,17 +527,21 @@ function setEnvironment(newEnv) {
     btn.classList.toggle("active", isActive);
     btn.setAttribute("aria-pressed", isActive ? "true" : "false");
   });
-  const label = environmentLabels[newEnv] || newEnv;
+  const label = environments[newEnv]?.label || newEnv;
   logEvent(`🌤️ Habitat tuned to ${label} vibes.`);
+  updateEnvironmentInsight();
 }
 
 function init() {
   sanctuaryApp.dataset.environment = state.environment;
+  updateEnvironmentInsight();
   updateStatsDisplay();
   updateMoodDisplay();
   petLevelEl.textContent = state.level;
-  petXpEl.textContent = state.xp;
+  petXpEl.textContent = Math.round(state.xp);
   careStreakEl.textContent = state.careStreak;
+  updateMilestones();
+  updateJournal();
   logEvent("🌱 SproutPal awakens and looks to you for guidance.");
 
   actionButtons.forEach((btn) => {
@@ -307,6 +552,13 @@ function init() {
       } else {
         applyAction(action);
       }
+    });
+  });
+
+  ritualButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const ritualKey = btn.dataset.ritual;
+      handleRitual(ritualKey);
     });
   });
 
@@ -322,7 +574,21 @@ function init() {
     }
   });
 
-  setInterval(tick, 1000);
+  Object.keys(state.ritualCooldowns).forEach((key) => {
+    if (state.ritualCooldowns[key] > Date.now()) {
+      disableRitualButton(key, true);
+      startRitualCountdown(key);
+    } else {
+      disableRitualButton(key, false);
+      if (ritualStatusEls[key]) {
+        ritualStatusEls[key].textContent = "Ready";
+      }
+    }
+  });
+
+  setInterval(() => {
+    tick();
+  }, 1000);
 }
 
 init();

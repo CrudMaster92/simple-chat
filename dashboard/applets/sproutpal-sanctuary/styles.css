@@ -9,6 +9,10 @@
   --shell-cream: #fff8d6;
   --card-bg: rgba(255, 255, 255, 0.65);
   --card-outline: rgba(31, 60, 90, 0.12);
+  --ritual-emerald: #1f8a70;
+  --ritual-mint: #63c6b0;
+  --mesa-coral: #ff8a5b;
+  --coast-sky: #4fb0ff;
 }
 
 body {
@@ -42,12 +46,35 @@ body {
   background: linear-gradient(140deg, rgba(255, 233, 214, 0.96), rgba(255, 186, 148, 0.92));
 }
 
+.sanctuary-app[data-environment="coast"] .orbital {
+  background: radial-gradient(circle, rgba(79, 176, 255, 0.6) 0%, rgba(111, 231, 194, 0.2) 60%, transparent 100%);
+}
+
+.sanctuary-app[data-environment="mesa"] .orbital {
+  background: radial-gradient(circle, rgba(255, 155, 90, 0.65) 0%, rgba(255, 205, 120, 0.25) 60%, transparent 100%);
+}
+
+.sanctuary-app[data-environment="coast"] .pet-leaf {
+  background: linear-gradient(120deg, #34a0a4, #9ef8e4);
+}
+
+.sanctuary-app[data-environment="mesa"] .pet-leaf {
+  background: linear-gradient(120deg, #ffb347, var(--mesa-coral));
+}
+
 .app-header {
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.environment-insight {
+  margin: 0;
+  max-width: 360px;
+  font-size: 0.9rem;
+  color: rgba(31, 60, 90, 0.68);
 }
 
 .title-group h1 {
@@ -98,6 +125,24 @@ body {
   display: grid;
   gap: 28px;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.section-header h3 {
+  margin: 0;
+}
+
+.section-header p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(31, 60, 90, 0.65);
 }
 
 .pet-stage {
@@ -398,6 +443,185 @@ body {
   transform: translateY(1px);
 }
 
+.rituals-panel,
+.growth-panel {
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(31, 60, 90, 0.08);
+  box-shadow: 0 16px 36px rgba(31, 60, 90, 0.08);
+}
+
+.rituals-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.ritual-card {
+  background: rgba(255, 255, 255, 0.86);
+  border-radius: 18px;
+  border: 1px solid rgba(31, 60, 90, 0.08);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 12px 30px rgba(31, 60, 90, 0.07);
+}
+
+.ritual-card h4 {
+  margin: 0;
+}
+
+.ritual-card p {
+  margin: 0;
+  color: rgba(31, 60, 90, 0.65);
+}
+
+.ritual-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 16px;
+  font-weight: 700;
+  background: linear-gradient(120deg, var(--ritual-emerald), var(--ritual-mint));
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 26px rgba(31, 138, 112, 0.25);
+}
+
+.ritual-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(31, 138, 112, 0.28);
+}
+
+.ritual-btn:active {
+  transform: translateY(1px);
+}
+
+.growth-content {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.milestone-card,
+.journal-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 18px;
+  border: 1px solid rgba(31, 60, 90, 0.08);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 10px 26px rgba(31, 60, 90, 0.06);
+}
+
+.milestone-progress {
+  height: 12px;
+  background: rgba(31, 60, 90, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.milestone-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(120deg, var(--citrus-burst), var(--citrus-peel));
+  border-radius: inherit;
+  transition: width 0.4s ease;
+}
+
+.milestone-progress-value {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(31, 60, 90, 0.65);
+}
+
+.milestone-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.milestone {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.milestone h5 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.milestone p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(31, 60, 90, 0.65);
+}
+
+.milestone-badge {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(31, 60, 90, 0.08);
+  color: var(--grove-ink);
+  font-weight: 700;
+}
+
+.milestone-badge.achieved {
+  background: linear-gradient(135deg, var(--grove-leaf), var(--ritual-mint));
+  color: white;
+}
+
+.milestone.achieved h5 {
+  color: var(--grove-leaf);
+}
+
+.journal-card h4 {
+  margin: 0;
+}
+
+.journal-tip {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(31, 60, 90, 0.6);
+}
+
+.journal-entries {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.journal-entries li {
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 16px;
+  border: 1px solid rgba(31, 60, 90, 0.08);
+  padding: 12px 14px;
+  display: grid;
+  gap: 6px;
+  font-size: 0.92rem;
+  color: rgba(31, 60, 90, 0.78);
+}
+
+.journal-entries strong {
+  font-size: 0.95rem;
+  color: var(--grove-ink);
+}
+
+.journal-entries span {
+  line-height: 1.45;
+}
+
 .cooldown {
   font-size: 0.85rem;
   color: rgba(31, 60, 90, 0.5);
@@ -460,15 +684,27 @@ body {
   border-radius: 0 0 60px 60px;
 }
 
+.pet-avatar[data-mood="radiant"] .cheek {
+  background: rgba(242, 84, 45, 0.45);
+}
+
 .pet-avatar[data-mood="wobbly"] .mouth {
   height: 16px;
   border-radius: 0 0 12px 12px;
+}
+
+.pet-avatar[data-mood="wobbly"] .cheek {
+  background: rgba(242, 84, 45, 0.25);
 }
 
 .pet-avatar[data-mood="dreary"] .mouth {
   height: 12px;
   border-radius: 0 0 8px 8px;
   background: rgba(31, 60, 90, 0.6);
+}
+
+.pet-avatar[data-mood="dreary"] .cheek {
+  background: rgba(242, 84, 45, 0.18);
 }
 
 .pet-avatar[data-mood="dreary"] .eye::after {
@@ -480,7 +716,8 @@ body {
 }
 
 .care-btn:disabled,
-.env-option:disabled {
+.env-option:disabled,
+.ritual-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   box-shadow: none;
