@@ -23,6 +23,25 @@ const wallpaperList = document.querySelector('[data-role="wallpaper-list"]');
 const wallpaperStatus = document.querySelector('[data-role="wallpaper-status"]');
 const wallpaperUpload = document.querySelector('[data-role="wallpaper-upload"]');
 const wallpaperClear = document.querySelector('[data-role="wallpaper-clear"]');
+const buddyContainer = document.querySelector('[data-role="desktop-buddy"]');
+const buddyAvatar = document.querySelector('[data-role="buddy-avatar"]');
+const buddyMessageBubble = document.querySelector('[data-role="buddy-message"]');
+const buddyPanel = document.querySelector('[data-role="buddy-panel"]');
+const buddyLog = document.querySelector('[data-role="buddy-log"]');
+const buddyStatus = document.querySelector('[data-role="buddy-status"]');
+const buddyModelSelect = document.querySelector('[data-role="buddy-model-select"]');
+const buddyModelStatus = document.querySelector('[data-role="buddy-model-status"]');
+const buddyRefreshButton = document.querySelector('[data-role="buddy-refresh-models"]');
+const buddyKeyInput = document.querySelector('[data-role="buddy-key"]');
+const buddyRememberKey = document.querySelector('[data-role="buddy-remember-key"]');
+const buddyForm = document.querySelector('[data-role="buddy-form"]');
+const buddyInput = document.querySelector('[data-role="buddy-input"]');
+const buddySendButton = document.querySelector('[data-role="buddy-send"]');
+const buddyCloseButton = document.querySelector('[data-role="buddy-close"]');
+const buddyEnabledToggle = document.querySelector('[data-role="buddy-enabled"]');
+const buddyIdleToggle = document.querySelector('[data-role="buddy-idle-toggle"]');
+const buddySoundToggle = document.querySelector('[data-role="buddy-sound-toggle"]');
+const buddyResetPositionButton = document.querySelector('[data-role="buddy-reset-position"]');
 const osShell = document.querySelector('[data-role="os-shell"]');
 const osWindow = document.querySelector('[data-role="os-window"]');
 const osTitle = document.querySelector('[data-role="os-title"]');
@@ -87,6 +106,75 @@ const SOUND_THEMES = {
   settingsToggleOff: [
     { frequency: 340, duration: 0.1, volume: 0.22 },
   ],
+  buddyWake: [
+    { frequency: 620, duration: 0.12, volume: 0.32 },
+    { frequency: 820, duration: 0.1, volume: 0.25, gap: 0.05 },
+    { frequency: 540, duration: 0.14, volume: 0.18 },
+  ],
+  buddySend: [
+    { frequency: 560, duration: 0.08, volume: 0.26 },
+    { frequency: 720, duration: 0.08, volume: 0.22, gap: 0.03 },
+  ],
+  buddyReply: [
+    { frequency: 420, duration: 0.1, volume: 0.28 },
+    { frequency: 640, duration: 0.12, volume: 0.24, gap: 0.04 },
+  ],
+  buddyChirp: [
+    { frequency: 900, duration: 0.06, volume: 0.22 },
+    { frequency: 690, duration: 0.08, volume: 0.2, gap: 0.04 },
+  ],
+  buddyMove: [
+    { frequency: 360, duration: 0.12, volume: 0.26 },
+  ],
+};
+
+const BUDDY_NAME = 'Cirrus';
+const BUDDY_SETTINGS_KEY = 'desktop-buddy-settings';
+const BUDDY_MODEL_CACHE_KEY = 'desktop-buddy-model-cache';
+const BUDDY_KEY_STORAGE_KEY = 'desktop-buddy-openai-key';
+const BUDDY_IDLE_INTERVAL = 120_000;
+const BUDDY_SYSTEM_PROMPT =
+  "You are Cirrus, a buoyant desktop companion for the Slop OS dashboard. Keep replies friendly, concise, and action-oriented. Mention applet names exactly as provided and suggest which applet can help when giving advice. Encourage curiosity, offer gentle productivity nudges, and never invent unavailable applets.";
+
+const BUDDY_IDLE_MESSAGES = [
+  'Need a tour? Ask me about any applet.',
+  'Drop in an OpenAI key and I can chat through anything.',
+  'Wondering what to try? Say “list applets” and I will guide you.',
+  'You can drag me anywhere if I am in the way.',
+  'Ask for a creative spark and I will point to the right applet.',
+  'Curious about the dashboard? I have tips ready whenever you are.',
+];
+
+const buddyState = {
+  enabled: true,
+  idleMessages: true,
+  playSounds: true,
+  rememberKey: false,
+  statusMessage: 'Say hello!',
+  modelStatus: 'Add an API key to fetch models.',
+  conversation: [],
+  models: null,
+  selectedModel: null,
+  isPanelOpen: false,
+  awaitingResponse: false,
+  idleTimer: null,
+  messageTimer: null,
+  lastIdleMessage: null,
+  position: { left: null, top: null },
+  appletDigest: '',
+  appletPreviewList: [],
+  openAiKey: '',
+  hasInitialized: false,
+};
+
+const buddyDragState = {
+  pointerId: null,
+  startX: 0,
+  startY: 0,
+  originLeft: 0,
+  originTop: 0,
+  moved: false,
+  justDragged: false,
 };
 
 const BOOT_CONFIG = { radius: 84, cubeSize: 28, gap: 6 };
@@ -217,6 +305,781 @@ function playSound(name, options = {}) {
   pattern.forEach((step) => {
     cursor += scheduleToneStep(context, audioMasterGain, cursor, step);
   });
+}
+
+function playBuddySound(name, options = {}) {
+  if (!buddyState.playSounds) return;
+  playSound(name, options);
+}
+
+function setBuddyStatus(message) {
+  if (typeof message !== 'string') return;
+  buddyState.statusMessage = message;
+  if (buddyStatus) {
+    buddyStatus.textContent = message;
+  }
+}
+
+function setBuddyModelStatus(message) {
+  if (typeof message !== 'string') return;
+  buddyState.modelStatus = message;
+  if (buddyModelStatus) {
+    buddyModelStatus.textContent = message;
+  }
+}
+
+function persistBuddySettings() {
+  try {
+    const payload = {
+      enabled: buddyState.enabled,
+      idleMessages: buddyState.idleMessages,
+      playSounds: buddyState.playSounds,
+      rememberKey: buddyState.rememberKey,
+      position: buddyState.position,
+    };
+    window.localStorage?.setItem(BUDDY_SETTINGS_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.warn('Unable to persist Cirrus settings', error);
+  }
+}
+
+function persistBuddyKey() {
+  try {
+    if (buddyState.rememberKey && buddyState.openAiKey) {
+      window.localStorage?.setItem(BUDDY_KEY_STORAGE_KEY, buddyState.openAiKey);
+    } else {
+      window.localStorage?.removeItem(BUDDY_KEY_STORAGE_KEY);
+    }
+  } catch (error) {
+    console.warn('Unable to persist Cirrus API key', error);
+  }
+}
+
+function loadBuddyStoredKey() {
+  if (!buddyState.rememberKey) return;
+  try {
+    const stored = window.localStorage?.getItem(BUDDY_KEY_STORAGE_KEY);
+    if (stored) {
+      buddyState.openAiKey = stored;
+      if (buddyKeyInput) {
+        buddyKeyInput.value = stored;
+      }
+    }
+  } catch (error) {
+    console.warn('Unable to restore Cirrus API key', error);
+  }
+}
+
+function restoreBuddySettings() {
+  let stored;
+  try {
+    const raw = window.localStorage?.getItem(BUDDY_SETTINGS_KEY);
+    if (raw) {
+      stored = JSON.parse(raw);
+    }
+  } catch (error) {
+    console.warn('Unable to restore Cirrus settings', error);
+  }
+  if (stored) {
+    if (typeof stored.enabled === 'boolean') buddyState.enabled = stored.enabled;
+    if (typeof stored.idleMessages === 'boolean') buddyState.idleMessages = stored.idleMessages;
+    if (typeof stored.playSounds === 'boolean') buddyState.playSounds = stored.playSounds;
+    if (typeof stored.rememberKey === 'boolean') buddyState.rememberKey = stored.rememberKey;
+    if (
+      stored.position &&
+      typeof stored.position.left === 'number' &&
+      typeof stored.position.top === 'number'
+    ) {
+      buddyState.position = { left: stored.position.left, top: stored.position.top };
+    }
+  }
+  if (buddyEnabledToggle) buddyEnabledToggle.checked = buddyState.enabled;
+  if (buddyIdleToggle) buddyIdleToggle.checked = buddyState.idleMessages;
+  if (buddySoundToggle) buddySoundToggle.checked = buddyState.playSounds;
+  if (buddyRememberKey) buddyRememberKey.checked = buddyState.rememberKey;
+  if (buddyState.rememberKey) {
+    loadBuddyStoredKey();
+  } else if (buddyKeyInput) {
+    buddyKeyInput.value = '';
+  }
+}
+
+function getTaskbarHeight() {
+  return taskbar ? Math.round(taskbar.getBoundingClientRect().height) : 72;
+}
+
+function getDefaultBuddyPosition() {
+  const viewportWidth = window.innerWidth || document.documentElement?.clientWidth || 1280;
+  const viewportHeight = window.innerHeight || document.documentElement?.clientHeight || 720;
+  const rect = buddyContainer?.getBoundingClientRect();
+  const width = rect?.width || 150;
+  const height = rect?.height || 200;
+  const left = Math.max(Math.round(viewportWidth * 0.68) - width / 2, 24);
+  const safeBottom = getTaskbarHeight() + 180;
+  const top = Math.min(Math.round(viewportHeight * 0.55), viewportHeight - height - safeBottom);
+  return { left, top: Math.max(top, 24) };
+}
+
+function getBuddyBounds() {
+  const viewportWidth = window.innerWidth || document.documentElement?.clientWidth || 1280;
+  const viewportHeight = window.innerHeight || document.documentElement?.clientHeight || 720;
+  const rect = buddyContainer?.getBoundingClientRect();
+  const width = rect?.width || 150;
+  const height = rect?.height || 200;
+  const minLeft = 12;
+  const minTop = 12;
+  const maxLeft = Math.max(viewportWidth - width - 12, minLeft);
+  const safeBottom = getTaskbarHeight() + 180;
+  const maxTop = Math.max(viewportHeight - height - safeBottom, minTop);
+  return { minLeft, minTop, maxLeft, maxTop };
+}
+
+function applyBuddyPosition(options = {}) {
+  if (!buddyContainer) return;
+  let { left, top } = buddyState.position;
+  if (typeof left !== 'number' || typeof top !== 'number') {
+    const defaults = getDefaultBuddyPosition();
+    left = defaults.left;
+    top = defaults.top;
+  }
+  const bounds = getBuddyBounds();
+  const clampedLeft = Math.min(Math.max(left, bounds.minLeft), bounds.maxLeft);
+  const clampedTop = Math.min(Math.max(top, bounds.minTop), bounds.maxTop);
+  buddyContainer.style.left = `${clampedLeft}px`;
+  buddyContainer.style.top = `${clampedTop}px`;
+  buddyState.position = { left: clampedLeft, top: clampedTop };
+  if (!options.skipPersist) {
+    persistBuddySettings();
+  }
+}
+
+function resetBuddyPosition() {
+  buddyState.position = getDefaultBuddyPosition();
+  applyBuddyPosition();
+  playBuddySound('buddyMove');
+}
+
+function updateBuddyVisibility() {
+  if (!buddyContainer) return;
+  const shouldShow = buddyState.enabled && !osState.current;
+  buddyContainer.classList.toggle('is-hidden', !shouldShow);
+  buddyContainer.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
+  if (!shouldShow) {
+    closeBuddyPanel({ silent: true });
+    cancelBuddyIdle();
+    clearBuddyBubble();
+  } else {
+    scheduleBuddyIdle();
+  }
+}
+
+function cancelBuddyIdle() {
+  if (buddyState.idleTimer) {
+    window.clearTimeout(buddyState.idleTimer);
+    buddyState.idleTimer = null;
+  }
+}
+
+function clearBuddyBubble() {
+  if (!buddyMessageBubble) return;
+  window.clearTimeout(buddyState.messageTimer);
+  buddyState.messageTimer = null;
+  buddyMessageBubble.classList.remove('is-visible');
+  if (!buddyMessageBubble.hasAttribute('hidden')) {
+    buddyMessageBubble.setAttribute('hidden', '');
+  }
+}
+
+function showBuddyBubble(message) {
+  if (!buddyMessageBubble || typeof message !== 'string' || !message.trim()) return;
+  buddyMessageBubble.textContent = message;
+  buddyMessageBubble.removeAttribute('hidden');
+  buddyMessageBubble.classList.add('is-visible');
+  window.clearTimeout(buddyState.messageTimer);
+  buddyState.messageTimer = window.setTimeout(() => {
+    clearBuddyBubble();
+  }, 6000);
+}
+
+function triggerBuddyIdleMessage() {
+  if (!buddyState.enabled || !buddyState.idleMessages || buddyState.isPanelOpen || osState.current) {
+    return;
+  }
+  const pool = Array.isArray(BUDDY_IDLE_MESSAGES) && BUDDY_IDLE_MESSAGES.length ? BUDDY_IDLE_MESSAGES : [];
+  if (!pool.length) return;
+  let message = pool[Math.floor(Math.random() * pool.length)];
+  if (pool.length > 1 && message === buddyState.lastIdleMessage) {
+    const alternatives = pool.filter((item) => item !== message);
+    if (alternatives.length) {
+      message = alternatives[Math.floor(Math.random() * alternatives.length)];
+    }
+  }
+  buddyState.lastIdleMessage = message;
+  showBuddyBubble(message);
+  playBuddySound('buddyChirp', { throttleMs: 1500, throttleKey: 'buddy-chirp' });
+}
+
+function scheduleBuddyIdle() {
+  cancelBuddyIdle();
+  if (!buddyState.enabled || !buddyState.idleMessages || buddyState.isPanelOpen || osState.current) {
+    return;
+  }
+  buddyState.idleTimer = window.setTimeout(() => {
+    triggerBuddyIdleMessage();
+    scheduleBuddyIdle();
+  }, BUDDY_IDLE_INTERVAL);
+}
+
+function updateBuddyAppletDigest() {
+  if (!state.records?.length) {
+    buddyState.appletDigest = '';
+    buddyState.appletPreviewList = [];
+    return;
+  }
+  const summary = state.records
+    .map((record) => `${record.name} — ${record.description}`)
+    .slice(0, 36);
+  buddyState.appletDigest = summary.join('\n');
+  buddyState.appletPreviewList = state.records
+    .slice(0, 12)
+    .map((record) => `• ${record.name} — ${record.description}`);
+}
+
+function trimBuddyConversation(limit = 14) {
+  if (buddyState.conversation.length > limit) {
+    buddyState.conversation.splice(0, buddyState.conversation.length - limit);
+  }
+}
+
+function appendBuddyLogEntry({ role, content, tone }) {
+  if (!buddyLog || typeof content !== 'string') return;
+  const entry = document.createElement('div');
+  entry.className = 'desktop-buddy__entry';
+  entry.dataset.speaker = role;
+  const label = document.createElement('span');
+  label.className = 'desktop-buddy__entry-label';
+  label.textContent = role === 'user' ? 'You' : role === 'assistant' ? BUDDY_NAME : 'Note';
+  const bubble = document.createElement('div');
+  bubble.className = 'desktop-buddy__message-block';
+  if (tone === 'local') {
+    bubble.classList.add('desktop-buddy__message-block--local');
+  }
+  bubble.textContent = content;
+  entry.append(label, bubble);
+  buddyLog.appendChild(entry);
+  buddyLog.scrollTop = buddyLog.scrollHeight;
+}
+
+function renderBuddyModelOptions() {
+  if (!buddyModelSelect) return;
+  buddyModelSelect.replaceChildren();
+  const models = buddyState.models;
+  if (!models) {
+    buddyModelSelect.disabled = true;
+    return;
+  }
+  const groups = [
+    ['chat', 'Chat'],
+    ['vision', 'Vision'],
+    ['images', 'Images'],
+    ['audio', 'Audio'],
+    ['embeddings', 'Embeddings'],
+  ];
+  let hasOptions = false;
+  groups.forEach(([key, label]) => {
+    const list = Array.isArray(models[key]) ? models[key] : [];
+    if (!list.length) return;
+    hasOptions = true;
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = label;
+    list.forEach((id) => {
+      const option = document.createElement('option');
+      option.value = id;
+      option.textContent = id;
+      optgroup.appendChild(option);
+    });
+    buddyModelSelect.appendChild(optgroup);
+  });
+  buddyModelSelect.disabled = !hasOptions;
+  if (!hasOptions) {
+    buddyState.selectedModel = null;
+    return;
+  }
+  const available = new Set(Object.values(models).flat().filter(Boolean));
+  if (!available.has(buddyState.selectedModel)) {
+    buddyState.selectedModel =
+      models.chat?.[0] ?? models.vision?.[0] ?? models.images?.[0] ?? models.audio?.[0] ?? models.embeddings?.[0] ?? null;
+  }
+  if (buddyState.selectedModel) {
+    buddyModelSelect.value = buddyState.selectedModel;
+  }
+}
+
+function fingerprintBuddyKey(key) {
+  if (!key) return 'anon';
+  return `openai-${String(key).slice(0, 8)}`;
+}
+
+function persistBuddyModelCache() {
+  if (!buddyState.models) return;
+  try {
+    const raw = window.localStorage?.getItem(BUDDY_MODEL_CACHE_KEY);
+    const cache = raw ? JSON.parse(raw) : {};
+    cache[fingerprintBuddyKey(buddyState.openAiKey)] = {
+      models: buddyState.models,
+      selectedModel: buddyState.selectedModel,
+      timestamp: Date.now(),
+    };
+    window.localStorage?.setItem(BUDDY_MODEL_CACHE_KEY, JSON.stringify(cache));
+  } catch (error) {
+    console.warn('Unable to store Cirrus model cache', error);
+  }
+}
+
+function loadBuddyCachedModels() {
+  if (!buddyState.openAiKey) return;
+  try {
+    const raw = window.localStorage?.getItem(BUDDY_MODEL_CACHE_KEY);
+    if (!raw) return;
+    const cache = JSON.parse(raw);
+    const entry = cache[fingerprintBuddyKey(buddyState.openAiKey)];
+    if (entry?.models) {
+      applyBuddyModels(entry.models, { selectedModel: entry.selectedModel });
+      setBuddyModelStatus(`Loaded ${countBuddyModels(entry.models)} cached models.`);
+    }
+  } catch (error) {
+    console.warn('Unable to load Cirrus model cache', error);
+  }
+}
+
+function resolveBuddyModelBucket(id) {
+  const key = String(id).toLowerCase();
+  if (key.includes('embedding')) return 'embeddings';
+  if (key.includes('audio') || key.includes('voice')) return 'audio';
+  if (key.includes('image') || key.includes('dall')) return 'images';
+  if (key.includes('vision')) return 'vision';
+  return 'chat';
+}
+
+function bucketizeBuddyModels(models) {
+  const buckets = {
+    chat: [],
+    vision: [],
+    images: [],
+    audio: [],
+    embeddings: [],
+  };
+  const seen = {
+    chat: new Set(),
+    vision: new Set(),
+    images: new Set(),
+    audio: new Set(),
+    embeddings: new Set(),
+  };
+  models.forEach((model) => {
+    const id = typeof model === 'string' ? model : model?.id;
+    if (!id) return;
+    const bucket = resolveBuddyModelBucket(id);
+    if (!seen[bucket].has(id)) {
+      seen[bucket].add(id);
+      buckets[bucket].push(id);
+    }
+  });
+  Object.keys(buckets).forEach((key) => buckets[key].sort());
+  return buckets;
+}
+
+function countBuddyModels(models) {
+  return Object.values(models || {}).reduce(
+    (total, list) => total + (Array.isArray(list) ? list.length : 0),
+    0
+  );
+}
+
+function applyBuddyModels(models, options = {}) {
+  buddyState.models = models;
+  if (options.selectedModel) {
+    buddyState.selectedModel = options.selectedModel;
+  }
+  renderBuddyModelOptions();
+  persistBuddyModelCache();
+}
+
+function buildBuddyMessages() {
+  const messages = [{ role: 'system', content: BUDDY_SYSTEM_PROMPT }];
+  if (buddyState.appletDigest) {
+    messages.push({ role: 'system', content: `Applet directory:\n${buddyState.appletDigest}` });
+  }
+  const history = buddyState.conversation.slice(-14);
+  messages.push(...history);
+  return messages;
+}
+
+async function refreshBuddyModels() {
+  if (!buddyState.openAiKey) {
+    setBuddyModelStatus('Add an API key to fetch models.');
+    return;
+  }
+  setBuddyModelStatus('Fetching models from OpenAI…');
+  setBuddyStatus('Syncing with OpenAI…');
+  buddyRefreshButton?.setAttribute('disabled', 'true');
+  buddyModelSelect?.setAttribute('disabled', 'true');
+  try {
+    const response = await fetch('https://api.openai.com/v1/models', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${buddyState.openAiKey}`,
+      },
+    });
+    if (response.status === 401) {
+      setBuddyModelStatus('OpenAI rejected the API key. Keeping the last known list.');
+      setBuddyStatus('OpenAI rejected the key. Update it to continue.');
+      return;
+    }
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || `OpenAI model refresh failed (${response.status})`);
+    }
+    const payload = await response.json();
+    const bucketed = bucketizeBuddyModels(payload?.data ?? []);
+    if (countBuddyModels(bucketed) === 0) {
+      setBuddyModelStatus('No models returned. Try again soon.');
+      setBuddyStatus('No models available right now.');
+      return;
+    }
+    applyBuddyModels(bucketed);
+    const count = countBuddyModels(bucketed);
+    setBuddyModelStatus(`Loaded ${count} models from OpenAI.`);
+    setBuddyStatus('Model catalog refreshed.');
+  } catch (error) {
+    console.error('Unable to refresh Cirrus models', error);
+    setBuddyModelStatus('Network error while fetching models. Using any cached list.');
+    setBuddyStatus('I could not reach OpenAI. Try again soon.');
+  } finally {
+    buddyRefreshButton?.removeAttribute('disabled');
+    if (buddyState.models && buddyModelSelect) {
+      buddyModelSelect.removeAttribute('disabled');
+    }
+  }
+}
+
+async function callBuddyOpenAI({ key, model, messages }) {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature: 0.7,
+    }),
+  });
+  if (response.status === 401) {
+    throw new Error('unauthorized');
+  }
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || `OpenAI chat failed (${response.status})`);
+  }
+  const data = await response.json();
+  const reply = data?.choices?.[0]?.message?.content;
+  if (typeof reply !== 'string' || !reply.trim()) {
+    throw new Error('Empty response from OpenAI');
+  }
+  return reply.trim();
+}
+
+function maybeHandleAppletQuestion(text) {
+  if (!text) return false;
+  const normalized = text.toLowerCase();
+  const mentionsApplet = /applet|apps|programs|catalog/.test(normalized);
+  const requestsList = /list|available|show|what|which|options/.test(normalized);
+  if (!mentionsApplet || !requestsList) {
+    return false;
+  }
+  if (!buddyState.appletPreviewList?.length) {
+    const fallback = state.records?.length
+      ? 'I do not see any registered applets right now.'
+      : 'No applets are registered yet, but new ones can be added to the dashboard.';
+    appendBuddyLogEntry({ role: 'assistant', content: fallback, tone: 'local' });
+    buddyState.conversation.push({ role: 'assistant', content: fallback });
+    trimBuddyConversation();
+    setBuddyStatus('Here is what I know.');
+    playBuddySound('buddyReply');
+    return true;
+  }
+  const response = `Here are some applets you can open:\n${buddyState.appletPreviewList.join('\n')}`;
+  appendBuddyLogEntry({ role: 'assistant', content: response, tone: 'local' });
+  buddyState.conversation.push({ role: 'assistant', content: response });
+  trimBuddyConversation();
+  setBuddyStatus('Here are a few desktop picks.');
+  playBuddySound('buddyReply');
+  return true;
+}
+
+async function handleBuddySubmit(event) {
+  event.preventDefault();
+  if (buddyState.awaitingResponse) return;
+  const value = buddyInput?.value?.trim();
+  if (!value) return;
+  buddyInput.value = '';
+  appendBuddyLogEntry({ role: 'user', content: value });
+  playBuddySound('buddySend');
+  clearBuddyBubble();
+  buddyState.conversation.push({ role: 'user', content: value });
+  trimBuddyConversation();
+  if (maybeHandleAppletQuestion(value)) {
+    scheduleBuddyIdle();
+    return;
+  }
+  buddyState.awaitingResponse = true;
+  buddySendButton?.setAttribute('disabled', 'true');
+  setBuddyStatus('Thinking…');
+  try {
+    if (!buddyState.openAiKey) {
+      throw new Error('missing-key');
+    }
+    if (!buddyState.models) {
+      await refreshBuddyModels();
+    }
+    const model =
+      buddyState.selectedModel ||
+      buddyState.models?.chat?.[0] ||
+      buddyState.models?.vision?.[0] ||
+      buddyState.models?.images?.[0] ||
+      buddyState.models?.audio?.[0];
+    if (!model) {
+      throw new Error('missing-model');
+    }
+    const messages = buildBuddyMessages();
+    const reply = await callBuddyOpenAI({ key: buddyState.openAiKey, model, messages });
+    buddyState.conversation.push({ role: 'assistant', content: reply });
+    trimBuddyConversation();
+    appendBuddyLogEntry({ role: 'assistant', content: reply });
+    setBuddyStatus('Glad to help!');
+    playBuddySound('buddyReply');
+  } catch (error) {
+    console.error('Cirrus chat failed', error);
+    let feedback = 'I ran into an issue reaching OpenAI.';
+    if (error.message === 'missing-key') {
+      feedback = 'Add an OpenAI API key so I can respond.';
+      setBuddyModelStatus('Add an API key to fetch models.');
+    } else if (error.message === 'unauthorized') {
+      feedback = 'OpenAI rejected the API key. Double-check it and try again.';
+      setBuddyModelStatus('OpenAI rejected the API key. Update it to continue.');
+    } else if (error.message === 'missing-model') {
+      feedback = 'Refresh the model list so I know which model to use.';
+    }
+    appendBuddyLogEntry({ role: 'system', content: feedback });
+    setBuddyStatus(feedback);
+  } finally {
+    buddyState.awaitingResponse = false;
+    buddySendButton?.removeAttribute('disabled');
+    scheduleBuddyIdle();
+  }
+}
+
+function openBuddyPanel() {
+  if (!buddyPanel || buddyState.isPanelOpen) return;
+  buddyState.isPanelOpen = true;
+  buddyPanel.hidden = false;
+  buddyPanel.setAttribute('aria-hidden', 'false');
+  buddyAvatar?.setAttribute('aria-expanded', 'true');
+  playBuddySound('buddyWake');
+  setBuddyStatus(buddyState.statusMessage ?? 'Ready to chat.');
+  setBuddyModelStatus(buddyState.modelStatus);
+  cancelBuddyIdle();
+  clearBuddyBubble();
+  requestAnimationFrame(() => {
+    buddyInput?.focus();
+  });
+}
+
+function closeBuddyPanel(options = {}) {
+  if (!buddyPanel || !buddyState.isPanelOpen) return;
+  buddyState.isPanelOpen = false;
+  buddyPanel.hidden = true;
+  buddyPanel.setAttribute('aria-hidden', 'true');
+  buddyAvatar?.setAttribute('aria-expanded', 'false');
+  if (!options.silent) {
+    playBuddySound('menuClose');
+  }
+  scheduleBuddyIdle();
+}
+
+function toggleBuddyPanel(force) {
+  const shouldOpen = typeof force === 'boolean' ? force : !buddyState.isPanelOpen;
+  if (shouldOpen) {
+    openBuddyPanel();
+  } else {
+    closeBuddyPanel();
+  }
+}
+
+function handleBuddyPointerDown(event) {
+  if (!buddyState.enabled || !buddyContainer) return;
+  buddyDragState.pointerId = event.pointerId;
+  buddyDragState.startX = event.clientX;
+  buddyDragState.startY = event.clientY;
+  const rect = buddyContainer.getBoundingClientRect();
+  buddyDragState.originLeft = rect.left;
+  buddyDragState.originTop = rect.top;
+  buddyDragState.moved = false;
+  buddyDragState.justDragged = false;
+  if (typeof buddyAvatar?.setPointerCapture === 'function') {
+    buddyAvatar.setPointerCapture(event.pointerId);
+  }
+  buddyContainer.classList.add('is-dragging');
+  cancelBuddyIdle();
+  clearBuddyBubble();
+}
+
+function handleBuddyPointerMove(event) {
+  if (buddyDragState.pointerId !== event.pointerId || !buddyContainer) return;
+  const dx = event.clientX - buddyDragState.startX;
+  const dy = event.clientY - buddyDragState.startY;
+  if (!buddyDragState.moved && Math.hypot(dx, dy) > 6) {
+    buddyDragState.moved = true;
+  }
+  if (!buddyDragState.moved) return;
+  const bounds = getBuddyBounds();
+  let left = buddyDragState.originLeft + dx;
+  let top = buddyDragState.originTop + dy;
+  left = Math.min(Math.max(left, bounds.minLeft), bounds.maxLeft);
+  top = Math.min(Math.max(top, bounds.minTop), bounds.maxTop);
+  buddyContainer.style.left = `${left}px`;
+  buddyContainer.style.top = `${top}px`;
+}
+
+function handleBuddyPointerUp(event) {
+  if (buddyDragState.pointerId !== event.pointerId || !buddyContainer) return;
+  if (typeof buddyAvatar?.releasePointerCapture === 'function') {
+    buddyAvatar.releasePointerCapture(event.pointerId);
+  }
+  buddyContainer.classList.remove('is-dragging');
+  const rect = buddyContainer.getBoundingClientRect();
+  buddyState.position = { left: rect.left, top: rect.top };
+  persistBuddySettings();
+  buddyDragState.justDragged = buddyDragState.moved;
+  if (buddyDragState.moved) {
+    playBuddySound('buddyMove', { throttleMs: 150 });
+  }
+  buddyDragState.pointerId = null;
+  buddyDragState.moved = false;
+  scheduleBuddyIdle();
+}
+
+function handleBuddyPointerCancel(event) {
+  if (buddyDragState.pointerId !== event.pointerId) return;
+  buddyDragState.pointerId = null;
+  buddyDragState.moved = false;
+  buddyContainer?.classList.remove('is-dragging');
+  scheduleBuddyIdle();
+}
+
+function initDesktopBuddy() {
+  if (buddyState.hasInitialized || !buddyContainer || !buddyAvatar) return;
+  buddyState.hasInitialized = true;
+  restoreBuddySettings();
+  applyBuddyPosition({ skipPersist: true });
+  updateBuddyVisibility();
+  scheduleBuddyIdle();
+
+  buddyAvatar.addEventListener('pointerdown', handleBuddyPointerDown);
+  buddyAvatar.addEventListener('pointermove', handleBuddyPointerMove);
+  buddyAvatar.addEventListener('pointerup', handleBuddyPointerUp);
+  buddyAvatar.addEventListener('pointercancel', handleBuddyPointerCancel);
+  buddyAvatar.addEventListener('click', (event) => {
+    if (buddyDragState.justDragged) {
+      event.preventDefault();
+      buddyDragState.justDragged = false;
+      return;
+    }
+    toggleBuddyPanel();
+  });
+  buddyAvatar.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleBuddyPanel();
+    }
+  });
+
+  buddyCloseButton?.addEventListener('click', () => closeBuddyPanel());
+  buddyForm?.addEventListener('submit', handleBuddySubmit);
+  buddyRefreshButton?.addEventListener('click', () => refreshBuddyModels());
+  buddyModelSelect?.addEventListener('change', (event) => {
+    if (!(event.target instanceof HTMLSelectElement)) return;
+    buddyState.selectedModel = event.target.value || null;
+    persistBuddyModelCache();
+    setBuddyStatus(buddyState.selectedModel ? `Model set to ${buddyState.selectedModel}.` : 'Select a model to chat.');
+  });
+  buddyKeyInput?.addEventListener('change', () => {
+    buddyState.openAiKey = buddyKeyInput.value.trim();
+    if (buddyState.openAiKey) {
+      setBuddyStatus('Key captured. Refresh models to sync.');
+      setBuddyModelStatus('Refresh models to sync with OpenAI.');
+    } else {
+      setBuddyStatus('Add an OpenAI API key so I can help.');
+      setBuddyModelStatus('Add an API key to fetch models.');
+    }
+    persistBuddyKey();
+    buddyState.models = null;
+    renderBuddyModelOptions();
+  });
+  buddyRememberKey?.addEventListener('change', () => {
+    buddyState.rememberKey = buddyRememberKey.checked;
+    persistBuddySettings();
+    persistBuddyKey();
+  });
+  buddyEnabledToggle?.addEventListener('change', () => {
+    buddyState.enabled = buddyEnabledToggle.checked;
+    persistBuddySettings();
+    if (buddyState.enabled) {
+      setBuddyStatus('Cirrus is ready to help.');
+    } else {
+      setBuddyStatus('Cirrus is resting.');
+    }
+    updateBuddyVisibility();
+  });
+  buddyIdleToggle?.addEventListener('change', () => {
+    buddyState.idleMessages = buddyIdleToggle.checked;
+    persistBuddySettings();
+    if (buddyState.idleMessages) {
+      scheduleBuddyIdle();
+    } else {
+      cancelBuddyIdle();
+      clearBuddyBubble();
+    }
+  });
+  buddySoundToggle?.addEventListener('change', () => {
+    buddyState.playSounds = buddySoundToggle.checked;
+    persistBuddySettings();
+  });
+  buddyResetPositionButton?.addEventListener('click', () => {
+    resetBuddyPosition();
+  });
+
+  window.addEventListener('resize', () => {
+    applyBuddyPosition({ skipPersist: true });
+  });
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && buddyState.isPanelOpen) {
+      closeBuddyPanel();
+      buddyAvatar?.focus();
+    }
+  });
+
+  if (buddyState.openAiKey) {
+    setBuddyStatus('Key loaded. Refresh models to sync.');
+    loadBuddyCachedModels();
+  } else if (!buddyState.enabled) {
+    setBuddyStatus('Cirrus is resting.');
+  } else {
+    setBuddyStatus('Say hello!');
+  }
+  setBuddyModelStatus(buddyState.modelStatus);
 }
 
 function clearBootTimers() {
@@ -693,6 +1556,7 @@ function closeActiveApplet(options = {}) {
   }
   syncWindowLayout();
   updateTaskbarSessionButton();
+  updateBuddyVisibility();
   if (!skipFocus) {
     startButton?.focus();
   }
@@ -722,6 +1586,7 @@ function launchApplet(record) {
 
   updateOsChrome(normalized);
   updateTaskbarSessionButton();
+  updateBuddyVisibility();
   toggleStartMenu(false);
   allAppsPanel?.classList.remove('is-open');
   allAppsPanel?.setAttribute('aria-hidden', 'true');
@@ -1700,6 +2565,7 @@ function initializeDesktop(results) {
     iconUrl: record.iconUrl,
     emoji: record.emoji,
   }));
+  updateBuddyAppletDigest();
   renderPinned();
   renderCategories();
   renderStartMenu();
@@ -1757,6 +2623,7 @@ async function init() {
   initAllAppsPanel();
   initKeyboardShortcuts();
   initSettings();
+  initDesktopBuddy();
   let registry;
   try {
     const res = await fetch('./applets.json');
