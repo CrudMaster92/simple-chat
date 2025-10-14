@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elemental Sand Atrium</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="atrium" aria-labelledby="title">
+      <header class="atrium__header">
+        <div>
+          <h1 id="title">Elemental Sand Atrium</h1>
+          <p class="atrium__tagline">
+            Paint with kinetic grains, cascading liquids, and reactive embers in a living materials lab.
+          </p>
+        </div>
+        <button class="control-button" id="resetButton" type="button">Clear Canvas</button>
+      </header>
+
+      <section class="atrium__content">
+        <aside class="control-panel" aria-label="Material palette and environment controls">
+          <section aria-label="Material palette" class="control-panel__section">
+            <h2>Materials</h2>
+            <div class="material-grid" id="materialPalette" role="radiogroup" aria-label="Select a material">
+              <!-- Buttons injected by app.js -->
+            </div>
+          </section>
+
+          <section aria-label="Brush controls" class="control-panel__section">
+            <h2>Brush</h2>
+            <label class="slider-label" for="brushSize">Size <span id="brushSizeValue">8</span></label>
+            <input id="brushSize" type="range" min="1" max="32" value="8" />
+
+            <label class="slider-label" for="flowRate">Flow Rate <span id="flowRateValue">1x</span></label>
+            <input id="flowRate" type="range" min="1" max="4" value="1" />
+          </section>
+
+          <section aria-label="Environment modifiers" class="control-panel__section">
+            <h2>Environment</h2>
+            <label class="slider-label" for="wind">Crosswind <span id="windValue">Calm</span></label>
+            <input id="wind" type="range" min="-4" max="4" value="0" />
+
+            <label class="slider-label" for="cooling">Cooling Rate <span id="coolingValue">Balanced</span></label>
+            <input id="cooling" type="range" min="0" max="10" value="5" />
+
+            <div class="toggle-row">
+              <label class="switch">
+                <input id="autoRain" type="checkbox" />
+                <span class="switch__slider" aria-hidden="true"></span>
+              </label>
+              <span>Skyfall drizzle</span>
+            </div>
+
+            <div class="toggle-row">
+              <label class="switch">
+                <input id="emberPulse" type="checkbox" />
+                <span class="switch__slider" aria-hidden="true"></span>
+              </label>
+              <span>Volcanic pulses</span>
+            </div>
+          </section>
+
+          <section aria-label="Status" class="control-panel__section">
+            <h2>Status</h2>
+            <dl class="status" id="statusBoard"></dl>
+          </section>
+        </aside>
+
+        <section class="canvas-wrap">
+          <canvas id="sandCanvas" width="160" height="100" role="img" aria-label="Falling sand simulation canvas"></canvas>
+          <div class="hint-bar">
+            Tip: hold Shift to sample a material under the cursor, or hold Alt to vacuum cells.
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
