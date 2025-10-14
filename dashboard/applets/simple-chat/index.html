@@ -11,329 +11,340 @@
   </head>
   <body data-theme="light">
     <div class="wrap">
-      <div class="card">
-        <div class="header">
-          <div class="row">
-            <span id="chipA" class="chip a"><span id="chipAEmoji">🅰️</span> <span id="chipAName">Persona A</span></span>
-            <span class="muted">vs</span>
-            <span id="chipB" class="chip b"><span id="chipBEmoji">🅱️</span> <span id="chipBName">Persona B</span></span>
-          </div>
-          <div class="row">
-            <button id="btnSetup" class="btn light">Setup</button>
-            <button id="btnChat" class="btn light">Chat</button>
-            <label class="theme-toggle">
-              <input id="themeToggle" type="checkbox" role="switch" aria-checked="false" aria-label="Toggle cracktro light or dark theme">
-              <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
-              <span class="theme-toggle-text"><span id="themeIcon" aria-hidden="true">🌞</span> <span id="themeLabel">Light Mode</span></span>
-            </label>
-          </div>
-        </div>
-
-        <!-- SETUP VIEW -->
-        <div id="viewSetup" class="view active">
-          <div class="pad">
-            <div class="accordion" id="setupAccordion">
-              <section class="accordion-item open" data-accordion-item>
-                <button class="accordion-header" type="button" aria-expanded="true">
-                  <span class="accordion-title">Conversation Defaults</span>
-                  <span class="accordion-icon" aria-hidden="true">▾</span>
-                </button>
-                <div class="accordion-body">
-                  <div class="panel">
-                    <div class="panel-title">Conversation Defaults</div>
-                    <div class="row">
-                      <div class="col">
-                        <div class="label">Exchanges (A↔B pairs)</div>
-                        <input id="exchanges" type="number" min="1" value="3">
-                      </div>
-                    </div>
-                    <div>
-                      <div class="label">Scenario presets</div>
-                      <div class="row" style="margin-top:6px">
-                        <select id="presetScenario"></select>
-                        <button id="applyScenario" class="btn light">Load scenario</button>
-                      </div>
-                    </div>
-                    <div class="label" style="margin-top:12px">Moderator guidance</div>
-                    <textarea id="moderatorPreprompt" rows="4" placeholder="Define the debate rules or load a scenario to prefill guidance"></textarea>
-                    <div class="row" style="margin-top:8px; gap:8px; align-items:center;">
-                      <button id="saveScenario" class="btn light" type="button">Save scenario</button>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section class="accordion-item" data-accordion-item>
-                <button class="accordion-header" type="button" aria-expanded="false">
-                  <span class="accordion-title">Persona Studio</span>
-                  <span class="accordion-icon" aria-hidden="true">▾</span>
-                </button>
-                <div class="accordion-body">
-                  <div class="persona-wizard">
-                    <div class="wizard-progress" role="tablist">
-                      <button type="button" class="wizard-step-btn active" data-step="1" aria-current="step">1. Persona A</button>
-                      <button type="button" class="wizard-step-btn" data-step="2">2. Persona B</button>
-                      <button type="button" class="wizard-step-btn" data-step="3">3. Review</button>
-                    </div>
-                    <div class="wizard-panels">
-                      <div class="wizard-panel active" data-step="1" role="tabpanel">
-                        <div class="panel">
-                          <div class="panel-title">Persona A</div>
-                          <div class="row">
-                            <div class="col">
-                              <div class="label">Name</div>
-                              <input id="nameA" type="text" value="Persona A">
-                            </div>
-                            <div style="width:100px">
-                              <div class="label">Emoji</div>
-                              <input id="emojiA" type="text" placeholder="😀" value="😀">
-                            </div>
-                            <div style="width:130px">
-                              <div class="label">Bubble color</div>
-                              <input id="colorA" type="color" value="#ffffff" title="Background color for Persona A messages">
-                            </div>
-                          </div>
-                          <div class="label" style="margin-top:8px">Prompt</div>
-                          <textarea id="promptA" rows="3" placeholder="Describe Persona A behaviour">You are an Analyst. Provide clear, data-backed insights in a concise and engaging manner.</textarea>
-                          <div class="label" style="margin-top:8px">Load persona</div>
-                          <div class="row">
-                            <select id="presetA"></select>
-                            <button id="applyPresetA" class="btn light">Load</button>
-                            <button id="savePersonaA" class="btn light" type="button">Save</button>
-                          </div>
-                        </div>
-                        <div class="wizard-nav">
-                          <button type="button" class="btn primary wizard-next" data-goto="2">Next: Persona B</button>
-                        </div>
-                      </div>
-                      <div class="wizard-panel" data-step="2" role="tabpanel">
-                        <div class="panel">
-                          <div class="panel-title">Persona B</div>
-                          <div class="row">
-                            <div class="col">
-                              <div class="label">Name</div>
-                              <input id="nameB" type="text" value="Persona B">
-                            </div>
-                            <div style="width:100px">
-                              <div class="label">Emoji</div>
-                              <input id="emojiB" type="text" placeholder="🧠" value="🧠">
-                            </div>
-                            <div style="width:130px">
-                              <div class="label">Bubble color</div>
-                              <input id="colorB" type="color" value="#ffffff" title="Background color for Persona B messages">
-                            </div>
-                          </div>
-                          <div class="label" style="margin-top:8px">Prompt</div>
-                          <textarea id="promptB" rows="3" placeholder="Describe Persona B behaviour">You are a Creative Strategist. Offer imaginative ideas and strategic insights with flair.</textarea>
-                          <div class="label" style="margin-top:8px">Load persona</div>
-                          <div class="row">
-                            <select id="presetB"></select>
-                            <button id="applyPresetB" class="btn light">Load</button>
-                            <button id="savePersonaB" class="btn light" type="button">Save</button>
-                          </div>
-                        </div>
-                        <div class="wizard-nav">
-                          <button type="button" class="btn light wizard-prev" data-goto="1">Back</button>
-                          <button type="button" class="btn primary wizard-next" data-goto="3">Next: Review</button>
-                        </div>
-                      </div>
-                      <div class="wizard-panel" data-step="3" role="tabpanel">
-                        <div class="panel">
-                          <div class="panel-title">Review &amp; Launch</div>
-                          <div class="wizard-review">
-                            <div class="review-card">
-                              <div class="review-title">Persona A Snapshot</div>
-                              <div class="review-name" id="reviewAName">Persona A</div>
-                              <div class="review-detail" id="reviewAPrompt">No persona prompt provided yet.</div>
-                            </div>
-                            <div class="review-card">
-                              <div class="review-title">Persona B Snapshot</div>
-                              <div class="review-name" id="reviewBName">Persona B</div>
-                              <div class="review-detail" id="reviewBPrompt">No persona prompt provided yet.</div>
-                            </div>
-                            <div class="review-card">
-                              <div class="review-title">Moderator Focus</div>
-                              <div class="review-name" id="reviewTopic">No topic set</div>
-                              <div class="review-detail" id="reviewTopicDetail">Add a moderator preprompt to define the topic.</div>
-                            </div>
-                          </div>
-                          <div class="muted" style="margin-top:12px">Need to tweak something? Jump back with the step buttons above.</div>
-                          <div class="wizard-nav" style="margin-top:16px">
-                            <button type="button" class="btn light wizard-prev" data-goto="2">Back</button>
-                            <button id="startBtn" class="btn primary">Start Chat</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section class="accordion-item" data-accordion-item>
-                <button class="accordion-header" type="button" aria-expanded="false">
-                  <span class="accordion-title">Creative Extras</span>
-                  <span class="accordion-icon" aria-hidden="true">▾</span>
-                </button>
-                <div class="accordion-body">
-                  <div class="panel">
-                    <div class="panel-title">Persona &amp; Topic Generator</div>
-                    <div class="label">Describe a theme, role, or mood</div>
-                    <input id="generatorSeed" type="text" placeholder="e.g. optimistic marine biologist, or &quot;collaborative AI policy&quot;">
-                    <div class="row" style="margin-top:8px">
-                      <button id="generateForA" class="btn primary">Generate for Persona A</button>
-                      <button id="generateForB" class="btn primary">Generate for Persona B</button>
-                      <button id="swapGeneratorSeed" class="btn light">Swap Personas</button>
-                    </div>
-                    <div id="generatorStatus" class="muted" style="margin-top:8px"></div>
-                    <div class="label" style="margin-top:12px">Suggested discussion topics</div>
-                    <textarea id="generatorTopics" rows="3" readonly placeholder="Generated topics will appear here"></textarea>
-                  </div>
-                </div>
-              </section>
-
-              <section class="accordion-item" data-accordion-item>
-                <button class="accordion-header" type="button" aria-expanded="false">
-                  <span class="accordion-title">Conversation Memory</span>
-                  <span class="accordion-icon" aria-hidden="true">▾</span>
-                </button>
-                <div class="accordion-body">
-                  <div class="panel">
-                    <div class="panel-title">Saved Sessions</div>
-                    <div class="row">
-                      <button id="refreshHistory" class="btn light">Refresh</button>
-                      <button id="clearHistory" class="btn warn">Clear All</button>
-                    </div>
-                    <div id="historyList" class="history-list" style="margin-top:12px"></div>
-                  </div>
-                </div>
-              </section>
-
-              <section class="accordion-item" data-accordion-item>
-                <button class="accordion-header" type="button" aria-expanded="false">
-                  <span class="accordion-title">API &amp; Model Settings</span>
-                  <span class="accordion-icon" aria-hidden="true">▾</span>
-                </button>
-                <div class="accordion-body">
-                  <div class="panel api-access-panel">
-                    <div class="panel-head">
-                      <div class="panel-title">API &amp; Model Settings</div>
-                    </div>
-                    <div class="api-provider-grid">
-                      <div class="provider-key-block">
-                        <div class="provider-key-header">
-                          <label class="label" for="openaiKey">OpenAI key</label>
-                          <label class="remember-toggle"><input id="rememberOpenAIKey" type="checkbox"> <span class="muted">Remember locally</span></label>
-                        </div>
-                        <div class="api-input-row">
-                          <input id="openaiKey" type="password" placeholder="Enter your OpenAI API key" autocomplete="off">
-                          <button id="pasteOpenAIKey" class="btn dark" type="button">📋 Paste</button>
-                        </div>
-                        <div id="openaiKeyStatus" class="muted provider-status" aria-live="polite"></div>
-                      </div>
-                      <div class="provider-key-block">
-                        <div class="provider-key-header">
-                          <label class="label" for="geminiKey">Gemini key</label>
-                          <label class="remember-toggle"><input id="rememberGeminiKey" type="checkbox"> <span class="muted">Remember locally</span></label>
-                        </div>
-                        <div class="api-input-row">
-                          <input id="geminiKey" type="password" placeholder="Enter your Gemini API key" autocomplete="off">
-                          <button id="pasteGeminiKey" class="btn dark" type="button">📋 Paste</button>
-                        </div>
-                        <div id="geminiKeyStatus" class="muted provider-status" aria-live="polite"></div>
-                      </div>
-                    </div>
-                    <div class="api-settings-grid">
-                      <div>
-                        <div class="label">Temperature: <span id="tempVal">1.0</span></div>
-                        <input id="temperature" type="range" min="0" max="2" step="0.1" value="1.0">
-                      </div>
-                    </div>
-                    <div class="persona-model-grid">
-                      <div class="persona-model-block">
-                        <div class="label">Persona A model</div>
-                        <select id="modelA">
-                          <option value="gpt-5">gpt-5</option>
-                          <option value="gpt-5-mini">gpt-5-mini</option>
-                          <option value="gpt-5-chat-latest">gpt-5-chat-latest</option>
-                          <option value="custom">Custom…</option>
-                        </select>
-                        <div class="label">Custom model (if selected)</div>
-                        <input id="customModelA" type="text" placeholder="model name">
-                      </div>
-                      <div class="persona-model-block">
-                        <div class="label">Persona B model</div>
-                        <select id="modelB">
-                          <option value="gpt-5">gpt-5</option>
-                          <option value="gpt-5-mini">gpt-5-mini</option>
-                          <option value="gpt-5-chat-latest">gpt-5-chat-latest</option>
-                          <option value="custom">Custom…</option>
-                        </select>
-                        <div class="label">Custom model (if selected)</div>
-                        <input id="customModelB" type="text" placeholder="model name">
-                      </div>
-                    </div>
-                    <div class="api-status-row">
-                      <button id="refreshModels" class="btn light" type="button">Refresh models</button>
-                      <div id="modelStatus" class="muted" aria-live="polite"></div>
-                    </div>
-                  </div>
-                </div>
-              </section>
+      <div class="chat-shell">
+        <div class="chat-layout">
+          <aside id="historyDrawer" class="memory-bar card" aria-label="Saved conversations">
+            <div class="memory-header">
+              <span>Conversation Memory</span>
+              <button id="closeHistory" class="icon-btn" type="button" aria-label="Hide conversation history">×</button>
             </div>
-          </div>
-        </div>
-
-        <!-- CHAT VIEW -->
-        <div id="viewChat" class="view">
-          <div class="pad">
-            <div class="chat-layout">
-              <aside class="memory-bar card">
-                <div class="memory-header">Conversation Memory</div>
-                <div id="chatHistoryList" class="memory-list"></div>
-              </aside>
-              <div class="chat-main">
-                <div class="card conversation-card">
-                  <div class="section-title">Conversation</div>
-                  <div class="conversation-summary">
-                    <div id="summaryAChip" class="summary-chip">
-                      <span id="summaryAEmoji" class="summary-emoji">🅰️</span>
-                      <span id="summaryAName" class="summary-name">Persona A</span>
-                      <div class="summary-detail" id="summaryADetail">No persona prompt provided yet.</div>
-                    </div>
-                    <div id="summaryTopicChip" class="summary-chip topic">
-                      <span class="summary-emoji">🧭</span>
-                      <span id="summaryTopicText" class="summary-name">No topic set</span>
-                      <div class="summary-detail" id="summaryTopicDetail">Add a moderator preprompt to define the topic.</div>
-                    </div>
-                    <div id="summaryBChip" class="summary-chip">
-                      <span id="summaryBEmoji" class="summary-emoji">🅱️</span>
-                      <span id="summaryBName" class="summary-name">Persona B</span>
-                      <div class="summary-detail" id="summaryBDetail">No persona prompt provided yet.</div>
-                    </div>
+            <div id="chatHistoryList" class="memory-list"></div>
+          </aside>
+          <div class="chat-main">
+            <div class="card conversation-card">
+              <div class="chat-header">
+                <button id="historyToggle" class="icon-btn" type="button" aria-expanded="true" aria-controls="chatHistoryList" aria-label="Toggle conversation history">
+                  <span class="icon">☰</span>
+                </button>
+                <div class="chat-header-meta">
+                  <div class="chat-title">Dialogue Studio</div>
+                  <div class="chip-row">
+                    <span id="chipA" class="chip a"><span id="chipAEmoji">🅰️</span> <span id="chipAName">Persona A</span></span>
+                    <span class="chip-sep" aria-hidden="true">vs</span>
+                    <span id="chipB" class="chip b"><span id="chipBEmoji">🅱️</span> <span id="chipBName">Persona B</span></span>
                   </div>
-                  <div id="conv" class="conv"></div>
-                  <div class="pad">
-                    <div class="row">
-                      <div class="col">
-                        <div class="label">Moderator message (optional)</div>
-                        <input id="moderatorMsg" type="text" placeholder="Add direction for the next segment…">
-                      </div>
-                      <div style="width:150px">
-                        <div class="label">Add exchanges</div>
-                        <input id="extendCount" type="number" min="1" value="2">
-                      </div>
-                    </div>
-                    <div class="row" style="margin-top:8px">
-                      <button id="extendBtn" class="btn primary">Extend Discussion</button>
-                      <button id="newBtn" class="btn light">New Chat</button>
-                    </div>
+                </div>
+                <div class="chat-header-actions">
+                  <button id="openSettings" class="btn light" type="button">Session Settings</button>
+                  <label class="theme-toggle">
+                    <input id="themeToggle" type="checkbox" role="switch" aria-checked="false" aria-label="Toggle light or dark theme">
+                    <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+                    <span class="theme-toggle-text"><span id="themeIcon" aria-hidden="true">🌞</span> <span id="themeLabel">Light Mode</span></span>
+                  </label>
+                </div>
+              </div>
+              <div class="conversation-summary">
+                <div id="summaryAChip" class="summary-chip">
+                  <span id="summaryAEmoji" class="summary-emoji">🅰️</span>
+                  <span id="summaryAName" class="summary-name">Persona A</span>
+                  <div class="summary-detail" id="summaryADetail">No persona prompt provided yet.</div>
+                </div>
+                <div id="summaryTopicChip" class="summary-chip topic">
+                  <span class="summary-emoji">🧭</span>
+                  <span id="summaryTopicText" class="summary-name">No topic set</span>
+                  <div class="summary-detail" id="summaryTopicDetail">Add a moderator preprompt to define the topic.</div>
+                </div>
+                <div id="summaryBChip" class="summary-chip">
+                  <span id="summaryBEmoji" class="summary-emoji">🅱️</span>
+                  <span id="summaryBName" class="summary-name">Persona B</span>
+                  <div class="summary-detail" id="summaryBDetail">No persona prompt provided yet.</div>
+                </div>
+              </div>
+              <div id="conv" class="conv"></div>
+              <div class="pad">
+                <div class="row">
+                  <div class="col">
+                    <div class="label">Moderator message (optional)</div>
+                    <input id="moderatorMsg" type="text" placeholder="Add direction for the next segment…">
                   </div>
+                  <div style="width:150px">
+                    <div class="label">Add exchanges</div>
+                    <input id="extendCount" type="number" min="1" value="2">
+                  </div>
+                </div>
+                <div class="row" style="margin-top:8px">
+                  <button id="extendBtn" class="btn primary">Extend Discussion</button>
+                  <button id="newBtn" class="btn light">New Chat</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
+    <div id="settingsOverlay" class="settings-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="settings-backdrop" data-close-overlay></div>
+      <div class="settings-panel card" role="document" tabindex="-1">
+        <div class="settings-head">
+          <div>
+            <div class="settings-title">Session Settings</div>
+            <div class="settings-subtitle">Fine-tune personas, prompts, and API access before starting a run.</div>
+          </div>
+          <button id="closeSettings" class="icon-btn" type="button" aria-label="Close session settings">×</button>
+        </div>
+        <div class="settings-scroll">
+          <div class="accordion" id="setupAccordion">
+            <section class="accordion-item open" data-accordion-item>
+              <button class="accordion-header" type="button" aria-expanded="true">
+                <span class="accordion-title">Conversation Defaults</span>
+                <span class="accordion-icon" aria-hidden="true">▾</span>
+              </button>
+              <div class="accordion-body">
+                <div class="panel">
+                  <div class="panel-title">Conversation Defaults</div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="label">Exchanges (A↔B pairs)</div>
+                      <input id="exchanges" type="number" min="1" value="3">
+                    </div>
+                  </div>
+                  <div>
+                    <div class="label">Scenario presets</div>
+                    <div class="row" style="margin-top:6px">
+                      <select id="presetScenario"></select>
+                      <button id="applyScenario" class="btn light">Load scenario</button>
+                    </div>
+                  </div>
+                  <div class="label" style="margin-top:12px">Moderator guidance</div>
+                  <textarea id="moderatorPreprompt" rows="4" placeholder="Define the debate rules or load a scenario to prefill guidance"></textarea>
+                  <div class="row" style="margin-top:8px; gap:8px; align-items:center;">
+                    <button id="saveScenario" class="btn light" type="button">Save scenario</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="accordion-item" data-accordion-item>
+              <button class="accordion-header" type="button" aria-expanded="false">
+                <span class="accordion-title">Persona Studio</span>
+                <span class="accordion-icon" aria-hidden="true">▾</span>
+              </button>
+              <div class="accordion-body">
+                <div class="persona-wizard">
+                  <div class="wizard-progress" role="tablist">
+                    <button type="button" class="wizard-step-btn active" data-step="1" aria-current="step">1. Persona A</button>
+                    <button type="button" class="wizard-step-btn" data-step="2">2. Persona B</button>
+                    <button type="button" class="wizard-step-btn" data-step="3">3. Review</button>
+                  </div>
+                  <div class="wizard-panels">
+                    <div class="wizard-panel active" data-step="1" role="tabpanel">
+                      <div class="panel">
+                        <div class="panel-title">Persona A</div>
+                        <div class="row">
+                          <div class="col">
+                            <div class="label">Name</div>
+                            <input id="nameA" type="text" value="Persona A">
+                          </div>
+                          <div style="width:100px">
+                            <div class="label">Emoji</div>
+                            <input id="emojiA" type="text" placeholder="😀" value="😀">
+                          </div>
+                          <div style="width:130px">
+                            <div class="label">Bubble color</div>
+                            <input id="colorA" type="color" value="#ffffff" title="Background color for Persona A messages">
+                          </div>
+                        </div>
+                        <div class="label" style="margin-top:8px">Prompt</div>
+                        <textarea id="promptA" rows="3" placeholder="Describe Persona A behaviour">You are an Analyst. Provide clear, data-backed insights in a concise and engaging manner.</textarea>
+                        <div class="label" style="margin-top:8px">Load persona</div>
+                        <div class="row">
+                          <select id="presetA"></select>
+                          <button id="applyPresetA" class="btn light">Load</button>
+                          <button id="savePersonaA" class="btn light" type="button">Save</button>
+                        </div>
+                      </div>
+                      <div class="wizard-nav">
+                        <button type="button" class="btn primary wizard-next" data-goto="2">Next: Persona B</button>
+                      </div>
+                    </div>
+                    <div class="wizard-panel" data-step="2" role="tabpanel">
+                      <div class="panel">
+                        <div class="panel-title">Persona B</div>
+                        <div class="row">
+                          <div class="col">
+                            <div class="label">Name</div>
+                            <input id="nameB" type="text" value="Persona B">
+                          </div>
+                          <div style="width:100px">
+                            <div class="label">Emoji</div>
+                            <input id="emojiB" type="text" placeholder="🧠" value="🧠">
+                          </div>
+                          <div style="width:130px">
+                            <div class="label">Bubble color</div>
+                            <input id="colorB" type="color" value="#ffffff" title="Background color for Persona B messages">
+                          </div>
+                        </div>
+                        <div class="label" style="margin-top:8px">Prompt</div>
+                        <textarea id="promptB" rows="3" placeholder="Describe Persona B behaviour">You are a Creative Strategist. Offer imaginative ideas and strategic insights with flair.</textarea>
+                        <div class="label" style="margin-top:8px">Load persona</div>
+                        <div class="row">
+                          <select id="presetB"></select>
+                          <button id="applyPresetB" class="btn light">Load</button>
+                          <button id="savePersonaB" class="btn light" type="button">Save</button>
+                        </div>
+                      </div>
+                      <div class="wizard-nav">
+                        <button type="button" class="btn light wizard-prev" data-goto="1">Back</button>
+                        <button type="button" class="btn primary wizard-next" data-goto="3">Next: Review</button>
+                      </div>
+                    </div>
+                    <div class="wizard-panel" data-step="3" role="tabpanel">
+                      <div class="panel">
+                        <div class="panel-title">Review &amp; Launch</div>
+                        <div class="wizard-review">
+                          <div class="review-card">
+                            <div class="review-title">Persona A Snapshot</div>
+                            <div class="review-name" id="reviewAName">Persona A</div>
+                            <div class="review-detail" id="reviewAPrompt">No persona prompt provided yet.</div>
+                          </div>
+                          <div class="review-card">
+                            <div class="review-title">Persona B Snapshot</div>
+                            <div class="review-name" id="reviewBName">Persona B</div>
+                            <div class="review-detail" id="reviewBPrompt">No persona prompt provided yet.</div>
+                          </div>
+                          <div class="review-card">
+                            <div class="review-title">Moderator Focus</div>
+                            <div class="review-name" id="reviewTopic">No topic set</div>
+                            <div class="review-detail" id="reviewTopicDetail">Add a moderator preprompt to define the topic.</div>
+                          </div>
+                        </div>
+                        <div class="muted" style="margin-top:12px">Need to tweak something? Jump back with the step buttons above.</div>
+                      </div>
+                      <div class="wizard-nav" style="margin-top:16px">
+                        <button type="button" class="btn light wizard-prev" data-goto="2">Back</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="accordion-item" data-accordion-item>
+              <button class="accordion-header" type="button" aria-expanded="false">
+                <span class="accordion-title">Creative Extras</span>
+                <span class="accordion-icon" aria-hidden="true">▾</span>
+              </button>
+              <div class="accordion-body">
+                <div class="panel">
+                  <div class="panel-title">Persona &amp; Topic Generator</div>
+                  <div class="label">Describe a theme, role, or mood</div>
+                  <input id="generatorSeed" type="text" placeholder="e.g. optimistic marine biologist, or &quot;collaborative AI policy&quot;">
+                  <div class="row" style="margin-top:8px">
+                    <button id="generateForA" class="btn primary">Generate for Persona A</button>
+                    <button id="generateForB" class="btn primary">Generate for Persona B</button>
+                    <button id="swapGeneratorSeed" class="btn light">Swap Personas</button>
+                  </div>
+                  <div id="generatorStatus" class="muted" style="margin-top:8px"></div>
+                  <div class="label" style="margin-top:12px">Suggested discussion topics</div>
+                  <textarea id="generatorTopics" rows="3" readonly placeholder="Generated topics will appear here"></textarea>
+                </div>
+              </div>
+            </section>
+
+            <section class="accordion-item" data-accordion-item>
+              <button class="accordion-header" type="button" aria-expanded="false">
+                <span class="accordion-title">Conversation Memory</span>
+                <span class="accordion-icon" aria-hidden="true">▾</span>
+              </button>
+              <div class="accordion-body">
+                <div class="panel">
+                  <div class="panel-title">Saved Sessions</div>
+                  <div class="row">
+                    <button id="refreshHistory" class="btn light">Refresh</button>
+                    <button id="clearHistory" class="btn warn">Clear All</button>
+                  </div>
+                  <div id="historyList" class="history-list" style="margin-top:12px"></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="accordion-item" data-accordion-item>
+              <button class="accordion-header" type="button" aria-expanded="false">
+                <span class="accordion-title">API &amp; Model Settings</span>
+                <span class="accordion-icon" aria-hidden="true">▾</span>
+              </button>
+              <div class="accordion-body">
+                <div class="panel api-access-panel">
+                  <div class="panel-head">
+                    <div class="panel-title">API &amp; Model Settings</div>
+                  </div>
+                  <div class="api-provider-grid">
+                    <div class="provider-key-block">
+                      <div class="provider-key-header">
+                        <label class="label" for="openaiKey">OpenAI key</label>
+                        <label class="remember-toggle"><input id="rememberOpenAIKey" type="checkbox"> <span class="muted">Remember locally</span></label>
+                      </div>
+                      <div class="api-input-row">
+                        <input id="openaiKey" type="password" placeholder="Enter your OpenAI API key" autocomplete="off">
+                        <button id="pasteOpenAIKey" class="btn dark" type="button">📋 Paste</button>
+                      </div>
+                      <div id="openaiKeyStatus" class="muted provider-status" aria-live="polite"></div>
+                    </div>
+                    <div class="provider-key-block">
+                      <div class="provider-key-header">
+                        <label class="label" for="geminiKey">Gemini key</label>
+                        <label class="remember-toggle"><input id="rememberGeminiKey" type="checkbox"> <span class="muted">Remember locally</span></label>
+                      </div>
+                      <div class="api-input-row">
+                        <input id="geminiKey" type="password" placeholder="Enter your Gemini API key" autocomplete="off">
+                        <button id="pasteGeminiKey" class="btn dark" type="button">📋 Paste</button>
+                      </div>
+                      <div id="geminiKeyStatus" class="muted provider-status" aria-live="polite"></div>
+                    </div>
+                  </div>
+                  <div class="api-settings-grid">
+                    <div>
+                      <div class="label">Temperature: <span id="tempVal">1.0</span></div>
+                      <input id="temperature" type="range" min="0" max="2" step="0.1" value="1.0">
+                    </div>
+                  </div>
+                  <div class="persona-model-grid">
+                    <div class="persona-model-block">
+                      <div class="label">Persona A model</div>
+                      <select id="modelA">
+                        <option value="gpt-5">gpt-5</option>
+                        <option value="gpt-5-mini">gpt-5-mini</option>
+                        <option value="gpt-5-chat-latest">gpt-5-chat-latest</option>
+                        <option value="custom">Custom…</option>
+                      </select>
+                      <div class="label">Custom model (if selected)</div>
+                      <input id="customModelA" type="text" placeholder="model name">
+                    </div>
+                    <div class="persona-model-block">
+                      <div class="label">Persona B model</div>
+                      <select id="modelB">
+                        <option value="gpt-5">gpt-5</option>
+                        <option value="gpt-5-mini">gpt-5-mini</option>
+                        <option value="gpt-5-chat-latest">gpt-5-chat-latest</option>
+                        <option value="custom">Custom…</option>
+                      </select>
+                      <div class="label">Custom model (if selected)</div>
+                      <input id="customModelB" type="text" placeholder="model name">
+                    </div>
+                  </div>
+                  <div class="api-status-row">
+                    <button id="refreshModels" class="btn light" type="button">Refresh models</button>
+                    <div id="modelStatus" class="muted" aria-live="polite"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="settings-foot">
+          <button id="startBtn" class="btn primary" type="button">Start Chat</button>
+        </div>
       </div>
     </div>
 

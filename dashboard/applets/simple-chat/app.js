@@ -1,15 +1,83 @@
 (function(){
   const el = id => document.getElementById(id);
 
-  // View management
-  const viewSetup = el('viewSetup');
-  const viewChat = el('viewChat');
-  const btnSetup = el('btnSetup');
-  const btnChat = el('btnChat');
   const startBtn = el('startBtn');
   const themeToggle = el('themeToggle');
   const themeLabelEl = el('themeLabel');
   const themeIconEl = el('themeIcon');
+  const settingsOverlay = el('settingsOverlay');
+  const openSettingsBtn = el('openSettings');
+  const closeSettingsBtn = el('closeSettings');
+  const settingsBackdrop = settingsOverlay ? settingsOverlay.querySelector('[data-close-overlay]') : null;
+  const historyToggle = el('historyToggle');
+  const closeHistoryBtn = el('closeHistory');
+  const historyDrawer = el('historyDrawer');
+  let lastOverlayTrigger = null;
+  function setHistoryVisibility(show){
+    const bodyEl = document.body;
+    bodyEl.classList.toggle('history-hidden', !show);
+    if(historyDrawer){
+      historyDrawer.setAttribute('aria-hidden', show ? 'false' : 'true');
+    }
+    if(historyToggle){
+      historyToggle.setAttribute('aria-expanded', show ? 'true' : 'false');
+    }
+  }
+  const collapseByDefault = window.matchMedia && window.matchMedia('(max-width: 900px)').matches;
+  setHistoryVisibility(!collapseByDefault);
+  if(historyToggle){
+    historyToggle.addEventListener('click', ()=>{
+      const isHidden = document.body.classList.contains('history-hidden');
+      setHistoryVisibility(isHidden);
+    });
+  }
+  if(closeHistoryBtn){
+    closeHistoryBtn.addEventListener('click', ()=>{
+      setHistoryVisibility(false);
+    });
+  }
+  function openSettingsPanel(){
+    if(!settingsOverlay) return;
+    lastOverlayTrigger = document.activeElement;
+    settingsOverlay.classList.add('open');
+    settingsOverlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('settings-open');
+    const panel = settingsOverlay.querySelector('.settings-panel');
+    if(panel && typeof panel.focus === 'function'){
+      panel.focus({ preventScroll:true });
+    }
+  }
+  function closeSettingsPanel(){
+    if(!settingsOverlay) return;
+    settingsOverlay.classList.remove('open');
+    settingsOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('settings-open');
+    if(lastOverlayTrigger && typeof lastOverlayTrigger.focus === 'function'){
+      window.setTimeout(()=>{
+        try{ lastOverlayTrigger.focus(); }
+        catch(_){ }
+      }, 0);
+    }
+  }
+  if(openSettingsBtn){
+    openSettingsBtn.addEventListener('click', ()=>{
+      openSettingsPanel();
+    });
+  }
+  if(closeSettingsBtn){
+    closeSettingsBtn.addEventListener('click', ()=>{
+      closeSettingsPanel();
+    });
+  }
+  if(settingsBackdrop){
+    settingsBackdrop.addEventListener('click', closeSettingsPanel);
+  }
+  document.addEventListener('keydown', evt=>{
+    if(evt.key === 'Escape' && settingsOverlay && settingsOverlay.classList.contains('open')){
+      evt.preventDefault();
+      closeSettingsPanel();
+    }
+  });
   const THEME_KEY = 'cracktroThemeMode';
   const prefersDarkMedia = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
   let themeTransitionTimer = 0;
@@ -140,13 +208,6 @@
       });
     });
   }
-  function showView(view){
-    viewSetup.classList.toggle('active', view==='setup');
-    viewChat.classList.toggle('active', view==='chat');
-  }
-  btnSetup.addEventListener('click', ()=>showView('setup'));
-  btnChat.addEventListener('click', ()=>showView('chat'));
-
   // Elements
   const openaiKeyEl = el('openaiKey');
   const geminiKeyEl = el('geminiKey');
@@ -1250,7 +1311,7 @@
     convEl.innerHTML = '';
     currentSessionId = 'sess_'+Date.now();
     renderHistory();
-    showView('chat');
+    closeSettingsPanel();
     const pairs = Math.max(1, parseInt(exchangesEl.value)||1);
     runSegment(pairs, '');
   });
@@ -1478,7 +1539,7 @@
       appendMessage(m.who, name, emoji, m.text, { silent:true });
     });
     renderHistory();
-    showView('chat');
+    closeSettingsPanel();
   }
 
   refreshHistoryBtn.addEventListener('click', renderHistory);
