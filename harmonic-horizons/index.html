@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harmonic Horizons Radio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="background-texture" aria-hidden="true"></div>
+    <header class="app-header">
+      <div class="title-block">
+        <h1>Harmonic Horizons Radio</h1>
+        <p class="subtitle">
+          Discover handpicked stations inspired by sunrise drives, seaside sunsets,
+          and late-night studio sessions.
+        </p>
+      </div>
+      <div class="status-pill" role="status">
+        <span class="led" aria-hidden="true"></span>
+        Live signal stable
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="tuner">
+        <div class="now-playing" aria-live="polite">
+          <h2>Now Tuning</h2>
+          <p class="station-name">Select a station to begin</p>
+          <p class="station-meta"></p>
+          <div class="waveform" aria-hidden="true"></div>
+        </div>
+
+        <div class="filter-panel">
+          <h3>Choose a Vibe</h3>
+          <div class="filter-tags" role="radiogroup"></div>
+        </div>
+
+        <div class="broadcast-info">
+          <h3>Broadcast Journal</h3>
+          <ul class="journal"></ul>
+        </div>
+
+        <div class="player">
+          <audio id="radio-player" controls preload="none">
+            <source src="" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+          <button class="shuffle" type="button">Surprise Me</button>
+        </div>
+      </section>
+
+      <section class="station-grid" aria-label="Station roster"></section>
+    </main>
+
+    <footer class="app-footer">
+      <p>
+        Streams are curated from public demo feeds and may buffer depending on
+        network conditions. For the best experience, plug in a pair of
+        headphones, close your eyes, and let the horizon expand.
+      </p>
+    </footer>
+
+    <template id="station-card-template">
+      <article class="station-card" tabindex="0">
+        <div class="card-header">
+          <div class="signal">
+            <span class="strength strength-1"></span>
+            <span class="strength strength-2"></span>
+            <span class="strength strength-3"></span>
+          </div>
+          <span class="genre"></span>
+        </div>
+        <h3 class="name"></h3>
+        <p class="location"></p>
+        <p class="description"></p>
+        <ul class="schedule"></ul>
+        <div class="tags"></div>
+      </article>
+    </template>
+
+    <script src="./script.js" type="module"></script>
+  </body>
+</html>
