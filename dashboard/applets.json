@@ -63,5 +63,6 @@
   "starlit-piano-observatory": "./applets/starlit-piano-observatory/applet.json",
   "vector-bloom-forge": "./applets/vector-bloom-forge/applet.json",
   "web-surf-club": "./applets/web-surf-club/applet.json",
-  "youtube-search-theater": "./applets/youtube-search-theater/applet.json"
+  "youtube-search-theater": "./applets/youtube-search-theater/applet.json",
+  "wayfinder-browser-bay": "./applets/wayfinder-browser-bay/applet.json"
 }
