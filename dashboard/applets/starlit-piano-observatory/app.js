@@ -20,7 +20,6 @@ const dom = {
   playButton: document.getElementById("playButton"),
   clearButton: document.getElementById("clearButton"),
   orbitFeed: document.getElementById("orbitFeed"),
-  closeButton: document.getElementById("closeButton"),
   canvas: document.getElementById("constellationCanvas")
 };
 
@@ -398,11 +397,6 @@ function bindControls() {
   dom.recordButton.addEventListener("click", toggleRecording);
   dom.playButton.addEventListener("click", replaySequence);
   dom.clearButton.addEventListener("click", clearField);
-
-  dom.closeButton.addEventListener("click", () => {
-    window.parent?.postMessage?.({ type: "applet-close" }, "*");
-    window.location.href = "../../index.html";
-  });
 
   window.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
