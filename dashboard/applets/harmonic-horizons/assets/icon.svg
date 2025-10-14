@@ -1,0 +1,19 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Harmonic Horizons Icon</title>
+  <desc id="desc">Stylized sun cresting over layered audio waves.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8c77e" />
+      <stop offset="100%" stop-color="#f06a3f" />
+    </linearGradient>
+    <linearGradient id="sea" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1d2d50" />
+      <stop offset="100%" stop-color="#1f6f8b" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="24" fill="#0b1a2a" />
+  <circle cx="64" cy="56" r="28" fill="url(#sky)" />
+  <path d="M24 84c8-10 24-16 40-16s32 6 40 16" fill="none" stroke="url(#sea)" stroke-width="10" stroke-linecap="round" />
+  <path d="M32 96c10-8 20-12 32-12s22 4 32 12" fill="none" stroke="#46b5d1" stroke-width="8" stroke-linecap="round" opacity="0.85" />
+  <path d="M40 108c8-6 16-8 24-8s16 2 24 8" fill="none" stroke="#f8c77e" stroke-width="6" stroke-linecap="round" opacity="0.7" />
+</svg>

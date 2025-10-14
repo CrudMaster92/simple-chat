@@ -1,0 +1,16 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Micro Adventure Atlas Icon</title>
+  <desc id="desc">Compass needle over layered terrain shapes.</desc>
+  <defs>
+    <linearGradient id="terrain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffb86b" />
+      <stop offset="100%" stop-color="#ff6f61" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="24" fill="#1f2f46" />
+  <path d="M24 92l16-20 20 12 24-34 20 42" fill="none" stroke="#8bd8bd" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="64" cy="56" r="26" fill="url(#terrain)" opacity="0.85" />
+  <circle cx="64" cy="56" r="8" fill="#1f2f46" />
+  <path d="M64 30l10 26-10 6-10-6z" fill="#f6f7eb" />
+  <path d="M64 82l-10-26 10-6 10 6z" fill="#1f2f46" opacity="0.65" />
+</svg>

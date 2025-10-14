@@ -1,0 +1,12 @@
+{
+  "slug": "harmonic-horizons",
+  "name": "Harmonic Horizons Radio",
+  "description": "Curate sun-soaked streaming stations, track broadcast journals, and shuffle surprise audio journeys by vibe.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2025-10-14",
+  "tags": ["audio", "radio", "curation"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

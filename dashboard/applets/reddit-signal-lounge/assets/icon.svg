@@ -1,0 +1,17 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Reddit Signal Lounge Icon</title>
+  <desc id="desc">Radar dish beaming social signal.</desc>
+  <defs>
+    <linearGradient id="beam" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff6b35" />
+      <stop offset="100%" stop-color="#ffc43d" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="#1a2238" />
+  <circle cx="48" cy="76" r="26" fill="#273049" />
+  <path d="M40 88l16-32" stroke="#ff6b35" stroke-width="10" stroke-linecap="round" />
+  <path d="M48 44c0 0 28-4 44 12" fill="none" stroke="url(#beam)" stroke-width="10" stroke-linecap="round" />
+  <circle cx="96" cy="64" r="10" fill="#ffc43d" />
+  <circle cx="48" cy="76" r="8" fill="#ffc43d" />
+  <path d="M28 108h40" stroke="#ff6b35" stroke-width="10" stroke-linecap="round" />
+</svg>

@@ -5,6 +5,7 @@
 - Leave shared infrastructure (build scripts, CI configs, deployment manifests) untouched unless the task says otherwise.
 
 ## Registry Requirements
+- Place the entire applet inside `dashboard/applets/<applet-slug>/`—do not create new applet folders alongside the dashboard shell or at the repo root.
 - Every applet must declare metadata in an `applet.json` file that the registry can ingest.
 - Register each applet in `dashboard/applets.json` using a relative path to its `applet.json`. Preserve the JSON key order to match the intended tile layout.
 

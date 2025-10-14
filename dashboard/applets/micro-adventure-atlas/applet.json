@@ -1,0 +1,12 @@
+{
+  "slug": "micro-adventure-atlas",
+  "name": "Micro Adventure Atlas",
+  "description": "Dial in time, energy, and terrain to spin fresh micro adventures complete with steps, gear, and wildcard flourishes.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2025-10-14",
+  "tags": ["planner", "adventure", "generator"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
