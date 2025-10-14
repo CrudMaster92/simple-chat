@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SproutPal Sanctuary</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="sanctuary-app">
+      <header class="app-header">
+        <div class="title-group">
+          <h1>SproutPal Sanctuary</h1>
+          <p class="tagline">
+            Tend to a citrus-bright companion, balance their needs, and keep their mood radiant.
+          </p>
+        </div>
+        <div class="environment-toggle" role="radiogroup" aria-label="Habitat">
+          <button class="env-option active" data-environment="grove" aria-pressed="true">Grove Glow</button>
+          <button class="env-option" data-environment="coast" aria-pressed="false">Coast Breeze</button>
+          <button class="env-option" data-environment="mesa" aria-pressed="false">Mesa Bloom</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="pet-stage" aria-labelledby="pet-title">
+          <div class="stage-backdrop">
+            <div class="orbital"></div>
+            <div class="sparkle sparkle-one"></div>
+            <div class="sparkle sparkle-two"></div>
+            <div class="sparkle sparkle-three"></div>
+          </div>
+          <div class="pet-avatar" aria-live="polite">
+            <div class="pet-face">
+              <div class="eye left"></div>
+              <div class="eye right"></div>
+              <div class="cheek left"></div>
+              <div class="cheek right"></div>
+              <div class="mouth"></div>
+            </div>
+            <div class="pet-leaf"></div>
+            <div class="pet-shadow"></div>
+          </div>
+          <div class="pet-details">
+            <h2 id="pet-title"><span id="pet-name">Sprout</span></h2>
+            <p class="mood-line">Mood: <span id="pet-mood">Bright</span></p>
+            <p class="level-line">Level <span id="pet-level">1</span> · <span id="pet-xp">0</span> xp</p>
+            <div class="rename-control">
+              <label for="name-input" class="sr-only">Rename pet</label>
+              <input id="name-input" maxlength="12" placeholder="Rename your pal" />
+              <button id="rename-btn">Rename</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="stats-panel" aria-label="Pet status">
+          <article class="stat-card" data-stat="hunger">
+            <header>
+              <h3>Nutrition</h3>
+              <span class="stat-value" id="stat-hunger-value">65</span>
+            </header>
+            <div class="stat-meter">
+              <div class="stat-fill" id="stat-hunger-fill"></div>
+            </div>
+            <p class="stat-tip">Feed citrus crunch leaves to replenish energy.</p>
+          </article>
+          <article class="stat-card" data-stat="joy">
+            <header>
+              <h3>Joy</h3>
+              <span class="stat-value" id="stat-joy-value">65</span>
+            </header>
+            <div class="stat-meter">
+              <div class="stat-fill" id="stat-joy-fill"></div>
+            </div>
+            <p class="stat-tip">Spin up games or explore for delight.</p>
+          </article>
+          <article class="stat-card" data-stat="energy">
+            <header>
+              <h3>Energy</h3>
+              <span class="stat-value" id="stat-energy-value">65</span>
+            </header>
+            <div class="stat-meter">
+              <div class="stat-fill" id="stat-energy-fill"></div>
+            </div>
+            <p class="stat-tip">Catnaps and gentle breezes restore pep.</p>
+          </article>
+          <article class="stat-card" data-stat="hygiene">
+            <header>
+              <h3>Freshness</h3>
+              <span class="stat-value" id="stat-hygiene-value">65</span>
+            </header>
+            <div class="stat-meter">
+              <div class="stat-fill" id="stat-hygiene-fill"></div>
+            </div>
+            <p class="stat-tip">Mist the leaves and tidy the habitat.</p>
+          </article>
+        </section>
+
+        <section class="actions-panel" aria-label="Care actions">
+          <div class="action-card" data-action="feed">
+            <h4>Feed</h4>
+            <p>Offer zesty citrus bites and morning dew.</p>
+            <button class="care-btn" data-action="feed">Serve a Citrus Feast</button>
+          </div>
+          <div class="action-card" data-action="play">
+            <h4>Play</h4>
+            <p>Launch a ribbon chase to boost joy.</p>
+            <button class="care-btn" data-action="play">Start Ribbon Chase</button>
+          </div>
+          <div class="action-card" data-action="clean">
+            <h4>Freshen</h4>
+            <p>Polish the terracotta cradle and mist.</p>
+            <button class="care-btn" data-action="clean">Mist &amp; Tidy</button>
+          </div>
+          <div class="action-card" data-action="rest">
+            <h4>Rest</h4>
+            <p>Dim the glow and hum lullabies.</p>
+            <button class="care-btn" data-action="rest">Soothe to Sleep</button>
+          </div>
+          <div class="action-card wide" data-action="explore">
+            <h4>Forage Voyage</h4>
+            <p>Send your companion on a mini expedition for curious finds.</p>
+            <button class="care-btn" data-action="explore">Embark &amp; Discover</button>
+            <p class="cooldown" id="explore-cooldown">Ready</p>
+          </div>
+        </section>
+
+        <section class="log-panel" aria-live="polite">
+          <header>
+            <h3>Habitat Chronicle</h3>
+            <div class="streak">Care streak: <span id="care-streak">0</span></div>
+          </header>
+          <ul id="log"></ul>
+        </section>
+      </main>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>

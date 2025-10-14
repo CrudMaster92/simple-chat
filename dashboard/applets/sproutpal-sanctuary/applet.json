@@ -1,0 +1,12 @@
+{
+  "slug": "sproutpal-sanctuary",
+  "name": "SproutPal Sanctuary",
+  "description": "Tend a citrus-bright digital companion, juggle care stats, and unlock moodful moments.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-05",
+  "tags": ["care", "simulation"],
+  "author": "SproutPal Team",
+  "permissions": []
+}
