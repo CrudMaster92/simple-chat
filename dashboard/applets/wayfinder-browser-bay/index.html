@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wayfinder Browser Bay</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="control-panel" aria-label="Navigator controls">
+        <header class="panel-header">
+          <h1>Wayfinder Browser Bay</h1>
+          <p>
+            Chart new corners of the web with a session notebook, quick-search
+            dials, and a live trail of the places you have scouted.
+          </p>
+        </header>
+
+        <section class="panel-section" aria-labelledby="address-label">
+          <div class="section-heading">
+            <h2 id="address-label">Navigation console</h2>
+            <p>Drop in a full address or let the Bay search for you.</p>
+          </div>
+          <label class="field-label" for="address-input">Address or search</label>
+          <div class="address-row">
+            <input
+              id="address-input"
+              type="text"
+              placeholder="https://example.com or search keywords"
+              autocomplete="off"
+            />
+            <button id="launch-button" type="button">Launch</button>
+          </div>
+          <div class="options-row">
+            <label class="field-label" for="search-mode">Search focus</label>
+            <select id="search-mode">
+              <option value="duckduckgo">DuckDuckGo web</option>
+              <option value="wikipedia">Wikipedia deep dive</option>
+              <option value="mdn">MDN docs lookup</option>
+            </select>
+            <button id="clear-button" type="button">Clear</button>
+          </div>
+          <div class="status-line">
+            <span class="status-label">Active domain:</span>
+            <span id="active-domain" class="status-value" aria-live="polite">—</span>
+          </div>
+        </section>
+
+        <section class="panel-section" aria-labelledby="trail-label">
+          <div class="section-heading">
+            <h2 id="trail-label">Trail markers</h2>
+            <p>Your eight most recent stops stay handy for quick revisits.</p>
+          </div>
+          <ul id="history-list" class="chip-list" aria-live="polite"></ul>
+        </section>
+
+        <section class="panel-section" aria-labelledby="pinboard-label">
+          <div class="section-heading">
+            <h2 id="pinboard-label">Pinboard</h2>
+            <p>Attach a field note to the page you are scouting.</p>
+          </div>
+          <textarea
+            id="pin-note"
+            rows="3"
+            placeholder="Why is this page worth docking?"
+          ></textarea>
+          <button id="pin-button" type="button">Pin current page</button>
+          <ul id="pin-list" class="pin-list" aria-live="polite"></ul>
+        </section>
+      </aside>
+
+      <main class="viewer" aria-label="Live site preview">
+        <div class="viewer-chrome">
+          <div class="viewer-info">
+            <span class="viewer-title">Live canvas</span>
+            <span id="viewer-status" class="viewer-status">Waiting for launch…</span>
+          </div>
+          <button id="focus-toggle" type="button">Toggle focus frame</button>
+        </div>
+        <div class="viewer-frame" id="viewer-frame">
+          <iframe
+            id="browser-frame"
+            title="Web content preview"
+            sandbox="allow-forms allow-scripts allow-same-origin allow-pointer-lock allow-popups"
+          ></iframe>
+          <div id="frame-overlay" class="frame-overlay hidden" role="status">
+            <p>
+              Some destinations block embedding. If the canvas stays blank,
+              copy the link from the pinboard or open it manually in a new tab.
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

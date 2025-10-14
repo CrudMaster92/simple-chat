@@ -1,0 +1,20 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Wayfinder Browser Bay icon</title>
+  <desc id="desc">Rounded square icon depicting a navigation compass inside a browser window.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1c2d" />
+      <stop offset="100%" stop-color="#11273a" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="24" fill="url(#bg)" />
+  <rect x="22" y="26" width="84" height="28" rx="10" fill="#132e44" />
+  <circle cx="41" cy="40" r="4" fill="#f46d1b" />
+  <circle cx="55" cy="40" r="4" fill="#f6d166" />
+  <circle cx="69" cy="40" r="4" fill="#f2f0dc" opacity="0.8" />
+  <rect x="22" y="54" width="84" height="58" rx="16" fill="#091522" stroke="#1f3a52" stroke-width="2" />
+  <circle cx="64" cy="83" r="24" fill="#0f2537" stroke="#1f3a52" stroke-width="2" />
+  <path d="M64 63l9 20-20 9 11-29z" fill="#f46d1b" />
+  <circle cx="64" cy="83" r="6" fill="#f6d166" />
+  <path d="M64 70v13l-12 7" stroke="#f2f0dc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
