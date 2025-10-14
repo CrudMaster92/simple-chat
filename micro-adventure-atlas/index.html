@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Micro Adventure Atlas</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Signika+Negative:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="atlas-shell">
+      <header class="atlas-header">
+        <div class="header-core">
+          <h1>Micro Adventure Atlas</h1>
+          <p>
+            Craft a perfectly bite-sized expedition that fits your time, energy, and
+            preferred terrain. Spin new combinations to keep your days surprising and alive.
+          </p>
+        </div>
+        <div class="header-badges">
+          <span class="badge">Time-smart</span>
+          <span class="badge">Restorative</span>
+          <span class="badge">City + Wild</span>
+        </div>
+      </header>
+
+      <section class="controls">
+        <div class="control-card">
+          <h2>Adventure Parameters</h2>
+          <div class="control-grid">
+            <label class="control-group">
+              <span class="label-title">Time Window</span>
+              <input type="range" id="time-range" min="0.5" max="6" step="0.5" value="2" />
+              <div class="range-output"><span id="time-output">2</span> hrs</div>
+            </label>
+
+            <div class="control-group">
+              <span class="label-title">Energy Level</span>
+              <div class="pill-row" role="radiogroup" aria-label="Energy level">
+                <button class="pill active" data-energy="low">Gentle</button>
+                <button class="pill" data-energy="medium">Steady</button>
+                <button class="pill" data-energy="high">Bold</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <span class="label-title">Terrain Mix</span>
+              <div class="chip-row">
+                <button class="chip active" data-terrain="urban">Urban nooks</button>
+                <button class="chip active" data-terrain="nature">Nature pockets</button>
+                <button class="chip" data-terrain="indoors">Indoors only</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <span class="label-title">Mood Anchor</span>
+              <select id="mood-select" aria-label="Adventure mood">
+                <option value="serene" selected>Serene + restorative</option>
+                <option value="curious">Curious + learning</option>
+                <option value="social">Social + connective</option>
+                <option value="energized">Energized + daring</option>
+              </select>
+            </div>
+          </div>
+          <div class="control-actions">
+            <button id="spin-button" class="primary">Spin adventure</button>
+            <button id="wildcard-button" class="secondary">Add wildcard flourish</button>
+          </div>
+        </div>
+      </section>
+
+      <main class="results" aria-live="polite">
+        <article class="adventure-card">
+          <div class="card-header">
+            <h2 id="adventure-title">Creekside Sketch & Sip</h2>
+            <p id="adventure-tagline">Wind along the closest waterway capturing textures and sounds.</p>
+          </div>
+          <div class="adventure-meta">
+            <span class="meta-pill" id="duration-pill">~2 hrs</span>
+            <span class="meta-pill" id="energy-pill">Gentle energy</span>
+            <span class="meta-pill" id="terrain-pill">Nature pocket</span>
+            <span class="meta-pill" id="mood-pill">Serene mood</span>
+          </div>
+          <div class="card-body">
+            <section class="card-section">
+              <h3>Move Map</h3>
+              <ol id="adventure-steps">
+                <li>Walk or cycle to the nearest water feature within 15 minutes.</li>
+                <li>Spend 30 minutes sketching textures or writing sensory notes.</li>
+                <li>Enjoy a thermos drink while recording a 2-minute sound clip.</li>
+              </ol>
+            </section>
+            <section class="card-section">
+              <h3>Bring Along</h3>
+              <ul id="adventure-gear">
+                <li>Compact sketch kit or note pad</li>
+                <li>Reusable mug + warm drink</li>
+                <li>Phone voice memo app</li>
+              </ul>
+            </section>
+            <section class="card-section">
+              <h3>Local Flavor Cue</h3>
+              <p id="adventure-flavor">Find a tiny detail (texture, scent, overheard phrase) to anchor the moment. Name your discovery and log it when you get home.</p>
+            </section>
+            <section class="card-section">
+              <h3>Wildcard Flourish</h3>
+              <p id="wildcard">Swap playlists with a friend afterwards and trade voice notes about the experience.</p>
+            </section>
+          </div>
+        </article>
+      </main>
+
+      <footer class="atlas-footer">
+        <p>
+          Micro adventures are designed to be achievable in the margins. Use this atlas to stay playful
+          even when schedules are tight.
+        </p>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
