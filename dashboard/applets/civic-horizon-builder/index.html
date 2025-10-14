@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Civic Horizon Builder</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Work+Sans:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="title-group">
+          <h1>Civic Horizon Builder</h1>
+          <p class="subtitle">
+            Shape a thriving hillside city, balance prosperity with clean air, and secure a harmonious skyline before the final planning review.
+          </p>
+        </div>
+        <div class="status-banner" id="statusBanner" role="status" aria-live="polite">
+          Draft a layout that keeps citizens joyful while preventing smog alerts.
+        </div>
+      </header>
+      <main class="app-body">
+        <section class="panel planning-panel" aria-label="Planning tools">
+          <h2>Build Palette</h2>
+          <p class="panel-hint">Select a district type and place it on the city grid.</p>
+          <div class="building-list" role="radiogroup" aria-label="Available districts">
+            <button class="building-card active" data-building="residential">
+              <span class="label">Residential Block</span>
+              <span class="cost">Cost 100</span>
+            </button>
+            <button class="building-card" data-building="commercial">
+              <span class="label">Market Square</span>
+              <span class="cost">Cost 120</span>
+            </button>
+            <button class="building-card" data-building="park">
+              <span class="label">Verdant Park</span>
+              <span class="cost">Cost 80</span>
+            </button>
+            <button class="building-card" data-building="industry">
+              <span class="label">Workshop Hub</span>
+              <span class="cost">Cost 150</span>
+            </button>
+            <button class="building-card" data-building="utility">
+              <span class="label">Eco Utility</span>
+              <span class="cost">Cost 90</span>
+            </button>
+          </div>
+          <div class="selection-details" id="selectionDetails" aria-live="polite">
+            Residential Blocks welcome new citizens, raise happiness slightly, and add a touch of pollution. They also collect modest taxes each turn.
+          </div>
+          <div class="turn-actions">
+            <button class="primary" id="endTurnButton">End Turn</button>
+            <button class="secondary" id="resetButton">New City</button>
+          </div>
+          <div class="objective-card">
+            <h3>Win Condition</h3>
+            <p>
+              Reach <strong>60 population</strong>, at least <strong>18 happiness</strong>, and keep pollution at or below <strong>25</strong> before planning review concludes in <strong>15 turns</strong>.
+            </p>
+          </div>
+        </section>
+        <section class="panel board-panel" aria-label="City grid and metrics">
+          <div class="scoreboard" role="group" aria-label="City status">
+            <div class="metric">
+              <span class="metric-label">Money</span>
+              <span class="metric-value" id="moneyStat">600</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Population</span>
+              <span class="metric-value" id="populationStat">0</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Happiness</span>
+              <span class="metric-value" id="happinessStat">5</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Pollution</span>
+              <span class="metric-value" id="pollutionStat">0</span>
+            </div>
+            <div class="metric turns">
+              <span class="metric-label">Turns Left</span>
+              <span class="metric-value" id="turnsStat">15</span>
+            </div>
+          </div>
+          <div class="city-grid" id="cityGrid" role="grid" aria-label="6 by 6 city map"></div>
+        </section>
+        <section class="panel intel-panel" aria-label="City council briefing">
+          <h2>City Council Briefing</h2>
+          <p>
+            The hillside council monitors three levers: <strong>prosperity</strong>, <strong>well-being</strong>, and <strong>smog alerts</strong>. Each district contributes differently every time you finalize a turn.
+          </p>
+          <ul class="district-notes">
+            <li><strong>Residential</strong>: +5 population, +1 happiness, +1 pollution, +8 income per turn.</li>
+            <li><strong>Market</strong>: +2 population, +2 happiness, +1 pollution, +20 income per turn.</li>
+            <li><strong>Park</strong>: +3 happiness, -3 pollution, no income.</li>
+            <li><strong>Workshop</strong>: +45 income per turn, -2 happiness, +4 pollution.</li>
+            <li><strong>Utility</strong>: +1 happiness, -2 pollution, +10 income per turn.</li>
+          </ul>
+          <p class="advice">
+            End a turn after placing districts to collect income. High pollution will sap happiness, and an empty treasury triggers an audit.
+          </p>
+          <div class="event-log" aria-live="polite" id="eventLog"></div>
+        </section>
+      </main>
+    </div>
+    <div class="modal" id="modal" role="dialog" aria-modal="true" hidden>
+      <div class="modal-card">
+        <h2 id="modalTitle">City Review</h2>
+        <p id="modalMessage"></p>
+        <button class="primary" id="modalClose">Start Fresh</button>
+      </div>
+    </div>
+  </body>
+</html>
