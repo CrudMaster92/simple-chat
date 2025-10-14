@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Realtime Tech Pulse</title>
+    <style>
+      :root {
+        --deep-ink: #0b3954;
+        --powder-sky: #bfd7ea;
+        --watermelon-pop: #ff6663;
+        --electric-lime: #e0ff4f;
+        --frosted-shell: #f7f9fb;
+        --slate-shadow: rgba(11, 57, 84, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: radial-gradient(circle at 20% 20%, rgba(224, 255, 79, 0.12), transparent),
+          linear-gradient(160deg, var(--deep-ink) 0%, #132d44 55%, #061928 100%);
+        color: var(--frosted-shell);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      main {
+        width: min(960px, 100%);
+        background: rgba(11, 57, 84, 0.78);
+        border-radius: 28px;
+        padding: 32px clamp(24px, 4vw, 48px);
+        box-shadow: 0 24px 60px -28px var(--slate-shadow);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(191, 215, 234, 0.25);
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 28px;
+      }
+
+      header h1 {
+        font-size: clamp(1.9rem, 3vw, 2.6rem);
+        margin: 0;
+        color: var(--powder-sky);
+        letter-spacing: 0.02em;
+      }
+
+      header p {
+        margin: 6px 0 0;
+        color: rgba(247, 249, 251, 0.74);
+        max-width: 460px;
+        line-height: 1.5;
+      }
+
+      .pulse-icon {
+        font-size: clamp(2.6rem, 6vw, 3.8rem);
+        color: var(--electric-lime);
+        filter: drop-shadow(0 0 8px rgba(224, 255, 79, 0.35));
+      }
+
+      form {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+
+      input[type="search"] {
+        flex: 1;
+        min-width: 200px;
+        padding: 14px 16px;
+        border-radius: 999px;
+        border: 1px solid rgba(191, 215, 234, 0.4);
+        background: rgba(247, 249, 251, 0.92);
+        color: #0a1d29;
+        font-size: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      input[type="search"]:focus {
+        outline: none;
+        border-color: var(--electric-lime);
+        box-shadow: 0 0 0 3px rgba(224, 255, 79, 0.2);
+      }
+
+      button {
+        padding: 14px 24px;
+        border-radius: 999px;
+        border: none;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        background: linear-gradient(135deg, var(--watermelon-pop), #ff857f);
+        color: #122335;
+        cursor: pointer;
+        box-shadow: 0 12px 24px -12px rgba(255, 102, 99, 0.8);
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 26px -16px rgba(255, 102, 99, 0.8);
+      }
+
+      button:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .status {
+        margin-bottom: 16px;
+        font-size: 0.95rem;
+        color: rgba(224, 255, 79, 0.9);
+        min-height: 1.4em;
+      }
+
+      .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 18px;
+      }
+
+      .result-card {
+        background: rgba(11, 57, 84, 0.65);
+        border-radius: 20px;
+        border: 1px solid rgba(191, 215, 234, 0.25);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      .result-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(224, 255, 79, 0.6);
+      }
+
+      .result-card h2 {
+        font-size: 1.1rem;
+        margin: 0;
+        color: var(--powder-sky);
+      }
+
+      .result-card h2 a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .result-card h2 a:hover {
+        color: var(--electric-lime);
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 0.85rem;
+        color: rgba(247, 249, 251, 0.7);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(191, 215, 234, 0.18);
+        color: rgba(247, 249, 251, 0.9);
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+
+      footer {
+        margin-top: 26px;
+        font-size: 0.85rem;
+        color: rgba(247, 249, 251, 0.65);
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      footer a {
+        color: var(--electric-lime);
+        text-decoration: none;
+      }
+
+      @media (max-width: 600px) {
+        main {
+          padding: 24px 20px;
+        }
+
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .pulse-icon {
+          align-self: flex-end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>Realtime Tech Pulse</h1>
+          <p>
+            Tap into live community buzz. Explore what the Hacker News community is reading
+            right now or search the latest headlines from the open Algolia API.
+          </p>
+        </div>
+        <div class="pulse-icon" aria-hidden="true">⚡</div>
+      </header>
+
+      <form id="search-form">
+        <input
+          type="search"
+          id="search-input"
+          placeholder="Search live Hacker News stories (e.g., AI, WebAssembly, design)"
+          aria-label="Search stories"
+        />
+        <button type="submit">Search</button>
+        <button type="button" id="reset-button">Trending Now</button>
+      </form>
+
+      <div class="status" role="status" aria-live="polite" id="status"></div>
+
+      <section class="results-grid" id="results" aria-live="polite"></section>
+
+      <footer>
+        <span>Data provided by the public <a href="https://hn.algolia.com/api">Hacker News Algolia API</a>.</span>
+        <span id="last-updated"></span>
+      </footer>
+    </main>
+
+    <template id="story-card-template">
+      <article class="result-card">
+        <h2><a target="_blank" rel="noopener"></a></h2>
+        <div class="meta">
+          <span class="badge score"></span>
+          <span class="badge comments"></span>
+          <span class="badge author"></span>
+        </div>
+        <p class="excerpt"></p>
+      </article>
+    </template>
+
+    <script>
+      const resultsEl = document.getElementById("results");
+      const statusEl = document.getElementById("status");
+      const lastUpdatedEl = document.getElementById("last-updated");
+      const formEl = document.getElementById("search-form");
+      const searchInput = document.getElementById("search-input");
+      const resetButton = document.getElementById("reset-button");
+      const cardTemplate = document.getElementById("story-card-template");
+
+      const state = {
+        controller: null,
+        currentMode: "trending",
+      };
+
+      const formatTimeAgo = (timestamp) => {
+        if (!timestamp) return "";
+        const now = new Date();
+        const then = new Date(timestamp);
+        const diff = Math.floor((now - then) / 1000);
+
+        const units = [
+          { label: "day", seconds: 86400 },
+          { label: "hour", seconds: 3600 },
+          { label: "minute", seconds: 60 },
+          { label: "second", seconds: 1 },
+        ];
+
+        for (const unit of units) {
+          const value = Math.floor(diff / unit.seconds);
+          if (value >= 1) {
+            return `${value} ${unit.label}${value > 1 ? "s" : ""} ago`;
+          }
+        }
+        return "just now";
+      };
+
+      async function fetchStories({ query } = {}) {
+        if (state.controller) {
+          state.controller.abort();
+        }
+        state.controller = new AbortController();
+        const { signal } = state.controller;
+
+        const isSearch = Boolean(query && query.trim());
+        state.currentMode = isSearch ? "search" : "trending";
+
+        const endpoint = isSearch
+          ? `https://hn.algolia.com/api/v1/search?tags=story&hitsPerPage=24&query=${encodeURIComponent(query)}`
+          : "https://hn.algolia.com/api/v1/search?tags=front_page";
+
+        statusEl.textContent = isSearch ? `Searching for “${query}”…` : "Loading today\'s front page…";
+        toggleLoading(true);
+
+        try {
+          const response = await fetch(endpoint, { signal });
+          if (!response.ok) {
+            throw new Error(`Request failed: ${response.status}`);
+          }
+          const data = await response.json();
+          renderStories(data.hits ?? []);
+          const now = new Date();
+          lastUpdatedEl.textContent = `Last updated ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+          statusEl.textContent = isSearch
+            ? `${data.hits.length} live result${data.hits.length === 1 ? "" : "s"} for “${query}”.`
+            : "Trending stories refreshed.";
+        } catch (error) {
+          if (error.name === "AbortError") {
+            return;
+          }
+          console.error(error);
+          statusEl.textContent = "We couldn\'t reach the live feed. Please try again.";
+          resultsEl.innerHTML = "";
+        } finally {
+          toggleLoading(false);
+        }
+      }
+
+      function toggleLoading(isLoading) {
+        const submitButton = formEl.querySelector('button[type="submit"]');
+        submitButton.disabled = isLoading;
+        resetButton.disabled = isLoading;
+        submitButton.textContent = isLoading ? "Loading…" : state.currentMode === "search" ? "Search" : "Search";
+      }
+
+      function renderStories(stories) {
+        resultsEl.innerHTML = "";
+
+        if (!stories.length) {
+          const empty = document.createElement("p");
+          empty.textContent = "No stories found. Try a different keyword or refresh the trending feed.";
+          empty.style.color = "rgba(247, 249, 251, 0.75)";
+          resultsEl.appendChild(empty);
+          return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        stories.forEach((story) => {
+          const card = cardTemplate.content.cloneNode(true);
+          const link = card.querySelector("a");
+          link.href = story.url || `https://news.ycombinator.com/item?id=${story.objectID}`;
+          link.textContent = story.title || "Untitled";
+
+          card.querySelector(".score").textContent = `▲ ${story.points ?? 0} points`;
+          card.querySelector(".comments").textContent = `💬 ${story.num_comments ?? 0} comments`;
+          card.querySelector(".author").textContent = `👤 ${story.author || "unknown"}`;
+
+          const excerpt = story._highlightResult?.story_text?.value || story._highlightResult?.comment_text?.value;
+          const description = story.story_text || story._snippetResult?.story_text?.value;
+          const excerptEl = card.querySelector(".excerpt");
+
+          if (excerpt) {
+            excerptEl.innerHTML = excerpt.replace(/<em>/g, '<mark style="background: rgba(224, 255, 79, 0.35); color: inherit;">').replace(/<\/em>/g, "</mark>");
+          } else if (description) {
+            excerptEl.innerHTML = description;
+          } else {
+            excerptEl.textContent = `Posted ${formatTimeAgo(story.created_at)}.`;
+          }
+
+          fragment.appendChild(card);
+        });
+
+        resultsEl.appendChild(fragment);
+      }
+
+      formEl.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const value = searchInput.value.trim();
+        fetchStories({ query: value });
+      });
+
+      resetButton.addEventListener("click", () => {
+        searchInput.value = "";
+        fetchStories();
+      });
+
+      fetchStories();
+    </script>
+  </body>
+</html>
