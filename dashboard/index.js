@@ -397,6 +397,13 @@ const PINNED_CONFIG = [
     categories: ['Utilities'],
   },
   {
+    slug: 'gridweave-analyst',
+    label: 'Gridweave Analyst',
+    hint: 'Scenario-savvy grid workbook',
+    emoji: '📊',
+    categories: ['Utilities'],
+  },
+  {
     slug: 'timekeeper-agenda',
     label: 'Timekeeper Agenda',
     hint: 'Planner with sticky notes',
