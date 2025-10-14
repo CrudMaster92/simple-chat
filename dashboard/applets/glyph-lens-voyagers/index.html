@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glyph Lens Voyagers</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="voyager-shell">
+      <header class="voyager-header">
+        <div class="title-block">
+          <img src="./assets/icon.svg" alt="Glyph Lens Voyagers" class="title-icon" />
+          <div>
+            <h1>Glyph Lens Voyagers</h1>
+            <p class="tagline">Decode real-world relics with GPT-5's keen vision and tool-triggered expeditions.</p>
+          </div>
+        </div>
+        <button type="button" id="newMissionButton" class="accent-button">Launch Fresh Mission</button>
+      </header>
+
+      <section class="control-grid">
+        <section class="panel api-panel">
+          <h2>OpenAI Link</h2>
+          <label class="field">
+            <span>API Key</span>
+            <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off" />
+          </label>
+          <label class="remember-toggle">
+            <input type="checkbox" id="rememberKeyToggle" />
+            <span>Remember key on this device</span>
+          </label>
+          <div class="model-row">
+            <button type="button" id="refreshModelsButton" class="ghost-button">Refresh models</button>
+            <span id="modelStatus" class="status-text">Using cached catalog.</span>
+          </div>
+          <label class="field">
+            <span>Vision Model</span>
+            <select id="modelSelect"></select>
+          </label>
+        </section>
+
+        <section class="panel mission-panel">
+          <h2>Mission Parameters</h2>
+          <label class="field">
+            <span>Expedition Codename</span>
+            <input type="text" id="missionNameInput" placeholder="e.g. Luminous Relic Sweep" />
+          </label>
+          <label class="field">
+            <span>Hazard Vibe</span>
+            <select id="hazardSelect">
+              <option value="steady">Steady currents</option>
+              <option value="spiky">Spiky anomaly field</option>
+              <option value="volatile">Volatile flux storm</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Focus Prompt</span>
+            <textarea id="focusInput" rows="3" placeholder="What should the lens prioritize in the scene?"></textarea>
+          </label>
+        </section>
+
+        <section class="panel image-panel">
+          <h2>Artifact Intake</h2>
+          <label class="drop-zone" id="dropZone">
+            <input type="file" id="imageInput" accept="image/*" hidden />
+            <div class="drop-content" id="dropContent">
+              <strong>Drop an image</strong>
+              <span>or click to select a fresh relic</span>
+            </div>
+            <img id="imagePreview" alt="Artifact preview" hidden />
+          </label>
+          <button type="button" id="analyzeButton" class="accent-button">Survey with GPT-5 Vision</button>
+          <p class="hint">The model inspects the image, then calls in-universe tools to log discoveries, hazards, and outcomes.</p>
+        </section>
+      </section>
+
+      <section class="telemetry">
+        <div class="flux-card">
+          <h2>Flux Meter</h2>
+          <div class="flux-bar" aria-live="polite">
+            <div class="flux-fill" id="fluxFill"></div>
+            <span id="fluxValue" class="flux-value">0</span>
+          </div>
+          <p class="flux-caption">Tool calls can push the flux between -10 (catastrophic) and +10 (glorious).</p>
+        </div>
+        <div class="discovery-card">
+          <h2>Logged Discoveries</h2>
+          <div id="discoveryList" class="discovery-list"></div>
+        </div>
+        <div class="rating-card">
+          <h2>Final Verdict</h2>
+          <div id="ratingSlot" class="rating-slot">Awaiting analysis…</div>
+        </div>
+      </section>
+
+      <section class="log-panel">
+        <h2>Expedition Log</h2>
+        <div id="logStream" class="log-stream" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -67,5 +67,6 @@
   "wayfinder-browser-bay": "./applets/wayfinder-browser-bay/applet.json",
   "civic-horizon-builder": "./applets/civic-horizon-builder/applet.json",
   "axis-glide-arena": "./applets/axis-glide-arena/applet.json",
-  "orbital-mneme-spindle": "./applets/orbital-mneme-spindle/applet.json"
+  "orbital-mneme-spindle": "./applets/orbital-mneme-spindle/applet.json",
+  "glyph-lens-voyagers": "./applets/glyph-lens-voyagers/applet.json"
 }

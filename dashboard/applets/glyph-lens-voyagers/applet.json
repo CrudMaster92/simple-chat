@@ -1,0 +1,8 @@
+{
+  "id": "glyph-lens-voyagers",
+  "name": "Glyph Lens Voyagers",
+  "icon": "./assets/icon.svg",
+  "color": "#ff6a3d",
+  "description": "Stage real-world relics for GPT-5 Vision, log discoveries through function calls, and ride the flux meter to victory.",
+  "entry": "./index.html"
+}
