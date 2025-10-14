@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Everseam World Forge</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="forge">
+      <header class="forge__header">
+        <h1>Everseam World Forge</h1>
+        <p>
+          Sculpt layered continents, rivers, and climates with a few sliders. Every seed spins up an all-new globe.
+        </p>
+      </header>
+      <main class="forge__main">
+        <section class="forge__controls" aria-label="World parameters">
+          <div class="control-row">
+            <label for="seed">Seed</label>
+            <div class="seed-input">
+              <input id="seed" type="number" min="0" max="999999" step="1" />
+              <button id="randomize" type="button">Randomize</button>
+            </div>
+          </div>
+          <div class="control-row">
+            <label for="scale">Elevation scale</label>
+            <input id="scale" type="range" min="120" max="600" value="320" />
+          </div>
+          <div class="control-row">
+            <label for="detail">Terrain detail</label>
+            <input id="detail" type="range" min="1" max="6" value="4" />
+          </div>
+          <div class="control-row">
+            <label for="moisture">Moisture drift</label>
+            <input id="moisture" type="range" min="1" max="8" value="3" />
+          </div>
+          <div class="control-row">
+            <label for="temperature">Thermal sway</label>
+            <input id="temperature" type="range" min="1" max="8" value="4" />
+          </div>
+          <fieldset class="control-row control-row--stacked">
+            <legend>Layers</legend>
+            <label>
+              <input id="showContours" type="checkbox" checked />
+              Elevation contours
+            </label>
+            <label>
+              <input id="showRivers" type="checkbox" checked />
+              River paths
+            </label>
+            <label>
+              <input id="animateClimate" type="checkbox" />
+              Animate climate pulse
+            </label>
+          </fieldset>
+          <button id="regen" class="regen" type="button">Forge new world</button>
+          <div class="legend" aria-live="polite">
+            <h2>Biome legend</h2>
+            <ul id="legendList"></ul>
+          </div>
+        </section>
+        <section class="forge__viewport" aria-label="Generated world">
+          <canvas id="map" width="640" height="640" role="img" aria-label="Procedurally generated world map"></canvas>
+          <div class="readout" aria-live="polite">
+            <h2>Tile insight</h2>
+            <p id="readout">Hover the map to inspect elevation, moisture, and biome.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
