@@ -42,6 +42,7 @@ const buddyEnabledToggle = document.querySelector('[data-role="buddy-enabled"]')
 const buddyIdleToggle = document.querySelector('[data-role="buddy-idle-toggle"]');
 const buddySoundToggle = document.querySelector('[data-role="buddy-sound-toggle"]');
 const buddyResetPositionButton = document.querySelector('[data-role="buddy-reset-position"]');
+const buddySkinList = document.querySelector('[data-role="buddy-skins"]');
 const osShell = document.querySelector('[data-role="os-shell"]');
 const osWindow = document.querySelector('[data-role="os-window"]');
 const osTitle = document.querySelector('[data-role="os-title"]');
@@ -145,10 +146,46 @@ const BUDDY_IDLE_MESSAGES = [
   'Curious about the dashboard? I have tips ready whenever you are.',
 ];
 
+const BUDDY_SKINS = [
+  {
+    id: 'lagoon-drift',
+    name: 'Lagoon Drift',
+    tagline: 'Seafoam teal with tidal shimmer.',
+    swatch: 'linear-gradient(135deg, #53ddcf, #1a9ba0)',
+  },
+  {
+    id: 'sunrise-sorbet',
+    name: 'Sunrise Sorbet',
+    tagline: 'Peach sherbet glow with citrus shine.',
+    swatch: 'linear-gradient(135deg, #ffb677, #ff6f4f)',
+  },
+  {
+    id: 'cloudline-mist',
+    name: 'Cloudline Mist',
+    tagline: 'Airy blues lifted by bright sky light.',
+    swatch: 'linear-gradient(135deg, #9cccf7, #2f7dde)',
+  },
+  {
+    id: 'citrus-grove',
+    name: 'Citrus Grove',
+    tagline: 'Zesty greens with sunlit highlights.',
+    swatch: 'linear-gradient(135deg, #b7f267, #4aa72f)',
+  },
+  {
+    id: 'ember-dawn',
+    name: 'Ember Dawn',
+    tagline: 'Warm ember oranges with a cozy glow.',
+    swatch: 'linear-gradient(135deg, #ff8660, #c9452e)',
+  },
+];
+
+const BUDDY_SKIN_IDS = new Set(BUDDY_SKINS.map((skin) => skin.id));
+
 const buddyState = {
   enabled: true,
   idleMessages: true,
   playSounds: true,
+  skin: BUDDY_SKINS[0]?.id || 'lagoon-drift',
   rememberKey: false,
   statusMessage: 'Say hello!',
   modelStatus: 'Add an API key to fetch models.',
@@ -334,6 +371,7 @@ function persistBuddySettings() {
       enabled: buddyState.enabled,
       idleMessages: buddyState.idleMessages,
       playSounds: buddyState.playSounds,
+      skin: buddyState.skin,
       rememberKey: buddyState.rememberKey,
       position: buddyState.position,
     };
@@ -384,6 +422,7 @@ function restoreBuddySettings() {
     if (typeof stored.enabled === 'boolean') buddyState.enabled = stored.enabled;
     if (typeof stored.idleMessages === 'boolean') buddyState.idleMessages = stored.idleMessages;
     if (typeof stored.playSounds === 'boolean') buddyState.playSounds = stored.playSounds;
+    if (typeof stored.skin === 'string' && BUDDY_SKIN_IDS.has(stored.skin)) buddyState.skin = stored.skin;
     if (typeof stored.rememberKey === 'boolean') buddyState.rememberKey = stored.rememberKey;
     if (
       stored.position &&
@@ -448,6 +487,74 @@ function applyBuddyPosition(options = {}) {
   buddyContainer.style.left = `${clampedLeft}px`;
   buddyContainer.style.top = `${clampedTop}px`;
   buddyState.position = { left: clampedLeft, top: clampedTop };
+  if (!options.skipPersist) {
+    persistBuddySettings();
+  }
+}
+
+function updateBuddySkinSelection(skinId) {
+  if (!buddySkinList) return;
+  const options = buddySkinList.querySelectorAll('.settings__buddy-skin');
+  options.forEach((option) => {
+    const input = option.querySelector('input[type="radio"]');
+    const isActive = input?.value === skinId;
+    if (input) {
+      input.checked = Boolean(isActive);
+    }
+    option.classList.toggle('is-selected', Boolean(isActive));
+  });
+}
+
+function renderBuddySkinOptions() {
+  if (!buddySkinList) return;
+  buddySkinList.innerHTML = '';
+  BUDDY_SKINS.forEach((skin) => {
+    const label = document.createElement('label');
+    label.className = 'settings__buddy-skin';
+    label.dataset.skin = skin.id;
+
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'buddy-skin';
+    input.value = skin.id;
+    input.checked = skin.id === buddyState.skin;
+
+    const swatch = document.createElement('span');
+    swatch.className = 'settings__buddy-swatch';
+    swatch.style.setProperty('--swatch', skin.swatch);
+
+    const info = document.createElement('span');
+    info.className = 'settings__buddy-info';
+
+    const name = document.createElement('span');
+    name.className = 'settings__buddy-name';
+    name.textContent = skin.name;
+
+    const description = document.createElement('span');
+    description.className = 'settings__buddy-description';
+    description.textContent = skin.tagline;
+
+    info.append(name, description);
+    if (input.checked) {
+      label.classList.add('is-selected');
+    }
+    label.append(input, swatch, info);
+    buddySkinList.append(label);
+  });
+  updateBuddySkinSelection(buddyState.skin);
+}
+
+function applyBuddySkin(skinId, options = {}) {
+  if (!BUDDY_SKIN_IDS.size) return;
+  const targetSkin = BUDDY_SKIN_IDS.has(skinId) ? skinId : BUDDY_SKINS[0]?.id;
+  if (!targetSkin) return;
+  buddyState.skin = targetSkin;
+  if (buddyContainer) {
+    buddyContainer.dataset.skin = targetSkin;
+  }
+  if (!options.skipSelectionSync) {
+    updateBuddySkinSelection(targetSkin);
+  }
   if (!options.skipPersist) {
     persistBuddySettings();
   }
@@ -983,6 +1090,8 @@ function initDesktopBuddy() {
   if (buddyState.hasInitialized || !buddyContainer || !buddyAvatar) return;
   buddyState.hasInitialized = true;
   restoreBuddySettings();
+  renderBuddySkinOptions();
+  applyBuddySkin(buddyState.skin, { skipPersist: true });
   applyBuddyPosition({ skipPersist: true });
   updateBuddyVisibility();
   scheduleBuddyIdle();
@@ -1059,6 +1168,11 @@ function initDesktopBuddy() {
   });
   buddyResetPositionButton?.addEventListener('click', () => {
     resetBuddyPosition();
+  });
+  buddySkinList?.addEventListener('change', (event) => {
+    if (!(event.target instanceof HTMLInputElement)) return;
+    if (event.target.name !== 'buddy-skin') return;
+    applyBuddySkin(event.target.value);
   });
 
   window.addEventListener('resize', () => {

@@ -62,6 +62,27 @@
       }
 
       .desktop-buddy {
+        --buddy-body-gradient: radial-gradient(circle at 32% 24%, #9ef7eb 0%, #53ddcf 52%, #1a9ba0 100%);
+        --buddy-border: rgba(255, 255, 255, 0.6);
+        --buddy-shadow: 0 24px 36px rgba(8, 35, 40, 0.32);
+        --buddy-spark: radial-gradient(circle at 75% 22%, rgba(255, 255, 255, 0.7), transparent 62%);
+        --buddy-face-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.45));
+        --buddy-face-shadow: inset 0 -6px 12px rgba(26, 155, 160, 0.32);
+        --buddy-eye-color: #0f4144;
+        --buddy-eye-highlight: rgba(222, 255, 248, 0.9);
+        --buddy-mouth-gradient: linear-gradient(180deg, #f7b25f, #f0742b);
+        --buddy-mouth-shadow: inset 0 -2px 4px rgba(135, 50, 10, 0.28);
+        --buddy-mouth-gloss: rgba(255, 255, 255, 0.32);
+        --buddy-name-bg: rgba(10, 76, 80, 0.68);
+        --buddy-name-color: #fff7ec;
+        --buddy-name-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+        --buddy-bubble-bg: rgba(255, 247, 230, 0.95);
+        --buddy-bubble-color: #183a40;
+        --buddy-bubble-border: rgba(255, 188, 92, 0.7);
+        --buddy-bubble-tail: rgba(255, 247, 230, 0.95);
+        --buddy-bubble-shadow: 0 18px 32px rgba(8, 25, 30, 0.28);
+        --buddy-panel-border: rgba(20, 120, 130, 0.24);
+        --buddy-panel-shadow: 0 26px 48px rgba(6, 36, 40, 0.28);
         position: fixed;
         left: 65vw;
         top: 56vh;
@@ -86,9 +107,9 @@
         width: 132px;
         height: 132px;
         border-radius: 44% 44% 40% 40%;
-        border: 3px solid rgba(255, 255, 255, 0.6);
-        background: radial-gradient(circle at 32% 24%, #9ef7eb 0%, #53ddcf 52%, #1a9ba0 100%);
-        box-shadow: 0 24px 36px rgba(8, 35, 40, 0.32);
+        border: 3px solid var(--buddy-border);
+        background: var(--buddy-body-gradient);
+        box-shadow: var(--buddy-shadow);
         display: grid;
         place-items: center;
         position: relative;
@@ -111,7 +132,7 @@
       .desktop-buddy__spark {
         position: absolute;
         inset: -18px;
-        background: radial-gradient(circle at 75% 22%, rgba(255, 255, 255, 0.7), transparent 62%);
+        background: var(--buddy-spark);
         border-radius: 50%;
         opacity: 0.9;
         pointer-events: none;
@@ -121,7 +142,7 @@
         width: 90px;
         height: 76px;
         border-radius: 40px 40px 32px 32px;
-        background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.45));
+        background: var(--buddy-face-bg);
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: auto auto;
@@ -129,13 +150,13 @@
         justify-items: center;
         gap: 0.4rem 1rem;
         padding: 1rem 1.1rem 0.6rem;
-        box-shadow: inset 0 -6px 12px rgba(26, 155, 160, 0.32);
+        box-shadow: var(--buddy-face-shadow);
       }
 
       .desktop-buddy__eye {
         width: 16px;
         height: 22px;
-        background: #0f4144;
+        background: var(--buddy-eye-color);
         border-radius: 14px;
         position: relative;
         animation: buddyBlink 6s ease-in-out infinite;
@@ -149,7 +170,7 @@
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: rgba(222, 255, 248, 0.9);
+        background: var(--buddy-eye-highlight);
       }
 
       .desktop-buddy__eye--right {
@@ -161,8 +182,8 @@
         width: 46px;
         height: 18px;
         border-radius: 999px;
-        background: linear-gradient(180deg, #f7b25f, #f0742b);
-        box-shadow: inset 0 -2px 4px rgba(135, 50, 10, 0.28);
+        background: var(--buddy-mouth-gradient);
+        box-shadow: var(--buddy-mouth-shadow);
         position: relative;
       }
 
@@ -171,15 +192,15 @@
         position: absolute;
         inset: 3px 10px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.32);
+        background: var(--buddy-mouth-gloss);
       }
 
       .desktop-buddy__name {
         font-weight: 600;
         font-size: 1rem;
-        color: #fff7ec;
-        text-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
-        background: rgba(10, 76, 80, 0.68);
+        color: var(--buddy-name-color);
+        text-shadow: var(--buddy-name-shadow);
+        background: var(--buddy-name-bg);
         padding: 0.25rem 0.75rem;
         border-radius: 999px;
         letter-spacing: 0.03em;
@@ -191,12 +212,12 @@
         bottom: 150px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(255, 247, 230, 0.95);
-        color: #183a40;
+        background: var(--buddy-bubble-bg);
+        color: var(--buddy-bubble-color);
         padding: 0.75rem 1rem;
         border-radius: 16px;
-        box-shadow: 0 18px 32px rgba(8, 25, 30, 0.28);
-        border: 1px solid rgba(255, 188, 92, 0.7);
+        box-shadow: var(--buddy-bubble-shadow);
+        border: 1px solid var(--buddy-bubble-border);
         font-size: 0.95rem;
         line-height: 1.4;
         pointer-events: none;
@@ -213,7 +234,7 @@
         transform: translateX(-50%);
         border-width: 8px;
         border-style: solid;
-        border-color: rgba(255, 247, 230, 0.95) transparent transparent transparent;
+        border-color: var(--buddy-bubble-tail) transparent transparent transparent;
         filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.18));
       }
 
@@ -234,8 +255,8 @@
         width: min(320px, calc(100vw - 4rem));
         background: rgba(250, 253, 255, 0.96);
         border-radius: 20px;
-        border: 1px solid rgba(20, 120, 130, 0.24);
-        box-shadow: 0 26px 48px rgba(6, 36, 40, 0.28);
+        border: 1px solid var(--buddy-panel-border);
+        box-shadow: var(--buddy-panel-shadow);
         backdrop-filter: blur(10px);
         display: flex;
         flex-direction: column;
@@ -246,6 +267,126 @@
 
       .desktop-buddy__panel[hidden] {
         display: none;
+      }
+
+      .desktop-buddy[data-skin='lagoon-drift'] {
+        --buddy-body-gradient: radial-gradient(circle at 32% 24%, #9ef7eb 0%, #53ddcf 52%, #1a9ba0 100%);
+        --buddy-border: rgba(255, 255, 255, 0.6);
+        --buddy-shadow: 0 24px 36px rgba(8, 35, 40, 0.32);
+        --buddy-spark: radial-gradient(circle at 75% 22%, rgba(255, 255, 255, 0.7), transparent 62%);
+        --buddy-face-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.45));
+        --buddy-face-shadow: inset 0 -6px 12px rgba(26, 155, 160, 0.32);
+        --buddy-eye-color: #0f4144;
+        --buddy-eye-highlight: rgba(222, 255, 248, 0.9);
+        --buddy-mouth-gradient: linear-gradient(180deg, #f7b25f, #f0742b);
+        --buddy-mouth-shadow: inset 0 -2px 4px rgba(135, 50, 10, 0.28);
+        --buddy-mouth-gloss: rgba(255, 255, 255, 0.32);
+        --buddy-name-bg: rgba(10, 76, 80, 0.68);
+        --buddy-name-color: #fff7ec;
+        --buddy-name-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+        --buddy-bubble-bg: rgba(255, 247, 230, 0.95);
+        --buddy-bubble-color: #183a40;
+        --buddy-bubble-border: rgba(255, 188, 92, 0.7);
+        --buddy-bubble-tail: rgba(255, 247, 230, 0.95);
+        --buddy-bubble-shadow: 0 18px 32px rgba(8, 25, 30, 0.28);
+        --buddy-panel-border: rgba(20, 120, 130, 0.24);
+        --buddy-panel-shadow: 0 26px 48px rgba(6, 36, 40, 0.28);
+      }
+
+      .desktop-buddy[data-skin='sunrise-sorbet'] {
+        --buddy-body-gradient: radial-gradient(circle at 30% 20%, #ffe7a8 0%, #ffb677 52%, #ff6f4f 100%);
+        --buddy-border: rgba(255, 244, 214, 0.75);
+        --buddy-shadow: 0 24px 36px rgba(125, 54, 18, 0.28);
+        --buddy-spark: radial-gradient(circle at 70% 18%, rgba(255, 244, 214, 0.8), transparent 65%);
+        --buddy-face-bg: linear-gradient(160deg, rgba(255, 250, 244, 0.95), rgba(255, 228, 200, 0.65));
+        --buddy-face-shadow: inset 0 -6px 12px rgba(215, 108, 42, 0.28);
+        --buddy-eye-color: #7f2d1f;
+        --buddy-eye-highlight: rgba(255, 232, 214, 0.85);
+        --buddy-mouth-gradient: linear-gradient(180deg, #ffb45b, #ff7449);
+        --buddy-mouth-shadow: inset 0 -2px 4px rgba(128, 38, 21, 0.36);
+        --buddy-mouth-gloss: rgba(255, 245, 232, 0.35);
+        --buddy-name-bg: rgba(197, 72, 38, 0.78);
+        --buddy-name-color: #fff4e8;
+        --buddy-name-shadow: 0 6px 14px rgba(116, 40, 14, 0.32);
+        --buddy-bubble-bg: rgba(255, 244, 232, 0.96);
+        --buddy-bubble-color: #5a2b18;
+        --buddy-bubble-border: rgba(255, 174, 122, 0.65);
+        --buddy-bubble-tail: rgba(255, 244, 232, 0.96);
+        --buddy-bubble-shadow: 0 18px 32px rgba(117, 46, 16, 0.28);
+        --buddy-panel-border: rgba(233, 152, 102, 0.42);
+        --buddy-panel-shadow: 0 26px 48px rgba(122, 52, 20, 0.26);
+      }
+
+      .desktop-buddy[data-skin='cloudline-mist'] {
+        --buddy-body-gradient: radial-gradient(circle at 28% 24%, #e1f0ff 0%, #9cccf7 52%, #2f7dde 100%);
+        --buddy-border: rgba(226, 240, 255, 0.85);
+        --buddy-shadow: 0 24px 36px rgba(21, 62, 110, 0.3);
+        --buddy-spark: radial-gradient(circle at 72% 20%, rgba(231, 246, 255, 0.85), transparent 62%);
+        --buddy-face-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(226, 240, 255, 0.6));
+        --buddy-face-shadow: inset 0 -6px 12px rgba(61, 132, 208, 0.28);
+        --buddy-eye-color: #1f3f66;
+        --buddy-eye-highlight: rgba(232, 248, 255, 0.85);
+        --buddy-mouth-gradient: linear-gradient(180deg, #5eb4ff, #1f79d5);
+        --buddy-mouth-shadow: inset 0 -2px 4px rgba(16, 66, 128, 0.35);
+        --buddy-mouth-gloss: rgba(240, 250, 255, 0.4);
+        --buddy-name-bg: rgba(33, 98, 178, 0.76);
+        --buddy-name-color: #f2f7ff;
+        --buddy-name-shadow: 0 6px 16px rgba(16, 56, 110, 0.32);
+        --buddy-bubble-bg: rgba(235, 245, 255, 0.96);
+        --buddy-bubble-color: #1f3f66;
+        --buddy-bubble-border: rgba(123, 182, 240, 0.68);
+        --buddy-bubble-tail: rgba(235, 245, 255, 0.96);
+        --buddy-bubble-shadow: 0 18px 32px rgba(24, 66, 122, 0.28);
+        --buddy-panel-border: rgba(102, 158, 215, 0.35);
+        --buddy-panel-shadow: 0 26px 48px rgba(28, 74, 136, 0.24);
+      }
+
+      .desktop-buddy[data-skin='citrus-grove'] {
+        --buddy-body-gradient: radial-gradient(circle at 32% 20%, #f0ffb0 0%, #b7f267 50%, #4aa72f 100%);
+        --buddy-border: rgba(248, 255, 220, 0.78);
+        --buddy-shadow: 0 24px 36px rgba(34, 94, 38, 0.28);
+        --buddy-spark: radial-gradient(circle at 68% 18%, rgba(246, 255, 214, 0.82), transparent 64%);
+        --buddy-face-bg: linear-gradient(160deg, rgba(255, 255, 240, 0.96), rgba(229, 255, 204, 0.6));
+        --buddy-face-shadow: inset 0 -6px 12px rgba(76, 168, 62, 0.28);
+        --buddy-eye-color: #1f4b18;
+        --buddy-eye-highlight: rgba(232, 255, 214, 0.85);
+        --buddy-mouth-gradient: linear-gradient(180deg, #c6ff5d, #6fbe2f);
+        --buddy-mouth-shadow: inset 0 -2px 4px rgba(44, 102, 30, 0.32);
+        --buddy-mouth-gloss: rgba(255, 255, 240, 0.42);
+        --buddy-name-bg: rgba(63, 140, 48, 0.78);
+        --buddy-name-color: #f4ffec;
+        --buddy-name-shadow: 0 6px 16px rgba(24, 80, 28, 0.3);
+        --buddy-bubble-bg: rgba(240, 255, 230, 0.96);
+        --buddy-bubble-color: #1f4b18;
+        --buddy-bubble-border: rgba(144, 214, 112, 0.6);
+        --buddy-bubble-tail: rgba(240, 255, 230, 0.96);
+        --buddy-bubble-shadow: 0 18px 32px rgba(32, 90, 36, 0.26);
+        --buddy-panel-border: rgba(132, 202, 110, 0.38);
+        --buddy-panel-shadow: 0 26px 48px rgba(40, 102, 44, 0.24);
+      }
+
+      .desktop-buddy[data-skin='ember-dawn'] {
+        --buddy-body-gradient: radial-gradient(circle at 30% 22%, #ffd1b5 0%, #ff8660 52%, #c9452e 100%);
+        --buddy-border: rgba(255, 226, 208, 0.78);
+        --buddy-shadow: 0 24px 36px rgba(132, 42, 22, 0.3);
+        --buddy-spark: radial-gradient(circle at 72% 20%, rgba(255, 226, 208, 0.82), transparent 64%);
+        --buddy-face-bg: linear-gradient(160deg, rgba(255, 247, 240, 0.96), rgba(255, 222, 202, 0.65));
+        --buddy-face-shadow: inset 0 -6px 12px rgba(201, 69, 46, 0.28);
+        --buddy-eye-color: #5a2113;
+        --buddy-eye-highlight: rgba(255, 232, 220, 0.85);
+        --buddy-mouth-gradient: linear-gradient(180deg, #ffa36c, #e0552f);
+        --buddy-mouth-shadow: inset 0 -2px 4px rgba(128, 36, 18, 0.32);
+        --buddy-mouth-gloss: rgba(255, 242, 232, 0.36);
+        --buddy-name-bg: rgba(181, 58, 32, 0.8);
+        --buddy-name-color: #fff2e6;
+        --buddy-name-shadow: 0 6px 16px rgba(102, 32, 18, 0.3);
+        --buddy-bubble-bg: rgba(255, 232, 220, 0.96);
+        --buddy-bubble-color: #5a2113;
+        --buddy-bubble-border: rgba(242, 165, 138, 0.65);
+        --buddy-bubble-tail: rgba(255, 232, 220, 0.96);
+        --buddy-bubble-shadow: 0 18px 32px rgba(120, 44, 24, 0.28);
+        --buddy-panel-border: rgba(214, 124, 96, 0.4);
+        --buddy-panel-shadow: 0 26px 48px rgba(132, 48, 26, 0.26);
       }
 
       .desktop-buddy__panel-header {
@@ -526,6 +667,75 @@
         display: grid;
         gap: 0.65rem;
         align-items: start;
+      }
+
+      .settings__buddy-skins {
+        margin-top: 1rem;
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .settings__buddy-skin {
+        position: relative;
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.7rem 0.8rem;
+        border-radius: 16px;
+        border: 1px solid rgba(16, 34, 60, 0.16);
+        background: rgba(255, 255, 255, 0.55);
+        cursor: pointer;
+        transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+      }
+
+      .settings__buddy-skin input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      .settings__buddy-skin:hover {
+        border-color: rgba(16, 34, 60, 0.32);
+        box-shadow: 0 12px 22px rgba(16, 34, 60, 0.16);
+        transform: translateY(-1px);
+      }
+
+      .settings__buddy-skin:focus-within {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+      }
+
+      .settings__buddy-skin.is-selected {
+        border-color: var(--accent);
+        box-shadow: 0 14px 26px rgba(16, 34, 60, 0.18);
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .settings__buddy-swatch {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: var(--swatch, linear-gradient(135deg, #1a9ba0, #0f6c70));
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 10px 20px rgba(15, 36, 64, 0.18);
+      }
+
+      .settings__buddy-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .settings__buddy-name {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .settings__buddy-description {
+        font-size: 0.85rem;
+        color: rgba(16, 34, 60, 0.65);
       }
 
       .settings__toggle {
@@ -1482,7 +1692,7 @@
     </div>
     <div class="desktop" data-role="desktop">
       <section class="desktop__shortcuts" data-role="shortcut-container" aria-label="Desktop shortcuts"></section>
-      <div class="desktop-buddy" data-role="desktop-buddy" aria-hidden="true">
+      <div class="desktop-buddy" data-role="desktop-buddy" data-skin="lagoon-drift" aria-hidden="true">
         <button
           type="button"
           class="desktop-buddy__avatar"
@@ -1684,8 +1894,10 @@
               </label>
               <button type="button" class="settings__buddy-reset" data-role="buddy-reset-position">Reset Cirrus position</button>
             </div>
+            <div class="settings__buddy-skins" data-role="buddy-skins" aria-label="Choose a Cirrus style"></div>
             <p class="settings__buddy-note">
-              Cirrus hides whenever an applet window is open and returns once the desktop is clear.
+              Cirrus hides whenever an applet window is open and returns once the desktop is clear. Pick a style whenever you
+              want their look to match your mood.
             </p>
           </section>
         </div>
