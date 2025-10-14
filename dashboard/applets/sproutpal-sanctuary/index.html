@@ -53,6 +53,21 @@
               <input id="name-input" maxlength="12" placeholder="Rename your pal" />
               <button id="rename-btn">Rename</button>
             </div>
+            <div class="harmony-insight">
+              <h3>Harmony Meter</h3>
+              <div
+                class="harmony-meter"
+                id="harmony-meter"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="65"
+              >
+                <div class="harmony-fill" id="harmony-fill"></div>
+                <div class="harmony-pointer" id="harmony-pointer"></div>
+              </div>
+              <p id="harmony-tip">Balance care actions to keep Sprout glowing.</p>
+            </div>
           </div>
         </section>
 
@@ -181,6 +196,14 @@
               <ul class="journal-entries" id="journal-entries"></ul>
             </article>
           </div>
+        </section>
+
+        <section class="quests-panel" aria-label="Care quests">
+          <header class="section-header">
+            <h3>Care Quests</h3>
+            <p id="quest-summary">No quests ready yet</p>
+          </header>
+          <ul class="quest-list" id="quest-list"></ul>
         </section>
 
         <section class="log-panel" aria-live="polite">
