@@ -20,6 +20,9 @@
           <button class="env-option" data-environment="coast" aria-pressed="false">Coast Breeze</button>
           <button class="env-option" data-environment="mesa" aria-pressed="false">Mesa Bloom</button>
         </div>
+        <p class="environment-insight" id="environment-insight" role="status">
+          Grove Glow keeps nutrition and freshness steady beneath a gentle canopy.
+        </p>
       </header>
 
       <main class="content">
@@ -122,6 +125,61 @@
             <p>Send your companion on a mini expedition for curious finds.</p>
             <button class="care-btn" data-action="explore">Embark &amp; Discover</button>
             <p class="cooldown" id="explore-cooldown">Ready</p>
+          </div>
+        </section>
+
+        <section class="rituals-panel" aria-label="Daily rituals">
+          <header class="section-header">
+            <h3>Daily Rituals</h3>
+            <p>Anchor Sprout's routine with restorative rhythms.</p>
+          </header>
+          <div class="rituals-grid">
+            <article class="ritual-card" data-ritual="sunsoak">
+              <div>
+                <h4>Sun Soak</h4>
+                <p>Invite warming rays that replenish pep and brighten mood.</p>
+              </div>
+              <button class="ritual-btn" data-ritual="sunsoak">Open the Canopy</button>
+              <p class="cooldown" id="ritual-sunsoak-status">Ready</p>
+            </article>
+            <article class="ritual-card" data-ritual="storytime">
+              <div>
+                <h4>Storytime Echo</h4>
+                <p>Share a whispered tale to steady joy and nurture calm.</p>
+              </div>
+              <button class="ritual-btn" data-ritual="storytime">Begin the Tale</button>
+              <p class="cooldown" id="ritual-storytime-status">Ready</p>
+            </article>
+            <article class="ritual-card" data-ritual="breezestretch">
+              <div>
+                <h4>Breeze Stretch</h4>
+                <p>Guide gentle sways that polish leaves and boost energy.</p>
+              </div>
+              <button class="ritual-btn" data-ritual="breezestretch">Flow with the Wind</button>
+              <p class="cooldown" id="ritual-breezestretch-status">Ready</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="growth-panel" aria-label="Growth almanac">
+          <header class="section-header">
+            <h3>Growth Almanac</h3>
+            <p id="next-milestone">Next milestone: Level 2</p>
+          </header>
+          <div class="growth-content">
+            <article class="milestone-card">
+              <h4>Level Progress</h4>
+              <div class="milestone-progress" aria-hidden="true">
+                <div class="milestone-progress-fill" id="milestone-progress-fill"></div>
+              </div>
+              <p class="milestone-progress-value" id="milestone-progress-value">0 / 60 xp</p>
+              <ul class="milestone-list" id="milestone-list"></ul>
+            </article>
+            <article class="journal-card">
+              <h4>Sprout Notes</h4>
+              <p class="journal-tip">Level up to unlock reflective entries from your companion.</p>
+              <ul class="journal-entries" id="journal-entries"></ul>
+            </article>
           </div>
         </section>
 
