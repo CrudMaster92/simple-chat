@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbital Mneme Spindle</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="mast">
+      <div class="title-block">
+        <h1>Orbital Mneme Spindle</h1>
+        <p>Thread luminous recollections around a kinetic halo. Spin, stretch, and catalogue each shard as you sculpt a living memory dial.</p>
+      </div>
+      <div class="status-pill" id="statusPill">Awaiting your first filament.</div>
+    </header>
+    <main class="layout">
+      <aside class="left-controls">
+        <label for="radiusControl" class="vertical-label">Orbit Spread</label>
+        <input type="range" id="radiusControl" min="120" max="260" value="190" orient="vertical" />
+        <label for="driftControl" class="vertical-label">Drift Pulse</label>
+        <input type="range" id="driftControl" min="-30" max="30" value="12" orient="vertical" />
+      </aside>
+      <section class="spindle">
+        <div class="halo">
+          <div class="orbit" id="orbit" style="--spin-rotation: 0deg;">
+            <div class="core" id="coreDisplay">
+              <div class="core-prompt">tap a beam</div>
+              <div class="core-echo">to weave your first shard</div>
+            </div>
+            <div class="ring-buttons" id="ringButtons">
+              <!-- buttons injected via JS -->
+            </div>
+          </div>
+        </div>
+        <div class="footnote">
+          Tap any dial to mint a shard. Drag a filament card to tilt its placement.
+        </div>
+      </section>
+      <aside class="ledger">
+        <div class="ledger-head">
+          <h2>Filament Ledger</h2>
+          <button id="exportBtn" class="export">Copy constellation log</button>
+        </div>
+        <ol class="ledger-list" id="ledgerList">
+          <li class="empty">No shards yet. The ledger lights up as soon as you cast one.</li>
+        </ol>
+      </aside>
+    </main>
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>
