@@ -335,10 +335,30 @@
         color: var(--text-primary);
         font-weight: 600;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
       }
 
       .start-menu__nav button:hover {
         background: rgba(193, 226, 248, 0.95);
+      }
+
+      .start-menu__nav button:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .start-menu__nav button[data-role="restart-desktop"] {
+        background: var(--accent);
+        color: #f8fbff;
+        border-color: rgba(16, 34, 60, 0.18);
+        box-shadow: 0 12px 20px rgba(16, 36, 64, 0.25);
+      }
+
+      .start-menu__nav button[data-role="restart-desktop"]:hover {
+        background: #1f8cdb;
       }
 
       .start-menu__section {
@@ -919,6 +939,22 @@
     </style>
   </head>
   <body>
+    <div class="boot-screen" data-role="boot-screen" aria-hidden="true">
+      <div class="boot-screen__inner">
+        <div class="boot-screen__animation" role="presentation">
+          <div class="boot-screen__effects" aria-hidden="true">
+            <div class="boot-screen__effects-layer boot-screen__effects-layer--glow"></div>
+            <div class="boot-screen__effects-layer boot-screen__effects-layer--vignette"></div>
+          </div>
+          <div class="boot-screen__ring" data-role="boot-ring" aria-hidden="true"></div>
+          <div class="boot-screen__pop" data-role="boot-pop" aria-hidden="true">
+            <div class="boot-screen__bloom" data-role="boot-bloom"></div>
+          </div>
+        </div>
+        <div class="boot-screen__title" data-role="boot-title">S L O P&nbsp;&nbsp;O S</div>
+      </div>
+      <p class="boot-screen__hint" data-role="boot-hint">Click to replay</p>
+    </div>
     <div class="desktop" data-role="desktop">
       <section class="desktop__shortcuts" data-role="shortcut-container" aria-label="Desktop shortcuts"></section>
     </div>
@@ -979,6 +1015,7 @@
         </div>
         <nav class="start-menu__nav">
           <button type="button" data-role="open-all-apps">Applets</button>
+          <button type="button" data-role="restart-desktop" title="Restart Slop OS desktop">Restart</button>
         </nav>
         <section class="start-menu__section" data-role="pinned-section">
           <div class="start-menu__section-title">Pinned</div>

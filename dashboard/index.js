@@ -33,6 +33,13 @@ const osCloseButton = document.querySelector('[data-action="close"]');
 const taskbarSessions = document.querySelector('[data-role="taskbar-sessions"]');
 const taskbar = document.querySelector('[data-role="taskbar"]');
 const osResizeButton = document.querySelector('[data-action="resize"]');
+const bootScreen = document.querySelector('[data-role="boot-screen"]');
+const bootRing = bootScreen?.querySelector('[data-role="boot-ring"]');
+const bootTitle = bootScreen?.querySelector('[data-role="boot-title"]');
+const bootHint = bootScreen?.querySelector('[data-role="boot-hint"]');
+const bootBloom = bootScreen?.querySelector('[data-role="boot-bloom"]');
+const bootPop = bootScreen?.querySelector('[data-role="boot-pop"]');
+const restartButton = document.querySelector('[data-role="restart-desktop"]');
 
 const shortcutButtonMap = new Map();
 const deleteRevealTimers = new WeakMap();
@@ -77,6 +84,77 @@ const SOUND_THEMES = {
     { frequency: 340, duration: 0.1, volume: 0.22 },
   ],
 };
+
+const BOOT_CONFIG = { radius: 84, cubeSize: 28, gap: 6 };
+const BOOT_ANGLES = Array.from({ length: 8 }, (_, index) => index * 45);
+const BOOT_GRID = (() => {
+  const offset = (BOOT_CONFIG.cubeSize + BOOT_CONFIG.gap) / 2;
+  return [
+    { x: -offset, y: -offset },
+    { x: offset, y: -offset },
+    { x: -offset, y: offset },
+    { x: offset, y: offset },
+  ];
+})();
+
+const reduceMotionQuery =
+  typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+    : null;
+
+const bootState = {
+  stage: 0,
+  timers: [],
+  isPlaying: false,
+  hasPlayed: false,
+  reduceMotion: reduceMotionQuery?.matches ?? false,
+};
+
+let bootCubes = [];
+
+if (bootRing) {
+  const fragment = document.createDocumentFragment();
+  BOOT_ANGLES.forEach((_, index) => {
+    const cube = document.createElement('div');
+    cube.className = 'boot-cube';
+    cube.setAttribute('data-role', 'boot-cube');
+    cube.dataset.index = String(index);
+    cube.style.width = `${BOOT_CONFIG.cubeSize}px`;
+    cube.style.height = `${BOOT_CONFIG.cubeSize}px`;
+
+    const inner = document.createElement('div');
+    inner.className = `boot-cube__inner ${index < 4 ? 'boot-cube__inner--primary' : 'boot-cube__inner--secondary'}`;
+    const bevel = document.createElement('div');
+    bevel.className = 'boot-cube__bevel';
+    inner.appendChild(bevel);
+    cube.appendChild(inner);
+    fragment.appendChild(cube);
+  });
+  bootRing.appendChild(fragment);
+  bootCubes = Array.from(bootRing.querySelectorAll('[data-role="boot-cube"]'));
+}
+
+if (bootScreen) {
+  bootScreen.setAttribute('data-stage', '0');
+}
+
+if (bootHint) {
+  bootHint.textContent = bootState.reduceMotion ? 'Reduced motion mode' : 'Click to replay';
+}
+
+if (reduceMotionQuery) {
+  const handleReduceMotionChange = (event) => {
+    bootState.reduceMotion = event.matches;
+    if (bootHint) {
+      bootHint.textContent = event.matches ? 'Reduced motion mode' : 'Click to replay';
+    }
+  };
+  if (typeof reduceMotionQuery.addEventListener === 'function') {
+    reduceMotionQuery.addEventListener('change', handleReduceMotionChange);
+  } else if (typeof reduceMotionQuery.addListener === 'function') {
+    reduceMotionQuery.addListener(handleReduceMotionChange);
+  }
+}
 
 function ensureAudioContext() {
   if (audioContext) {
@@ -135,6 +213,158 @@ function playSound(name, options = {}) {
   pattern.forEach((step) => {
     cursor += scheduleToneStep(context, audioMasterGain, cursor, step);
   });
+}
+
+function clearBootTimers() {
+  bootState.timers.forEach((id) => window.clearTimeout(id));
+  bootState.timers = [];
+}
+
+function setBootStage(stage) {
+  bootState.stage = stage;
+  if (bootScreen) {
+    bootScreen.setAttribute('data-stage', String(stage));
+  }
+
+  const ringDeg = stage < 1 ? 0 : stage === 1 ? 540 : 720;
+  if (bootRing) {
+    const ringTransition =
+      stage === 0
+        ? 'none'
+        : stage === 1
+        ? 'transform 1100ms cubic-bezier(.23,1,.32,1)'
+        : 'transform 600ms cubic-bezier(.2,1.1,.2,1)';
+    bootRing.style.transition = ringTransition;
+    bootRing.style.transform = `translate(-50%, -50%) rotate(${ringDeg}deg)`;
+  }
+
+  bootCubes.forEach((cube, index) => {
+    const angle = BOOT_ANGLES[index];
+    let tx = 0;
+    let ty = 0;
+    let rot = 0;
+    let scale = 0;
+    let opacity = 0;
+
+    if (stage <= 0) {
+      scale = 0;
+      opacity = 0;
+    } else if (stage === 1) {
+      const radians = (angle * Math.PI) / 180;
+      tx = Math.cos(radians) * BOOT_CONFIG.radius;
+      ty = Math.sin(radians) * BOOT_CONFIG.radius;
+      rot = angle + 90;
+      scale = 1;
+      opacity = 1;
+    } else {
+      const target = BOOT_GRID[index % 4];
+      tx = target.x;
+      ty = target.y;
+      rot = 0;
+      scale = 1;
+      opacity = 1;
+    }
+
+    const transition =
+      stage === 0
+        ? 'none'
+        : stage === 1
+        ? 'transform 1100ms cubic-bezier(.23,1,.32,1), opacity 500ms ease'
+        : 'transform 600ms cubic-bezier(.2,1.1,.2,1)';
+    cube.style.transition = transition;
+    cube.style.transform = `translate(-50%, -50%) translate(${tx}px, ${ty}px) rotate(${rot}deg) scale(${scale})`;
+    cube.style.opacity = String(opacity);
+  });
+
+  if (bootBloom) {
+    const isVisible = stage >= 2;
+    bootBloom.style.width = isVisible ? '60px' : '0px';
+    bootBloom.style.height = isVisible ? '60px' : '0px';
+    bootBloom.style.opacity = isVisible ? '1' : '0';
+  }
+
+  if (bootPop) {
+    if (stage === 3) {
+      bootPop.classList.remove('is-pop');
+      void bootPop.offsetWidth;
+      bootPop.classList.add('is-pop');
+    } else {
+      bootPop.classList.remove('is-pop');
+    }
+  }
+
+  if (bootTitle) {
+    if (stage >= 4) {
+      bootTitle.classList.add('is-visible');
+    } else {
+      bootTitle.classList.remove('is-visible');
+    }
+  }
+}
+
+function showBootScreen() {
+  if (!bootScreen) return;
+  bootScreen.classList.add('is-visible');
+  bootScreen.setAttribute('aria-hidden', 'false');
+  if (document.body) {
+    document.body.classList.add('is-booting');
+  }
+}
+
+function hideBootScreen() {
+  if (!bootScreen) return;
+  bootScreen.classList.remove('is-visible');
+  bootScreen.setAttribute('aria-hidden', 'true');
+  if (document.body) {
+    document.body.classList.remove('is-booting');
+  }
+}
+
+function finishBoot() {
+  hideBootScreen();
+  bootState.isPlaying = false;
+  bootState.hasPlayed = true;
+  clearBootTimers();
+}
+
+function playBootAnimation() {
+  if (!bootScreen) return;
+  clearBootTimers();
+  showBootScreen();
+  bootState.isPlaying = true;
+  if (bootHint) {
+    bootHint.textContent = bootState.reduceMotion ? 'Reduced motion mode' : 'Click to replay';
+  }
+  setBootStage(0);
+  void bootScreen.offsetWidth;
+
+  if (bootState.reduceMotion) {
+    setBootStage(2);
+    setBootStage(4);
+    const timerId = window.setTimeout(() => {
+      finishBoot();
+    }, 400);
+    bootState.timers.push(timerId);
+    return;
+  }
+
+  bootState.timers.push(window.setTimeout(() => setBootStage(1), 60));
+  bootState.timers.push(window.setTimeout(() => setBootStage(2), 1200));
+  bootState.timers.push(window.setTimeout(() => setBootStage(3), 1900));
+  bootState.timers.push(window.setTimeout(() => setBootStage(4), 2200));
+  bootState.timers.push(window.setTimeout(() => finishBoot(), 3200));
+}
+
+function restartDesktop() {
+  if (bootState.isPlaying) {
+    return;
+  }
+  toggleStartMenu(false);
+  allAppsPanel?.classList.remove('is-open');
+  allAppsPanel?.setAttribute('aria-hidden', 'true');
+  toggleSettings(false);
+  closeActiveApplet({ skipFocus: true });
+  playBootAnimation();
 }
 
 const PINNED_CONFIG = [
@@ -393,7 +623,8 @@ function restoreActiveApplet() {
   });
 }
 
-function closeActiveApplet() {
+function closeActiveApplet(options = {}) {
+  const { skipFocus = false } = options;
   if (!osState.current) return;
   playSound('appClose');
   osState.current = null;
@@ -418,7 +649,9 @@ function closeActiveApplet() {
   }
   syncWindowLayout();
   updateTaskbarSessionButton();
-  startButton?.focus();
+  if (!skipFocus) {
+    startButton?.focus();
+  }
 }
 
 function launchApplet(record) {
@@ -528,6 +761,14 @@ osCloseButton?.addEventListener('click', () => {
   if (osState.current) {
     closeActiveApplet();
   }
+});
+
+restartButton?.addEventListener('click', () => {
+  restartDesktop();
+});
+
+bootScreen?.addEventListener('click', () => {
+  playBootAnimation();
 });
 
 startButton?.addEventListener('click', () => toggleStartMenu());
@@ -1523,4 +1764,5 @@ async function init() {
   initializeDesktop(results);
 }
 
+playBootAnimation();
 init();
