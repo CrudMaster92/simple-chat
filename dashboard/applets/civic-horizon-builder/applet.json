@@ -1,0 +1,12 @@
+{
+  "slug": "civic-horizon-builder",
+  "name": "Civic Horizon Builder",
+  "description": "Balance prosperity, joy, and clean air in a compact city-planning challenge with a firm win condition.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-06-06",
+  "tags": ["strategy", "simulation", "city-builder"],
+  "author": "Civic Horizon Studio",
+  "permissions": []
+}

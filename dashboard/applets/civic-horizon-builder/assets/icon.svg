@@ -1,0 +1,18 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Civic Horizon Builder Icon</title>
+  <desc id="desc">Stacked buildings over a rising sun.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#edf1f6" />
+      <stop offset="100%" stop-color="#9dc9a3" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="18" fill="url(#sky)" />
+  <g fill="#1f2523" opacity="0.75">
+    <rect x="24" y="46" width="22" height="58" rx="4" />
+    <rect x="54" y="32" width="26" height="72" rx="4" />
+    <rect x="88" y="54" width="16" height="50" rx="4" />
+  </g>
+  <circle cx="68" cy="42" r="18" fill="#f26b5e" opacity="0.9" />
+  <path d="M16 102h96v10H16z" fill="#2e5939" />
+</svg>
