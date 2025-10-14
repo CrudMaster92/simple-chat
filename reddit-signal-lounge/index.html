@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reddit Signal Lounge</title>
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="background-texture" aria-hidden="true"></div>
+    <div class="app-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <div class="hero-pill">Curated Reddit intelligence</div>
+          <h1>Reddit Signal Lounge</h1>
+          <p>
+            Surface meaningful conversations from across the Reddit universe. Tune
+            the dashboard to spotlight momentum, engagement, and creative sparks
+            from the communities you care about.
+          </p>
+        </div>
+        <div class="hero-controls" role="search">
+          <label class="field" for="search">
+            <span class="field-label">Search communities or headlines</span>
+            <input
+              id="search"
+              type="search"
+              placeholder="Try r/Futurology, AI tools, cozy gaming..."
+              autocomplete="off"
+            />
+          </label>
+          <div class="control-cluster">
+            <span class="cluster-label">Sort by signal</span>
+            <div class="segment" role="radiogroup" aria-label="Sort posts">
+              <button class="segment-btn is-active" data-sort="momentum">
+                Momentum
+              </button>
+              <button class="segment-btn" data-sort="engagement">Reach</button>
+              <button class="segment-btn" data-sort="conversation">
+                Debate
+              </button>
+              <button class="segment-btn" data-sort="fresh">New</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="layout" aria-live="polite">
+        <section class="sidebar" aria-label="Signal summary">
+          <div class="signal-board">
+            <h2>Signal Board</h2>
+            <div class="metric-grid" id="metric-grid"></div>
+            <div class="trend-strip" id="trend-strip" aria-live="polite"></div>
+          </div>
+
+          <div class="category-panel">
+            <div class="panel-header">
+              <h3>Focus Streams</h3>
+              <button class="reset-btn" id="reset-filters" type="button">
+                Reset
+              </button>
+            </div>
+            <p>
+              Toggle one or more themes to see how different pockets of Reddit are
+              pulsing right now.
+            </p>
+            <div class="chip-grid" id="category-chips"></div>
+          </div>
+
+          <div class="radar-panel" aria-live="polite">
+            <h3>Conversation Radar</h3>
+            <dl class="radar-list" id="radar-list"></dl>
+          </div>
+        </section>
+
+        <section class="content" aria-label="Highlighted posts">
+          <div class="feed-intro">
+            <h2>Spotlight Threads</h2>
+            <p id="feed-summary">
+              Dial in your filters to highlight the mix of ideas worth sharing
+              next.
+            </p>
+          </div>
+          <div class="feed" id="post-feed"></div>
+        </section>
+
+        <section class="insight-lab" aria-label="Idea generation lab">
+          <div class="lab-header">
+            <h2>Remix Lab</h2>
+            <button id="idea-button" type="button">Generate Remix Idea</button>
+          </div>
+          <div class="idea-output" id="idea-output">
+            Tap the button to spin up a collaboration idea inspired by the current
+            signals.
+          </div>
+          <div class="playbook">
+            <h3>Playbook Prompts</h3>
+            <ul id="prompt-list" class="prompt-list"></ul>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
