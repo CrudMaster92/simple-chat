@@ -1,0 +1,12 @@
+{
+  "slug": "everseam-world-forge",
+  "name": "Everseam World Forge",
+  "description": "Dial in tectonics, climate, and rainfall to mint a fresh procedural world in seconds.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-05-09",
+  "tags": ["simulation", "generative", "worldbuilding"],
+  "author": "Everseam Cartography Collective",
+  "permissions": []
+}

@@ -1,0 +1,23 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Everseam World Forge Icon</title>
+  <desc id="desc">A stylized globe with layered continents and rivers.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f4c5c" />
+      <stop offset="100%" stop-color="#155d6e" />
+    </linearGradient>
+    <linearGradient id="continent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4b942" />
+      <stop offset="100%" stop-color="#d97904" />
+    </linearGradient>
+    <linearGradient id="forest" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3d9b7c" />
+      <stop offset="100%" stop-color="#7dbb5e" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="54" fill="url(#bg)" />
+  <path d="M25 50c18-22 52-28 70-10 14 14 10 34-6 46-14 11-38 16-55 4-16-12-21-30-9-40z" fill="url(#continent)" opacity="0.92" />
+  <path d="M35 63c11-12 33-15 46-5 9 7 6 19-4 26-9 7-24 10-35 2s-14-20-7-23z" fill="url(#forest)" opacity="0.9" />
+  <path d="M40 40c18 14 38 12 52 28" fill="none" stroke="#f4f5f6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.55" />
+  <path d="M32 72c15 10 32 10 49 23" fill="none" stroke="#8dd2e0" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" />
+</svg>
