@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Retro Chat Hub</title>
+    <title>Dialogue Studio</title>
     <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -11,10 +11,10 @@
     <main class="retro-chat" data-provider="openai">
       <header class="retro-chat__header">
         <div class="retro-chat__identity">
-          <img src="./assets/icon.svg" alt="Retro Chat Hub icon" class="retro-chat__icon" />
+          <img src="./assets/icon.svg" alt="Dialogue Studio icon" class="retro-chat__icon" />
           <div>
-            <h1 class="retro-chat__title">Retro Chat Hub</h1>
-            <p class="retro-chat__subtitle">A pixel-flair studio for your favorite AI copilots.</p>
+            <h1 class="retro-chat__title">Dialogue Studio</h1>
+            <p class="retro-chat__subtitle">A focused workspace for thoughtful conversations with your models.</p>
           </div>
         </div>
         <p class="retro-chat__status" id="connectionStatus" role="status" aria-live="polite">Offline – add an API key to sync models.</p>
@@ -59,8 +59,23 @@
                 <span class="provider-field__label">Temperature</span>
                 <input type="number" id="temperatureInput" min="0" max="2" step="0.1" value="0.7" />
               </label>
+              <label class="provider-field provider-field--textarea">
+                <span class="provider-field__label">Assistant instructions</span>
+                <textarea id="systemPromptInput" rows="4" placeholder="You are a precise, kind assistant. Provide clear, grounded answers."></textarea>
+                <span class="provider-field__hint">Saved per provider. Leave blank for the default helper voice.</span>
+              </label>
             </div>
           </div>
+
+          <aside class="insights-panel" aria-label="Session insights">
+            <div class="insights-panel__header">
+              <h2>Session insights</h2>
+              <button id="renameChatButton" class="pixel-button pixel-button--ghost">Rename</button>
+            </div>
+            <ul class="insights-panel__stats" id="insightStats"></ul>
+            <div class="insights-panel__summary" id="insightSummary">Start chatting to see highlights and recaps.</div>
+            <div class="insights-panel__footer" id="insightFooter"></div>
+          </aside>
 
           <section class="chat-panel" aria-label="Chat timeline">
             <div class="chat-panel__header">
@@ -69,6 +84,14 @@
                 <span id="chatMeta" class="chat-panel__meta-tag">0 messages</span>
               </div>
               <div class="chat-panel__indicators" id="typingIndicator" aria-live="polite"></div>
+            </div>
+            <div class="chat-panel__toolbar">
+              <div class="chat-panel__toolbar-group">
+                <button id="summarizeChatButton" class="pixel-button">Summarize</button>
+                <button id="copyTranscriptButton" class="pixel-button">Copy transcript</button>
+                <button id="resetContextButton" class="pixel-button">Reset context</button>
+              </div>
+              <span class="chat-panel__toolbar-status" id="summaryStatus" aria-live="polite"></span>
             </div>
             <div class="chat-panel__messages" id="messageList" aria-live="polite"></div>
           </section>
@@ -83,11 +106,11 @@
                 <input type="file" id="imageInput" accept="image/*" multiple />
                 <span class="pixel-button pixel-button--ghost">🖼️ Image</span>
               </label>
-              <textarea id="messageInput" rows="3" placeholder="Send a message"></textarea>
+              <textarea id="messageInput" rows="3" placeholder="Ask anything you'd like help with"></textarea>
             </div>
             <div class="composer__footer">
               <div class="composer__attachments" id="attachmentPreview" aria-live="polite"></div>
-              <button type="submit" class="pixel-button pixel-button--primary">Send</button>
+              <button type="submit" id="sendButton" class="pixel-button pixel-button--primary">Send</button>
             </div>
           </form>
         </section>
