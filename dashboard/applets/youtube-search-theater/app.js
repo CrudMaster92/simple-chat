@@ -1,4 +1,36 @@
 const API_KEY = "sk-proj-X8U3_Ax-rLUXFgUiwReW2Gc8VWW3WPxefsYJkpJJu8TgyJuf3Nt26T0xIFNJk_KPGI4";
+const STORAGE_KEY = "youtubeSearchTheater.apiKey";
+const API_KEY_INVALID_ERROR = "API_KEY_INVALID";
+const API_KEY_STATUS_LABELS = {
+  missing: "Set API key",
+  ready: "Update API key",
+  invalid: "Fix API key",
+};
+
+const storage = {
+  get(key) {
+    try {
+      return window.localStorage?.getItem(key) ?? null;
+    } catch (error) {
+      console.warn("localStorage get failed", error);
+      return null;
+    }
+  },
+  set(key, value) {
+    try {
+      window.localStorage?.setItem(key, value);
+    } catch (error) {
+      console.warn("localStorage set failed", error);
+    }
+  },
+  remove(key) {
+    try {
+      window.localStorage?.removeItem(key);
+    } catch (error) {
+      console.warn("localStorage remove failed", error);
+    }
+  },
+};
 
 const state = {
   apiKey: API_KEY,
@@ -9,6 +41,7 @@ const state = {
   prevPageToken: null,
   results: [],
   selectedVideoId: null,
+  apiKeyStatus: "unknown",
 };
 
 const elements = {
@@ -21,9 +54,20 @@ const elements = {
   navButtons: Array.from(document.querySelectorAll(".nav-button")),
   playerShell: document.querySelector("[data-player-shell]"),
   videoMeta: document.querySelector(".video-meta"),
+  apiKeyButton: document.querySelector("[data-api-key-button]"),
+  apiKeyLabel: document.querySelector("[data-api-key-label]"),
 };
 
 function init() {
+  hydrateApiKeyFromStorage();
+  updateApiKeyDisplay();
+  if (!hasLikelyValidApiKey()) {
+    setStatus(
+      elements.resultsStatus,
+      "Add your YouTube Data API key using the key button in the header before searching."
+    );
+  }
+
   elements.searchForm.addEventListener("submit", handleSearchSubmit);
   elements.orderSelect.addEventListener("change", (event) => {
     state.order = event.target.value;
@@ -38,6 +82,12 @@ function init() {
     }
   });
 
+  if (elements.apiKeyButton) {
+    elements.apiKeyButton.addEventListener("click", handleApiKeyButtonClick);
+  }
+
+  window.addEventListener("storage", handleStorageUpdate);
+
   elements.navButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const direction = button.dataset.direction;
@@ -49,6 +99,117 @@ function init() {
       }
     });
   });
+}
+
+function hydrateApiKeyFromStorage() {
+  const stored = getStoredApiKey();
+  if (stored) {
+    state.apiKey = stored;
+  }
+}
+
+function handleStorageUpdate(event) {
+  if (event.key !== STORAGE_KEY) return;
+  const nextValue = (event.newValue ?? "").trim();
+  state.apiKey = nextValue || API_KEY;
+  updateApiKeyDisplay();
+  if (!hasLikelyValidApiKey()) {
+    setStatus(
+      elements.resultsStatus,
+      "Add your YouTube Data API key using the key button in the header before searching."
+    );
+    return;
+  }
+  if (state.query) {
+    performSearch();
+  }
+}
+
+function handleApiKeyButtonClick() {
+  const existing = getStoredApiKey();
+  const promptSeed = existing || (hasLikelyValidApiKey() ? state.apiKey : "");
+  const input = window.prompt("Enter your YouTube Data API key:", promptSeed || "");
+  if (input === null) {
+    return;
+  }
+
+  const trimmed = input.trim();
+  if (!trimmed) {
+    clearStoredApiKey();
+    state.apiKey = API_KEY;
+    updateApiKeyDisplay();
+    setStatus(
+      elements.resultsStatus,
+      "Add your YouTube Data API key using the key button in the header before searching."
+    );
+    return;
+  }
+
+  if (isLikelyPlaceholderKey(trimmed)) {
+    clearStoredApiKey();
+    state.apiKey = trimmed;
+    updateApiKeyDisplay("missing");
+    setStatus(
+      elements.resultsStatus,
+      "That key looks like a placeholder. Paste your actual YouTube Data API key to search."
+    );
+    return;
+  }
+
+  setStoredApiKey(trimmed);
+  state.apiKey = trimmed;
+  updateApiKeyDisplay("ready");
+
+  if (state.query) {
+    performSearch();
+  } else {
+    setStatus(elements.resultsStatus, "API key saved. Search for something to get started.");
+  }
+}
+
+function getStoredApiKey() {
+  const stored = storage.get(STORAGE_KEY);
+  if (!stored) return null;
+  const trimmed = stored.trim();
+  return trimmed || null;
+}
+
+function setStoredApiKey(value) {
+  storage.set(STORAGE_KEY, value);
+}
+
+function clearStoredApiKey() {
+  storage.remove(STORAGE_KEY);
+}
+
+function hasLikelyValidApiKey() {
+  return !isLikelyPlaceholderKey(state.apiKey);
+}
+
+function isLikelyPlaceholderKey(key) {
+  if (!key) return true;
+  const trimmed = String(key).trim();
+  if (!trimmed) return true;
+  if (API_KEY.startsWith("sk-") && trimmed.startsWith("sk-")) {
+    return true;
+  }
+  if (API_KEY.startsWith("sk-") && trimmed === API_KEY) {
+    return true;
+  }
+  return false;
+}
+
+function updateApiKeyDisplay(statusOverride) {
+  const status = statusOverride ?? (hasLikelyValidApiKey() ? "ready" : "missing");
+  state.apiKeyStatus = status;
+  if (elements.apiKeyButton) {
+    elements.apiKeyButton.dataset.keyState = status;
+    const label = API_KEY_STATUS_LABELS[status] ?? API_KEY_STATUS_LABELS.ready;
+    elements.apiKeyButton.title = `${label} for YouTube requests`;
+    if (elements.apiKeyLabel) {
+      elements.apiKeyLabel.textContent = label;
+    }
+  }
 }
 
 function handleSearchSubmit(event) {
@@ -64,6 +225,16 @@ function handleSearchSubmit(event) {
 }
 
 async function performSearch({ pageToken = "", isPageChange = false } = {}) {
+  if (!hasLikelyValidApiKey()) {
+    updateApiKeyDisplay("missing");
+    toggleNavButtons(false);
+    setStatus(
+      elements.resultsStatus,
+      "Add your YouTube Data API key using the key button in the header before searching."
+    );
+    return;
+  }
+
   try {
     setStatus(elements.resultsStatus, "Searching YouTube…");
     toggleNavButtons(true);
@@ -87,20 +258,25 @@ async function performSearch({ pageToken = "", isPageChange = false } = {}) {
     }
 
     const endpoint = `https://www.googleapis.com/youtube/v3/search?${params.toString()}`;
-    const response = await fetch(endpoint);
-    if (!response.ok) {
-      throw new Error(`Search request failed: ${response.status}`);
+    const { ok, status, data } = await requestJson(endpoint);
+    if (!ok) {
+      if (isInvalidApiKeyResponse(data)) {
+        handleInvalidApiKeyResponse({ clearResults: !isPageChange });
+        return;
+      }
+      throw new Error(`Search request failed: ${status}`);
     }
 
-    const data = await response.json();
-    const videos = data.items || [];
+    const payload = data ?? {};
+    const videos = payload.items ?? [];
+    state.nextPageToken = payload.nextPageToken ?? null;
+    state.prevPageToken = payload.prevPageToken ?? null;
 
     if (!videos.length) {
       state.results = [];
       renderResults();
-      state.nextPageToken = null;
-      state.prevPageToken = null;
       toggleNavButtons(false);
+      updateApiKeyDisplay("ready");
       setStatus(elements.resultsStatus, "No videos found. Try another phrase or loosen filters.");
       return;
     }
@@ -109,7 +285,16 @@ async function performSearch({ pageToken = "", isPageChange = false } = {}) {
       .map((item) => item.id && item.id.videoId)
       .filter(Boolean);
 
-    const details = await fetchVideoDetails(ids);
+    let details;
+    try {
+      details = await fetchVideoDetails(ids);
+    } catch (error) {
+      if (error?.message === API_KEY_INVALID_ERROR) {
+        handleInvalidApiKeyResponse({ clearResults: !isPageChange });
+        return;
+      }
+      throw error;
+    }
 
     state.results = videos.map((item) => {
       const videoId = item.id.videoId;
@@ -125,19 +310,38 @@ async function performSearch({ pageToken = "", isPageChange = false } = {}) {
       };
     });
 
-    state.nextPageToken = data.nextPageToken ?? null;
-    state.prevPageToken = data.prevPageToken ?? null;
-
     renderResults();
+    updateApiKeyDisplay("ready");
     setStatus(elements.resultsStatus, `Showing ${state.results.length} videos for “${state.query}”.`);
     toggleNavButtons(false);
   } catch (error) {
+    if (error?.message === API_KEY_INVALID_ERROR) {
+      handleInvalidApiKeyResponse({ clearResults: !isPageChange });
+      return;
+    }
     console.error(error);
     state.nextPageToken = null;
     state.prevPageToken = null;
     setStatus(elements.resultsStatus, "We couldn't reach YouTube right now. Try again in a moment.");
     toggleNavButtons(false);
   }
+}
+
+function handleInvalidApiKeyResponse({ clearResults = false } = {}) {
+  updateApiKeyDisplay("invalid");
+  state.nextPageToken = null;
+  state.prevPageToken = null;
+  toggleNavButtons(false);
+  if (clearResults) {
+    state.results = [];
+    renderResults();
+    state.selectedVideoId = null;
+    clearPlayer();
+  }
+  setStatus(
+    elements.resultsStatus,
+    "The API key was rejected. Update it using the key button in the header."
+  );
 }
 
 async function fetchVideoDetails(ids) {
@@ -149,18 +353,54 @@ async function fetchVideoDetails(ids) {
     id: ids.join(","),
   });
   const endpoint = `https://www.googleapis.com/youtube/v3/videos?${params.toString()}`;
-  const response = await fetch(endpoint);
-  if (!response.ok) {
+  const { ok, data } = await requestJson(endpoint);
+  if (!ok) {
+    if (isInvalidApiKeyResponse(data)) {
+      throw new Error(API_KEY_INVALID_ERROR);
+    }
     return results;
   }
-  const data = await response.json();
-  (data.items || []).forEach((item) => {
+
+  (data?.items ?? []).forEach((item) => {
     results.set(item.id, {
       statistics: item.statistics || null,
       contentDetails: item.contentDetails || null,
     });
   });
   return results;
+}
+
+async function requestJson(url) {
+  const response = await fetch(url);
+  let payload = null;
+  try {
+    payload = await response.json();
+  } catch (error) {
+    payload = null;
+  }
+  return { ok: response.ok, status: response.status, data: payload };
+}
+
+function isInvalidApiKeyResponse(payload) {
+  if (!payload || typeof payload !== "object") return false;
+  const error = payload.error;
+  if (!error) return false;
+  const message = typeof error.message === "string" ? error.message.toLowerCase() : "";
+  if (message.includes("api key not valid")) {
+    return true;
+  }
+  const errors = Array.isArray(error.errors) ? error.errors : [];
+  if (
+    errors.some((entry) => {
+      const reason = typeof entry.reason === "string" ? entry.reason.toLowerCase() : "";
+      const msg = typeof entry.message === "string" ? entry.message.toLowerCase() : "";
+      return reason.includes("api_key") || msg.includes("api key not valid");
+    })
+  ) {
+    return true;
+  }
+  const details = Array.isArray(error.details) ? error.details : [];
+  return details.some((entry) => entry?.reason === "API_KEY_INVALID");
 }
 
 function selectBestThumbnail(thumbnails = {}) {
