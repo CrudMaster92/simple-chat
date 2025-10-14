@@ -614,6 +614,15 @@ body {
   z-index: 40;
 }
 
+.import-drawer[aria-hidden="true"] {
+  display: none;
+}
+
+.import-drawer[aria-hidden="false"] {
+  display: grid;
+  visibility: visible;
+}
+
 .drawer-panel {
   background: #ffffff;
   box-shadow: -24px 0 50px rgba(20, 48, 46, 0.24);
