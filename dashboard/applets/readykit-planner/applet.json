@@ -1,0 +1,11 @@
+{
+  "slug": "readykit-planner",
+  "name": "ReadyKit Planner",
+  "description": "Tailor emergency go-bags to your household, track packing progress, and surface hazard-specific action plans.",
+  "entry": "./index.html",
+  "version": "0.1.0",
+  "lastUpdated": "2024-07-09",
+  "tags": ["preparedness", "planner", "household"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
