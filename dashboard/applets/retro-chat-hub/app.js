@@ -13,13 +13,21 @@
     embeddings: ['text-embedding-004'],
   };
 
+  const DEFAULT_ASSISTANT_PROMPT =
+    'You are a calm, capable AI assistant. Provide clear, factual, and friendly answers without referencing retro themes unless the user explicitly asks.';
+
   const state = {
     provider: 'openai',
     chats: [],
     activeChatId: null,
     rememberKeys: false,
     composerAttachments: [],
-    typingTimer: null,
+    pendingReply: false,
+    isSummarizing: false,
+    systemPrompts: {
+      openai: DEFAULT_ASSISTANT_PROMPT,
+      gemini: DEFAULT_ASSISTANT_PROMPT,
+    },
     voice: {
       recognition: null,
       listening: false,
@@ -38,50 +46,7 @@
     },
   };
 
-  const STOPWORDS = new Set([
-    'that',
-    'with',
-    'have',
-    'about',
-    'your',
-    'from',
-    'there',
-    'their',
-    'would',
-    'could',
-    'should',
-    'just',
-    'really',
-    'this',
-    'then',
-    'into',
-    'been',
-    'were',
-    'will',
-    'what',
-    'when',
-    'where',
-    'which',
-    'while',
-    'after',
-    'before',
-    'because',
-    'again',
-    'once',
-    'even',
-    'also',
-    'like',
-    'thing',
-    'maybe',
-    'some',
-    'more',
-    'take',
-    'make',
-    'going',
-    'want',
-    'need',
-    'much',
-  ]);
+  let summaryStatusTimer = 0;
 
   const elements = {};
 
@@ -108,17 +73,27 @@
     elements.modelStatus = document.getElementById('modelStatus');
     elements.modelSelect = document.getElementById('modelSelect');
     elements.temperatureInput = document.getElementById('temperatureInput');
+    elements.systemPromptInput = document.getElementById('systemPromptInput');
     elements.connectionStatus = document.getElementById('connectionStatus');
     elements.activeChatTitle = document.getElementById('activeChatTitle');
     elements.chatMeta = document.getElementById('chatMeta');
     elements.typingIndicator = document.getElementById('typingIndicator');
+    elements.summaryStatus = document.getElementById('summaryStatus');
     elements.messageList = document.getElementById('messageList');
     elements.composer = document.getElementById('composer');
     elements.messageInput = document.getElementById('messageInput');
+    elements.sendButton = document.getElementById('sendButton');
     elements.imageInput = document.getElementById('imageInput');
     elements.attachmentPreview = document.getElementById('attachmentPreview');
     elements.voiceButton = document.getElementById('voiceButton');
     elements.voiceStatus = document.getElementById('voiceStatus');
+    elements.summarizeButton = document.getElementById('summarizeChatButton');
+    elements.copyTranscriptButton = document.getElementById('copyTranscriptButton');
+    elements.resetContextButton = document.getElementById('resetContextButton');
+    elements.renameChatButton = document.getElementById('renameChatButton');
+    elements.insightStats = document.getElementById('insightStats');
+    elements.insightSummary = document.getElementById('insightSummary');
+    elements.insightFooter = document.getElementById('insightFooter');
   }
 
   function wireEvents() {
@@ -184,10 +159,34 @@
       elements.temperatureInput.value = clamped.toFixed(1);
     });
 
+    if (elements.systemPromptInput) {
+      elements.systemPromptInput.addEventListener('input', (event) => {
+        const value = event.target.value;
+        state.systemPrompts[state.provider] = value;
+      });
+      elements.systemPromptInput.addEventListener('blur', () => {
+        persistSettings();
+      });
+    }
+
     elements.composer.addEventListener('submit', onSendMessage);
     elements.imageInput.addEventListener('change', onAttachmentsSelected);
 
     elements.voiceButton.addEventListener('click', toggleVoiceInput);
+    elements.messageList.addEventListener('click', handleMessageListClick);
+
+    if (elements.summarizeButton) {
+      elements.summarizeButton.addEventListener('click', summarizeChat);
+    }
+    if (elements.copyTranscriptButton) {
+      elements.copyTranscriptButton.addEventListener('click', copyTranscript);
+    }
+    if (elements.resetContextButton) {
+      elements.resetContextButton.addEventListener('click', resetContext);
+    }
+    if (elements.renameChatButton) {
+      elements.renameChatButton.addEventListener('click', renameActiveChat);
+    }
   }
 
   function ensureChatExists() {
@@ -237,6 +236,12 @@
         if (savedSettings.geminiSelectedModel) {
           state.gemini.selectedModel = savedSettings.geminiSelectedModel;
         }
+        if (typeof savedSettings.openaiSystemPrompt === 'string') {
+          state.systemPrompts.openai = savedSettings.openaiSystemPrompt || '';
+        }
+        if (typeof savedSettings.geminiSystemPrompt === 'string') {
+          state.systemPrompts.gemini = savedSettings.geminiSystemPrompt || '';
+        }
       }
     } catch (error) {
       console.error('Failed to load settings', error);
@@ -265,6 +270,8 @@
       rememberKeys: state.rememberKeys,
       openaiSelectedModel: state.openai.selectedModel,
       geminiSelectedModel: state.gemini.selectedModel,
+      openaiSystemPrompt: state.systemPrompts.openai,
+      geminiSystemPrompt: state.systemPrompts.gemini,
     };
     if (state.rememberKeys) {
       payload.openaiKey = state.openai.key;
@@ -288,6 +295,7 @@
       elements.apiKeyInput.value = state.gemini.key;
     }
 
+    updateSystemPromptField();
     renderProviderTabs();
     renderModelSelect();
     renderChatList();
@@ -301,6 +309,12 @@
       tab.setAttribute('aria-selected', String(isActive));
     });
     elements.main.dataset.provider = state.provider;
+  }
+
+  function updateSystemPromptField() {
+    if (!elements.systemPromptInput) return;
+    const stored = state.systemPrompts[state.provider];
+    elements.systemPromptInput.value = stored || '';
   }
 
   function renderModelSelect() {
@@ -365,6 +379,7 @@
       elements.activeChatTitle.textContent = 'Untitled session';
       elements.chatMeta.textContent = '0 messages';
       elements.messageList.innerHTML = '';
+      renderSessionInsights(null);
       return;
     }
 
@@ -376,15 +391,17 @@
     chat.messages.forEach((message) => {
       const bubble = document.createElement('article');
       bubble.className = 'message' + (message.role === 'assistant' ? ' message--assistant' : '');
+      bubble.dataset.messageId = message.id;
+      bubble.dataset.role = message.role;
 
       const role = document.createElement('p');
       role.className = 'message__role';
       role.textContent = `${message.role.toUpperCase()} · ${message.model || state.provider}`;
       bubble.append(role);
 
-      const body = document.createElement('p');
+      const body = document.createElement('div');
       body.className = 'message__body';
-      body.textContent = message.content;
+      renderMessageBody(body, message.content || '');
       bubble.append(body);
 
       if (message.attachments?.length) {
@@ -399,8 +416,17 @@
         bubble.append(attachments);
       }
 
+      const actions = document.createElement('div');
+      actions.className = 'message__actions';
+      actions.append(createMessageAction('Copy', 'copy'));
+      actions.append(createMessageAction('Quote', 'quote'));
+      actions.append(createMessageAction('Delete', 'delete'));
+      bubble.append(actions);
+
       elements.messageList.append(bubble);
     });
+
+    renderSessionInsights(chat);
 
   }
 
@@ -410,6 +436,7 @@
     renderProviderTabs();
     renderModelSelect();
     elements.apiKeyInput.value = provider === 'openai' ? state.openai.key : state.gemini.key;
+    updateSystemPromptField();
     updateConnectionStatus();
   }
 
@@ -450,13 +477,23 @@
     });
   }
 
-  function onSendMessage(event) {
+  async function onSendMessage(event) {
     event.preventDefault();
     const text = elements.messageInput.value.trim();
     if (!text && !state.composerAttachments.length) {
       return;
     }
-    const chat = state.chats.find((entry) => entry.id === state.activeChatId);
+    if (state.pendingReply) {
+      setTypingIndicator('Hold on—finishing the previous response.');
+      return;
+    }
+
+    const providerForSend = state.provider;
+    if (!requireProviderKey(providerForSend)) {
+      return;
+    }
+
+    const chat = getActiveChat();
     if (!chat) return;
 
     const messageContent = text || (state.composerAttachments.length ? '[Image attachments]' : '');
@@ -466,13 +503,13 @@
       role: 'user',
       content: messageContent,
       createdAt: new Date().toISOString(),
-      model: `${state.provider}:${getSelectedModel()}`,
+      model: `${providerForSend}:${getSelectedModel()}`,
       attachments: state.composerAttachments.slice(),
     };
 
     chat.messages.push(userMessage);
     chat.updatedAt = userMessage.createdAt;
-    if (!chat.title || chat.title === 'New retro chat') {
+    if (!chat.title || chat.title === 'New conversation') {
       chat.title = createTitleFromMessage(text) || chat.title;
     }
     playChime('send');
@@ -482,32 +519,94 @@
     renderAttachments();
     persistChats();
     renderActiveChat();
+    scrollMessagesToEnd();
     updateChatMeta(chat);
 
-    simulateAssistantResponse(chat, userMessage);
+    try {
+      setComposerBusy(true);
+      await requestAssistantResponse(chat, userMessage);
+    } finally {
+      setComposerBusy(false);
+    }
   }
 
-  function simulateAssistantResponse(chat, userMessage) {
-    const providerLabel = userMessage.model?.startsWith('gemini') ? 'Gemini' : 'OpenAI';
-    elements.typingIndicator.textContent = `Synthesizing via ${providerLabel}…`;
-    if (state.typingTimer) {
-      clearTimeout(state.typingTimer);
+  function getActiveChat() {
+    return state.chats.find((entry) => entry.id === state.activeChatId) || null;
+  }
+
+  function requireProviderKey(provider) {
+    const key = getKeyForProvider(provider);
+    if (key) return true;
+    const label = provider === 'gemini' ? 'Gemini' : 'OpenAI';
+    alert(`Add your ${label} API key in the provider panel to continue.`);
+    if (elements.apiKeyInput) {
+      elements.apiKeyInput.focus();
+    }
+    return false;
+  }
+
+  function setComposerBusy(isBusy) {
+    state.pendingReply = isBusy;
+    if (elements.sendButton) {
+      elements.sendButton.disabled = isBusy;
+      elements.sendButton.textContent = isBusy ? 'Sending…' : 'Send';
+    }
+  }
+
+  function setTypingIndicator(message) {
+    if (elements.typingIndicator) {
+      elements.typingIndicator.textContent = message || '';
+    }
+  }
+
+  function setSummaryStatus(message) {
+    if (!elements.summaryStatus) return;
+    elements.summaryStatus.textContent = message || '';
+    if (summaryStatusTimer) {
+      clearTimeout(summaryStatusTimer);
+      summaryStatusTimer = 0;
+    }
+    if (message) {
+      summaryStatusTimer = window.setTimeout(() => {
+        if (elements.summaryStatus.textContent === message) {
+          elements.summaryStatus.textContent = '';
+        }
+      }, 4000);
+    }
+  }
+
+  async function requestAssistantResponse(chat, userMessage) {
+    const [providerKey, modelId] = (userMessage.model || `${state.provider}:${getSelectedModel()}`).split(':');
+    const provider = providerKey === 'gemini' ? 'gemini' : 'openai';
+    const key = getKeyForProvider(provider);
+    if (!key) {
+      setTypingIndicator(`Add a ${provider === 'gemini' ? 'Gemini' : 'OpenAI'} key to continue.`);
+      return;
     }
 
-    const responseDelay = 800 + Math.random() * 1200;
-    state.typingTimer = setTimeout(() => {
-      const [providerKey, modelId] = (userMessage.model || `${state.provider}:${getSelectedModel()}`).split(':');
-      const providerName = providerKey === 'openai' ? 'OpenAI' : 'Gemini';
-      const model = modelId || getSelectedModel();
-      const temperature = parseFloat(elements.temperatureInput.value) || 0.7;
-      const reply = composeAssistantReply({ chat, providerName, model, userMessage, temperature });
+    const activeModel = modelId || (provider === 'gemini' ? state.gemini.selectedModel : state.openai.selectedModel);
+    const temperature = clamp(parseFloat(elements.temperatureInput.value), 0, 2, 0.7);
+    const systemPrompt = getSystemPrompt(provider);
 
+    setTypingIndicator(`Contacting ${provider === 'gemini' ? 'Gemini' : 'OpenAI'}…`);
+
+    try {
+      let content = '';
+      if (provider === 'openai') {
+        const messages = prepareOpenAIMessages(chat, systemPrompt);
+        content = await callOpenAIChat({ key, model: activeModel, messages, temperature });
+      } else {
+        const payload = prepareGeminiPayload(chat, systemPrompt);
+        content = await callGeminiChat({ key, model: activeModel, payload, temperature });
+      }
+
+      const finalContent = (content || '').trim() || 'I’m ready for the next step whenever you are.';
       const assistantMessage = {
         id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + 1),
         role: 'assistant',
-        content: reply,
+        content: finalContent,
         createdAt: new Date().toISOString(),
-        model: `${providerKey}:${model}`,
+        model: `${provider}:${activeModel}`,
         attachments: [],
       };
       chat.messages.push(assistantMessage);
@@ -515,111 +614,402 @@
       persistChats();
       if (state.activeChatId === chat.id) {
         renderActiveChat();
-        elements.typingIndicator.textContent = '';
-        if (elements.messageList.lastElementChild) {
-          elements.messageList.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
+        scrollMessagesToEnd();
       }
       updateChatMeta(chat);
       playChime('receive');
-      state.typingTimer = null;
-    }, responseDelay);
+      setTypingIndicator('');
+    } catch (error) {
+      console.error('Assistant response failed', error);
+      const message = error.message || 'Unable to reach the model.';
+      const assistantMessage = {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + 2),
+        role: 'assistant',
+        content: `⚠️ ${message}`,
+        createdAt: new Date().toISOString(),
+        model: `${provider}:${modelId || activeModel}`,
+        attachments: [],
+        isError: true,
+      };
+      chat.messages.push(assistantMessage);
+      chat.updatedAt = assistantMessage.createdAt;
+      persistChats();
+      if (state.activeChatId === chat.id) {
+        renderActiveChat();
+      }
+      updateChatMeta(chat);
+      setTypingIndicator(message);
+    }
   }
 
-  function composeAssistantReply({ chat, providerName, model, userMessage, temperature }) {
-    const text = (userMessage.content || '').trim();
-    const intro = `(${providerName} · ${model} · temp ${temperature.toFixed(1)})`;
-
-    if (!text) {
-      return `${intro} I'm tuned in and ready whenever you want to share something.`;
+  async function callOpenAIChat({ key, model, messages, temperature }) {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature,
+      }),
+    });
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(extractErrorMessage(text, response.statusText || 'Request failed.'));
     }
-
-    const lower = text.toLowerCase();
-    const greetingPattern = /\b(hi|hello|hey|hola|howdy)\b/;
-
-    if (greetingPattern.test(lower)) {
-      return `${intro} Hey there! I'm feeling extra neon tonight—what would you like to dive into?`;
+    const payload = safeJsonParse(text);
+    if (!payload || !payload.choices || !payload.choices.length) {
+      throw new Error('Unexpected response from OpenAI.');
     }
-
-    if (lower.includes('thank')) {
-      return `${intro} Anytime! I'm glad the hub could help. What should we explore next?`;
-    }
-
-    if (lower.includes('how are you')) {
-      return `${intro} Running smooth and full of synth energy! How are things on your side?`;
-    }
-
-    const acknowledgement = pickRandom([
-      'Got it.',
-      'Understood.',
-      'I hear you.',
-      'Sounds good.',
-    ]);
-
-    const topic = extractTopic(text);
-    const summaryLine = topic
-      ? `${acknowledgement} It sounds like you're focusing on ${topic}.`
-      : `${acknowledgement} I’m following along with what you’re saying.`;
-
-    const previousUser = chat.messages
-      .filter((message) => message.role === 'user')
-      .slice(-2, -1)[0];
-
-    const contextLine = previousUser
-      ? `Thanks for building on your earlier point about "${truncate(previousUser.content, 60)}".`
-      : '';
-
-    const questionLike = /\?|\b(what|how|why|where|when|who|which|could|would|should)\b/.test(lower);
-
-    const guidanceLine = questionLike
-      ? pickRandom([
-          'One quick approach is to outline the goal, list the constraints, and tackle each piece step-by-step.',
-          'You might compare a couple of options side-by-side, jot down pros and cons, and follow the path that fits best.',
-          'Try sketching the outcome you want first—then work backward to the actions that get you there.',
-        ])
-      : pickRandom([
-          'If you’d like ideas, examples, or a plan, just say the word and we can spin one up.',
-          'Happy to brainstorm or break things down further whenever you’re ready.',
-          'Let me know if you want resources, bullet points, or a quick summary to keep things moving.',
-        ]);
-
-    const closing = pickRandom([
-      'What should we dig into next?',
-      'How can I support you further?',
-      'Ready when you are for the next detail.',
-    ]);
-
-    return [intro, summaryLine, contextLine, guidanceLine, closing]
-      .filter(Boolean)
-      .join(' ');
+    const content = payload.choices[0]?.message?.content || '';
+    return content.trim();
   }
 
-  function extractTopic(text) {
-    return text
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, ' ')
-      .split(/\s+/)
-      .filter(Boolean)
-      .filter((word) => word.length > 3 && !STOPWORDS.has(word))
-      .slice(0, 3)
-      .join(' ');
+  async function callGeminiChat({ key, model, payload, temperature }) {
+    const body = {
+      ...payload,
+      generationConfig: Object.assign({ temperature }, payload.generationConfig || {}),
+    };
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      }
+    );
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(extractErrorMessage(text, response.statusText || 'Request failed.'));
+    }
+    const data = safeJsonParse(text);
+    if (data?.error?.message) {
+      throw new Error(data.error.message);
+    }
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const content = parts
+      .map((part) => part.text || '')
+      .join('');
+    return content.trim();
   }
 
-  function truncate(text, maxLength = 80) {
-    if (!text) return '';
-    return text.length > maxLength ? `${text.slice(0, maxLength)}…` : text;
+  function prepareOpenAIMessages(chat, systemPrompt, extraPrompt) {
+    const messages = [];
+    const trimmedPrompt = (systemPrompt || '').trim();
+    if (trimmedPrompt) {
+      messages.push({ role: 'system', content: trimmedPrompt });
+    }
+    chat.messages
+      .filter((message) => message.role === 'assistant' || message.role === 'user')
+      .forEach((message) => {
+        messages.push({ role: message.role, content: message.content || '' });
+      });
+    if (extraPrompt) {
+      messages.push({ role: 'user', content: extraPrompt });
+    }
+    return messages;
   }
 
-  function pickRandom(list) {
-    if (!Array.isArray(list) || list.length === 0) return '';
-    const index = Math.floor(Math.random() * list.length);
-    return list[index];
+  function prepareGeminiPayload(chat, systemPrompt, extraPrompt) {
+    const contents = chat.messages
+      .filter((message) => message.role === 'assistant' || message.role === 'user')
+      .map((message) => ({
+        role: message.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: message.content || '' }],
+      }));
+    if (extraPrompt) {
+      contents.push({ role: 'user', parts: [{ text: extraPrompt }] });
+    }
+    const trimmedPrompt = (systemPrompt || '').trim();
+    const payload = { contents };
+    if (trimmedPrompt) {
+      payload.systemInstruction = { parts: [{ text: trimmedPrompt }] };
+    }
+    return payload;
+  }
+
+  function getSystemPrompt(provider) {
+    const stored = state.systemPrompts[provider] || '';
+    const trimmed = stored.trim();
+    return trimmed || DEFAULT_ASSISTANT_PROMPT;
+  }
+
+  function renderMessageBody(container, text) {
+    container.innerHTML = '';
+    const normalized = (text || '').replace(/\r\n/g, '\n');
+    const segments = normalized.split(/\n{2,}/).filter((segment) => segment.trim().length);
+    if (!segments.length) {
+      const paragraph = document.createElement('p');
+      paragraph.className = 'message__paragraph';
+      paragraph.textContent = normalized.trim();
+      container.append(paragraph);
+      return;
+    }
+    segments.forEach((segment) => {
+      const paragraph = document.createElement('p');
+      paragraph.className = 'message__paragraph';
+      paragraph.textContent = segment.trim();
+      container.append(paragraph);
+    });
+  }
+
+  function createMessageAction(label, action) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'message__action';
+    button.dataset.action = action;
+    button.textContent = label;
+    return button;
+  }
+
+  function handleMessageListClick(event) {
+    const button = event.target.closest('.message__action');
+    if (!button) return;
+    const bubble = button.closest('[data-message-id]');
+    if (!bubble) return;
+    const chat = getActiveChat();
+    if (!chat) return;
+    const message = chat.messages.find((entry) => entry.id === bubble.dataset.messageId);
+    if (!message) return;
+
+    switch (button.dataset.action) {
+      case 'copy':
+        copyToClipboard(message.content || '')
+          .then(() => setSummaryStatus('Message copied.'))
+          .catch(() => setSummaryStatus('Clipboard copy blocked.'));
+        break;
+      case 'quote':
+        quoteMessage(message);
+        break;
+      case 'delete':
+        deleteMessageFromChat(chat, message.id);
+        break;
+      default:
+        break;
+    }
+  }
+
+  async function copyTranscript() {
+    const chat = getActiveChat();
+    if (!chat || !chat.messages.length) {
+      setSummaryStatus('Start the conversation before copying a transcript.');
+      return;
+    }
+    const transcript = chat.messages
+      .map((message) => `${message.role === 'assistant' ? 'Assistant' : 'You'}: ${message.content || ''}`)
+      .join('\n\n');
+    try {
+      await copyToClipboard(transcript);
+      setSummaryStatus('Transcript copied to clipboard.');
+    } catch (error) {
+      console.error('Copy transcript failed', error);
+      setSummaryStatus('Clipboard copy blocked.');
+    }
+  }
+
+  async function summarizeChat() {
+    if (state.isSummarizing) return;
+    const chat = getActiveChat();
+    if (!chat || !chat.messages.length) {
+      setSummaryStatus('Add a few messages before summarizing.');
+      return;
+    }
+    const provider = state.provider;
+    if (!requireProviderKey(provider)) {
+      return;
+    }
+    state.isSummarizing = true;
+    setSummaryStatus('Summarizing…');
+    const summaryPrompt =
+      'Summarize this conversation in three concise bullet points and include one suggested next step.';
+    try {
+      let summaryText = '';
+      if (provider === 'openai') {
+        const messages = prepareOpenAIMessages(chat, getSystemPrompt(provider), summaryPrompt);
+        summaryText = await callOpenAIChat({
+          key: state.openai.key,
+          model: state.openai.selectedModel,
+          messages,
+          temperature: 0.4,
+        });
+      } else {
+        const payload = prepareGeminiPayload(chat, getSystemPrompt(provider), summaryPrompt);
+        summaryText = await callGeminiChat({
+          key: state.gemini.key,
+          model: state.gemini.selectedModel,
+          payload,
+          temperature: 0.4,
+        });
+      }
+      chat.summary = summaryText.trim();
+      chat.updatedAt = new Date().toISOString();
+      persistChats();
+      renderSessionInsights(chat);
+      setSummaryStatus('Summary updated.');
+    } catch (error) {
+      console.error('Summarize failed', error);
+      setSummaryStatus(`Summary failed: ${error.message || 'Unknown error'}`);
+    } finally {
+      state.isSummarizing = false;
+    }
+  }
+
+  function resetContext() {
+    const chat = getActiveChat();
+    if (!chat) return;
+    if (!chat.messages.length) {
+      setSummaryStatus('Conversation is already empty.');
+      return;
+    }
+    if (!window.confirm('Clear all messages from this conversation?')) return;
+    chat.messages = [];
+    chat.summary = '';
+    chat.updatedAt = new Date().toISOString();
+    persistChats();
+    renderActiveChat();
+    updateChatMeta(chat);
+    setTypingIndicator('');
+    setSummaryStatus('Conversation cleared.');
+  }
+
+  function renameActiveChat() {
+    const chat = getActiveChat();
+    if (!chat) return;
+    const proposed = window.prompt('Name this chat', chat.title || 'Untitled session');
+    if (proposed === null) return;
+    const trimmed = proposed.trim();
+    if (!trimmed) return;
+    chat.title = trimmed;
+    chat.updatedAt = new Date().toISOString();
+    persistChats();
+    renderChatList();
+    renderActiveChat();
+  }
+
+  function quoteMessage(message) {
+    if (!elements.messageInput) return;
+    const snippet = (message.content || '').split('\n').map((line) => `> ${line}`).join('\n');
+    const existing = elements.messageInput.value;
+    const combined = existing ? `${snippet}\n\n${existing}` : `${snippet}\n\n`;
+    elements.messageInput.value = combined;
+    elements.messageInput.focus();
+    const length = elements.messageInput.value.length;
+    elements.messageInput.setSelectionRange(length, length);
+  }
+
+  function deleteMessageFromChat(chat, messageId) {
+    const index = chat.messages.findIndex((entry) => entry.id === messageId);
+    if (index === -1) return;
+    if (!window.confirm('Remove this message from the conversation?')) return;
+    chat.messages.splice(index, 1);
+    chat.updatedAt = new Date().toISOString();
+    persistChats();
+    renderActiveChat();
+    updateChatMeta(chat);
+  }
+
+  function renderSessionInsights(chat) {
+    if (!elements.insightStats || !elements.insightSummary) return;
+    if (!chat) {
+      elements.insightStats.innerHTML = '';
+      elements.insightSummary.textContent = 'Start chatting to see highlights and recaps.';
+      if (elements.insightFooter) {
+        elements.insightFooter.textContent = '';
+      }
+      return;
+    }
+
+    const total = chat.messages.length;
+    const assistantCount = chat.messages.filter((message) => message.role === 'assistant').length;
+    const userCount = chat.messages.filter((message) => message.role === 'user').length;
+    const lastModel =
+      chat.messages
+        .slice()
+        .reverse()
+        .find((message) => message.model)?.model || `${state.provider}:${getSelectedModel()}`;
+    const [providerKey, modelId] = lastModel.split(':');
+    const providerLabel = providerKey === 'gemini' ? 'Gemini' : 'OpenAI';
+
+    elements.insightStats.innerHTML = '';
+    [
+      { label: 'Messages', value: String(total) },
+      { label: 'You vs. assistant', value: `${userCount} : ${assistantCount}` },
+      { label: 'Latest model', value: `${providerLabel} · ${modelId || 'n/a'}` },
+    ].forEach(({ label, value }) => {
+      const item = document.createElement('li');
+      const span = document.createElement('span');
+      span.textContent = label;
+      const strong = document.createElement('strong');
+      strong.textContent = value;
+      item.append(span, strong);
+      elements.insightStats.append(item);
+    });
+
+    if (chat.summary && chat.summary.trim()) {
+      elements.insightSummary.textContent = chat.summary.trim();
+    } else {
+      elements.insightSummary.textContent = 'Use Summarize to capture the conversation so far.';
+    }
+
+    if (elements.insightFooter) {
+      const created = formatTimestamp(chat.createdAt);
+      const updated = formatTimestamp(chat.updatedAt || chat.createdAt);
+      elements.insightFooter.textContent = `Updated ${updated} • Started ${created}`;
+    }
+  }
+
+  function scrollMessagesToEnd() {
+    if (elements.messageList && elements.messageList.lastElementChild) {
+      elements.messageList.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }
+
+  async function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'absolute';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  }
+
+  function safeJsonParse(text) {
+    if (!text) return null;
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function extractErrorMessage(text, fallback) {
+    const parsed = safeJsonParse(text);
+    if (parsed?.error?.message) return parsed.error.message;
+    if (parsed?.message) return parsed.message;
+    if (typeof text === 'string' && text.trim()) {
+      return text.trim().slice(0, 280);
+    }
+    return fallback;
+  }
+
+  function getKeyForProvider(provider) {
+    return provider === 'gemini' ? state.gemini.key : state.openai.key;
   }
 
   function updateChatMeta(chat) {
     if (state.activeChatId === chat.id) {
       elements.chatMeta.textContent = `${chat.messages.length} message${chat.messages.length === 1 ? '' : 's'}`;
       elements.activeChatTitle.textContent = chat.title || 'Untitled session';
+      renderSessionInsights(chat);
     }
     renderChatList();
   }
@@ -629,6 +1019,7 @@
     renderChatList();
     renderActiveChat();
     elements.typingIndicator.textContent = '';
+    setSummaryStatus('');
   }
 
   function createChat() {
@@ -637,7 +1028,7 @@
       id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
       createdAt: now,
       updatedAt: now,
-      title: 'New retro chat',
+      title: 'New conversation',
       messages: [],
     };
     state.chats.push(chat);
@@ -645,6 +1036,7 @@
     persistChats();
     renderChatList();
     renderActiveChat();
+    setSummaryStatus('');
   }
 
   function readFileAsDataURL(file) {
