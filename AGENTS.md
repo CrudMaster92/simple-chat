@@ -1,6 +1,7 @@
 # Global Agent Guidelines
-
 - When designing or updating UI components, avoid defaulting to purple color schemes. Explore diverse palettes so each experience feels distinct.
 - Steer clear of overused "dark cosmic," "pastel neumorphism," "pastel minimal," and "cosmic glassmorphism" aesthetics so new applets feel fresh.
 - When building applets that rely on OpenAI API calls, always use the Models List endpoint (GET /v1/models or `client.models.list()` in the official SDK) to refresh the available models for the provided API key. Filter the returned models into UI-friendly buckets (chat/vision/images/audio/embeddings), cache per key, handle unauthorized keys gracefully by keeping the last known list, and surface appropriate loading and error states.
 - Do not add escape, quit, or close buttons inside applets—the dashboard now supplies the necessary controls.
+- Each new or updated applet must use a color palette that is clearly distinct from the existing applets. Avoid purple, cosmic blue, or similarly recurring schemes altogether, and document the palette choices in your commit message if you introduce a new UI.
+- Before starting a new applet, review the concepts already present in `dashboard/applets/`. Do not build another app with essentially the same mechanics (e.g., multiple Minesweeper-style clones). If a requested concept is already represented, suggest or implement a fresh twist that meaningfully differentiates it.
