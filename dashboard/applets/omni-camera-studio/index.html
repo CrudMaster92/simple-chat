@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Omni Camera Studio</title>
+    <link rel="stylesheet" href="./applet.css" />
+  </head>
+  <body>
+    <main class="studio" aria-live="polite">
+      <header class="studio__header">
+        <div class="header__title">
+          <img src="./assets/icon.svg" alt="Omni Camera Studio logo" class="header__logo" />
+          <div>
+            <h1>Omni Camera Studio</h1>
+            <p>Capture-ready toolkit built for desktop and mobile photographers.</p>
+          </div>
+        </div>
+        <div class="header__status">
+          <span id="statusBadge" class="status-badge status-badge--idle">Camera idle</span>
+          <button id="permissionButton" class="btn btn--primary">Enable Camera</button>
+        </div>
+      </header>
+
+      <section class="studio__body">
+        <div class="preview-stack">
+          <div class="preview-shell" id="previewShell">
+            <video id="liveVideo" autoplay playsinline muted></video>
+            <canvas id="captureCanvas" hidden></canvas>
+            <div id="gridOverlay" class="grid-overlay" aria-hidden="true"></div>
+            <div id="countdown" class="countdown" hidden aria-live="assertive"></div>
+            <div id="permissionNotice" class="permission-notice" role="status">
+              <h2>Waiting for camera access</h2>
+              <p>
+                Allow camera permissions in your browser to start a live preview. If you denied access, use your browser settings
+                to enable it and then press <strong>Enable Camera</strong> again.
+              </p>
+              <ul>
+                <li>Desktop: Check the address bar for the camera icon.</li>
+                <li>Mobile Safari: Go to Settings &gt; Safari &gt; Camera.</li>
+                <li>Android Chrome: Settings &gt; Site Settings &gt; Camera.</li>
+              </ul>
+            </div>
+          </div>
+          <aside class="capture-insights" aria-live="polite">
+            <h2>Shot Details</h2>
+            <dl>
+              <div>
+                <dt>Status</dt>
+                <dd id="detailStatus">Awaiting camera</dd>
+              </div>
+              <div>
+                <dt>Lens</dt>
+                <dd id="detailLens">—</dd>
+              </div>
+              <div>
+                <dt>Resolution</dt>
+                <dd id="detailResolution">—</dd>
+              </div>
+              <div>
+                <dt>Scene Profile</dt>
+                <dd id="detailScene">Natural</dd>
+              </div>
+              <div>
+                <dt>Last Capture</dt>
+                <dd id="detailLastCapture">No photos yet</dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
+
+        <div class="control-grid">
+          <section class="control-panel" aria-label="Primary camera controls">
+            <div class="control-panel__row">
+              <label class="field">
+                <span class="field__label">Camera source</span>
+                <select id="cameraSelect" class="field__input"></select>
+              </label>
+              <label class="field">
+                <span class="field__label">Timer</span>
+                <select id="timerSelect" class="field__input">
+                  <option value="0">Off</option>
+                  <option value="3">3s</option>
+                  <option value="10">10s</option>
+                </select>
+              </label>
+              <label class="field">
+                <span class="field__label">Scene</span>
+                <select id="sceneSelect" class="field__input">
+                  <option value="natural">Natural Balance</option>
+                  <option value="vivid">Vivid Pop</option>
+                  <option value="mono">Monochrome</option>
+                  <option value="nocturne">Nocturne</option>
+                </select>
+              </label>
+            </div>
+            <div class="control-panel__row control-panel__row--buttons">
+              <button id="flipButton" class="btn" type="button">Switch Lens</button>
+              <button id="mirrorButton" class="btn" type="button">Mirror</button>
+              <button id="gridButton" class="btn" type="button">Grid</button>
+              <button id="captureButton" class="btn btn--accent" type="button">Capture</button>
+              <button id="retakeButton" class="btn" type="button" disabled>Retake</button>
+              <button id="downloadButton" class="btn" type="button" disabled>Download</button>
+            </div>
+          </section>
+
+          <section class="control-panel" aria-label="Creative adjustments">
+            <div class="control-panel__row">
+              <label class="field">
+                <span class="field__label">Exposure</span>
+                <input id="exposureSlider" class="field__input" type="range" min="0.6" max="1.4" step="0.05" value="1" />
+              </label>
+              <label class="field">
+                <span class="field__label">Vibrance</span>
+                <input id="vibranceSlider" class="field__input" type="range" min="0.8" max="1.6" step="0.05" value="1.1" />
+              </label>
+              <label class="field">
+                <span class="field__label">Warmth</span>
+                <input id="warmthSlider" class="field__input" type="range" min="-30" max="30" step="5" value="0" />
+              </label>
+              <label class="field">
+                <span class="field__label">Sharpness</span>
+                <input id="sharpnessSlider" class="field__input" type="range" min="0" max="1" step="0.1" value="0.2" />
+              </label>
+            </div>
+            <p class="panel-hint">
+              Adjustments apply live to the preview and are baked into captured photos. Scene profiles set a baseline that you can fine-tune here.
+            </p>
+          </section>
+
+          <section class="gallery-panel" aria-label="Session gallery">
+            <header class="gallery-panel__header">
+              <h2>Session Gallery</h2>
+              <button id="clearGalleryButton" class="btn btn--ghost" type="button">Clear All</button>
+            </header>
+            <div id="gallery" class="gallery" role="list"></div>
+            <p class="panel-hint">
+              Thumbnails are stored locally for this session only. Download shots you love to keep them.
+            </p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./applet.js"></script>
+  </body>
+</html>
