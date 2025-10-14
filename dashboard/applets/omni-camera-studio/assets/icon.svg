@@ -1,0 +1,18 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Omni Camera Studio icon</title>
+  <desc id="desc">Circular aperture icon with lime ring and cyan highlights</desc>
+  <defs>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4bb3fd" />
+      <stop offset="100%" stop-color="#a8ff3d" />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="28" fill="#101820" />
+  <circle cx="60" cy="60" r="40" fill="none" stroke="url(#ring)" stroke-width="10" />
+  <circle cx="60" cy="60" r="20" fill="#172430" stroke="#a8ff3d" stroke-width="4" />
+  <path d="M60 18l12 20H48L60 18z" fill="#223c54" />
+  <path d="M102 60l-20 12V48L102 60z" fill="#223c54" />
+  <path d="M60 102l-12-20h24L60 102z" fill="#223c54" />
+  <path d="M18 60l20-12v24L18 60z" fill="#223c54" />
+  <circle cx="78" cy="42" r="6" fill="#4bb3fd" />
+</svg>

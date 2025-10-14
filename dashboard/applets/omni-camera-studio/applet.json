@@ -1,0 +1,12 @@
+{
+  "slug": "omni-camera-studio",
+  "name": "Omni Camera Studio",
+  "description": "Feature-rich camera suite with smart guides, filter moods, and a session gallery for desktop and mobile capture.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-05-20",
+  "tags": ["camera", "photography", "media"],
+  "author": "Simple Chat Contributors",
+  "permissions": ["camera"]
+}
