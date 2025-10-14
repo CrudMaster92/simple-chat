@@ -74,5 +74,6 @@
   "micro-adventure-atlas": "./applets/micro-adventure-atlas/applet.json",
   "reddit-signal-lounge": "./applets/reddit-signal-lounge/applet.json",
   "web-pulse": "./applets/web-pulse/applet.json",
-  "readykit-planner": "./applets/readykit-planner/applet.json"
+  "readykit-planner": "./applets/readykit-planner/applet.json",
+  "everseam-world-forge": "./applets/everseam-world-forge/applet.json"
 }
