@@ -1,0 +1,12 @@
+{
+  "slug": "elemental-sand-atrium",
+  "name": "Elemental Sand Atrium",
+  "description": "Conduct a kinetic falling-sand playground with molten flows, mist, plants, and reactive chemistry.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-06",
+  "tags": ["simulation", "physics", "toy"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
