@@ -215,9 +215,25 @@
       .taskbar__clock {
         min-width: 80px;
         margin-left: auto;
+        padding: 0.35rem 0.75rem;
+        border: none;
+        border-radius: 10px;
+        background: none;
         text-align: right;
         color: rgba(241, 245, 249, 0.85);
         font-feature-settings: "tnum" 1;
+        cursor: pointer;
+        transition: background 150ms ease, color 150ms ease;
+      }
+
+      .taskbar__clock:hover {
+        background: rgba(15, 46, 72, 0.5);
+        color: #f8fafc;
+      }
+
+      .taskbar__clock:focus-visible {
+        outline: 2px solid rgba(148, 163, 184, 0.85);
+        outline-offset: 2px;
       }
 
       .taskbar__settings {
@@ -1090,7 +1106,13 @@
         <span aria-hidden="true">⚙️</span>
         <span class="taskbar__settings-label">Settings</span>
       </button>
-      <div class="taskbar__clock" data-role="taskbar-clock" aria-live="polite"></div>
+      <button
+        class="taskbar__clock"
+        type="button"
+        data-role="taskbar-clock"
+        aria-live="polite"
+        title="Open Maestro Clock Pavilion"
+      ></button>
     </footer>
     <script src="./index.js" type="module"></script>
   </body>

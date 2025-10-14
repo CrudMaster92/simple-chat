@@ -46,6 +46,10 @@ const deleteRevealTimers = new WeakMap();
 let draggedShortcutSlug = null;
 const DELETE_REVEAL_DELAY = 1200;
 
+const CLOCK_APPLET_SLUG = 'maestro-clock-pavilion';
+const CLOCK_APPLET_FALLBACK_NAME = 'Maestro Clock Pavilion';
+let pendingClockLaunch = false;
+
 let audioContext = null;
 let audioMasterGain = null;
 const audioThrottleMarks = new Map();
@@ -486,6 +490,14 @@ const osState = {
 
 let activeTaskbarButton = null;
 
+function getAppletRecord(slug) {
+  return (
+    state.records.find((record) => record.slug === slug) ||
+    state.pinned.find((record) => record.slug === slug) ||
+    null
+  );
+}
+
 function updateTaskbarSafeArea() {
   const safeArea = taskbar ? Math.round(taskbar.getBoundingClientRect().height) : 0;
   document.documentElement?.style.setProperty('--taskbar-safe-area', `${safeArea}px`);
@@ -514,11 +526,36 @@ function updateClock() {
   const now = new Date();
   const hours = now.getHours().toString().padStart(2, '0');
   const minutes = now.getMinutes().toString().padStart(2, '0');
-  clockDisplay.textContent = `${hours}:${minutes}`;
+  const timeString = `${hours}:${minutes}`;
+  clockDisplay.textContent = timeString;
+  const clockRecord = getAppletRecord(CLOCK_APPLET_SLUG);
+  const label = clockRecord?.name ?? CLOCK_APPLET_FALLBACK_NAME;
+  clockDisplay.setAttribute('aria-label', `Open ${label} (current time ${timeString})`);
+}
+
+function attemptLaunchClockApplet() {
+  const record = getAppletRecord(CLOCK_APPLET_SLUG);
+  if (record?.entryUrl) {
+    pendingClockLaunch = false;
+    launchApplet(record);
+    return true;
+  }
+  if (state.records.length || state.pinned.length) {
+    pendingClockLaunch = false;
+    console.warn(`Clock applet "${CLOCK_APPLET_SLUG}" is not available to launch.`);
+  }
+  return false;
 }
 
 setInterval(updateClock, 30_000);
 updateClock();
+
+if (clockDisplay) {
+  clockDisplay.addEventListener('click', () => {
+    pendingClockLaunch = true;
+    attemptLaunchClockApplet();
+  });
+}
 
 function normalizeAppletRecord(record) {
   if (!record || typeof record.entryUrl !== 'string' || !record.entryUrl) {
@@ -1058,11 +1095,7 @@ function hasDesktopShortcut(slug) {
 }
 
 function getShortcutRecord(slug) {
-  return (
-    state.records.find((record) => record.slug === slug) ||
-    state.pinned.find((record) => record.slug === slug) ||
-    null
-  );
+  return getAppletRecord(slug);
 }
 
 function syncShortcutButton(slug) {
@@ -1671,6 +1704,9 @@ function initializeDesktop(results) {
   renderCategories();
   renderStartMenu();
   renderShortcuts();
+  if (pendingClockLaunch) {
+    attemptLaunchClockApplet();
+  }
 }
 
 function initAllAppsPanel() {
