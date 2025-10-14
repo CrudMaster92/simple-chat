@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Axis Glide Arena</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+</head>
+<body>
+  <div id="ui">
+    <div class="hud">
+      <div class="stat"><span class="label">Energy Cells:</span> <span id="orb-count">0</span>/<span id="orb-total">0</span></div>
+      <div class="stat"><span class="label">Time Left:</span> <span id="timer">0.0</span>s</div>
+    </div>
+    <div class="controls">
+      <p>Use <strong>WASD</strong> or <strong>Arrow Keys</strong> to glide. Capture every energy cell before the timer expires.</p>
+      <button id="start-button">Start Run</button>
+    </div>
+  </div>
+  <div id="overlay" hidden>
+    <div id="overlay-content"></div>
+    <button id="restart-button">Restart</button>
+  </div>
+  <canvas id="arena"></canvas>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

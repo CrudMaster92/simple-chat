@@ -1,0 +1,131 @@
+:root {
+  --charcoal: #1f1b24;
+  --gunmetal: #141117;
+  --neon-lime: #b7f31a;
+  --vivid-coral: #ff6f4c;
+  --soft-peach: #ffe0c7;
+  --grid-line: rgba(183, 243, 26, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Barlow", "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at 20% 20%, #2c2835, var(--gunmetal));
+  color: var(--soft-peach);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#arena {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+#ui {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.hud {
+  display: flex;
+  gap: 16px;
+  background: rgba(20, 17, 23, 0.78);
+  border: 1px solid var(--grid-line);
+  padding: 10px 18px;
+  border-radius: 14px;
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+}
+
+.stat {
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.label {
+  color: var(--neon-lime);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.controls {
+  max-width: 420px;
+  background: rgba(31, 27, 36, 0.85);
+  border-radius: 16px;
+  padding: 14px 18px 18px;
+  border: 1px solid rgba(255, 111, 76, 0.4);
+  box-shadow: 0 10px 25px rgba(11, 9, 13, 0.6);
+  pointer-events: auto;
+}
+
+.controls p {
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+
+button {
+  background: var(--vivid-coral);
+  color: #1a120c;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(255, 111, 76, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 111, 76, 0.45);
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 12, 18, 0.82);
+  gap: 18px;
+  text-align: center;
+}
+
+#overlay-content {
+  font-size: 1.3rem;
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+@media (max-width: 680px) {
+  .hud {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #ui {
+    top: 18px;
+  }
+
+  .controls {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "slug": "axis-glide-arena",
+  "name": "Axis Glide Arena",
+  "description": "Pilot a hover sphere through a neon grid, capture energy orbs, and stabilize the arena before the timer expires.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-05-13",
+  "tags": ["game", "3d", "arcade"],
+  "author": "Applet Builder",
+  "permissions": []
+}
