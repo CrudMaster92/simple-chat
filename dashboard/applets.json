@@ -69,5 +69,9 @@
   "axis-glide-arena": "./applets/axis-glide-arena/applet.json",
   "orbital-mneme-spindle": "./applets/orbital-mneme-spindle/applet.json",
   "glyph-lens-voyagers": "./applets/glyph-lens-voyagers/applet.json",
-  "sproutpal-sanctuary": "./applets/sproutpal-sanctuary/applet.json"
+  "sproutpal-sanctuary": "./applets/sproutpal-sanctuary/applet.json",
+  "harmonic-horizons": "./applets/harmonic-horizons/applet.json",
+  "micro-adventure-atlas": "./applets/micro-adventure-atlas/applet.json",
+  "reddit-signal-lounge": "./applets/reddit-signal-lounge/applet.json",
+  "web-pulse": "./applets/web-pulse/applet.json"
 }

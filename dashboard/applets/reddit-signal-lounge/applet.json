@@ -1,0 +1,12 @@
+{
+  "slug": "reddit-signal-lounge",
+  "name": "Reddit Signal Lounge",
+  "description": "Surface trending Reddit discussions, compare metrics, and remix ideas inside a signal-forward lounge.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2025-10-14",
+  "tags": ["reddit", "insights", "dashboard"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

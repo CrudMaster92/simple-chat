@@ -1,0 +1,12 @@
+{
+  "slug": "web-pulse",
+  "name": "Realtime Tech Pulse",
+  "description": "Track live tech headlines, sentiment, and curated resources with a search-driven pulse dashboard.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2025-10-14",
+  "tags": ["news", "tech", "dashboard"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
