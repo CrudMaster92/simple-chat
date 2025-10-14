@@ -73,5 +73,6 @@
   "harmonic-horizons": "./applets/harmonic-horizons/applet.json",
   "micro-adventure-atlas": "./applets/micro-adventure-atlas/applet.json",
   "reddit-signal-lounge": "./applets/reddit-signal-lounge/applet.json",
-  "web-pulse": "./applets/web-pulse/applet.json"
+  "web-pulse": "./applets/web-pulse/applet.json",
+  "readykit-planner": "./applets/readykit-planner/applet.json"
 }

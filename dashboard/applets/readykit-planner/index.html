@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReadyKit Planner</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="readykit-app" role="application">
+      <header class="app-header">
+        <div class="title-block">
+          <h1>ReadyKit Planner</h1>
+          <p class="lead">
+            Build a go-bag that actually fits your household. Dial in the people and hazards you’re planning for, mark what’s packed,
+            and surface the next readiness actions in one place.
+          </p>
+        </div>
+        <div class="summary-panel" aria-live="polite">
+          <div class="summary-card">
+            <span class="summary-label">Coverage</span>
+            <span class="summary-value" id="coverageRatio">0%</span>
+            <span class="summary-sub">items packed</span>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">Water</span>
+            <span class="summary-value" id="waterNeed">0</span>
+            <span class="summary-sub">gallons for the plan</span>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">Meals</span>
+            <span class="summary-value" id="mealNeed">0</span>
+            <span class="summary-sub">shelf-stable servings</span>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">Energy</span>
+            <span class="summary-value" id="powerHours">0</span>
+            <span class="summary-sub">portable power hours</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-layout">
+        <section class="left-column" aria-label="Readiness inputs">
+          <article class="panel-card">
+            <header>
+              <h2>Household profile</h2>
+              <p>Quantities scale automatically from the people, pets, and timeframe you set.</p>
+            </header>
+            <div class="profile-grid">
+              <label class="field">
+                <span>Adults</span>
+                <input type="number" min="0" id="adultsInput" />
+              </label>
+              <label class="field">
+                <span>Children</span>
+                <input type="number" min="0" id="childrenInput" />
+              </label>
+              <label class="field">
+                <span>Infants</span>
+                <input type="number" min="0" id="infantsInput" />
+              </label>
+              <label class="field">
+                <span>Pets</span>
+                <input type="number" min="0" id="petsInput" />
+              </label>
+              <label class="field">
+                <span>Support needs</span>
+                <select id="supportInput">
+                  <option value="none">None</option>
+                  <option value="mobility">Mobility aid required</option>
+                  <option value="medical">Critical medication</option>
+                  <option value="both">Mobility + medical</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Planning horizon</span>
+                <select id="daysInput">
+                  <option value="2">48 hours</option>
+                  <option value="3">72 hours</option>
+                  <option value="4">4 days</option>
+                  <option value="5">5 days</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Climate lean</span>
+                <select id="climateInput">
+                  <option value="temperate">Temperate</option>
+                  <option value="hot">Hot / arid</option>
+                  <option value="cold">Cold / alpine</option>
+                  <option value="coastal">Coastal / humid</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Home base</span>
+                <select id="locationInput">
+                  <option value="urban">Urban high-rise</option>
+                  <option value="suburban">Suburban home</option>
+                  <option value="rural">Rural</option>
+                  <option value="travel">Travel / mobile</option>
+                </select>
+              </label>
+            </div>
+            <div class="preset-bar" role="group" aria-label="Quick fill profiles">
+              <button class="preset" data-preset="duo">City duo</button>
+              <button class="preset" data-preset="family">Family + pet</button>
+              <button class="preset" data-preset="solo">Solo responder</button>
+            </div>
+          </article>
+
+          <article class="panel-card">
+            <header>
+              <h2>Hazards to cover</h2>
+              <p>Select the disruptions you want the kit to handle. Extra supplies and checklist items unlock instantly.</p>
+            </header>
+            <div class="hazard-chip-wrap" id="hazardChips" role="listbox" aria-multiselectable="true"></div>
+          </article>
+
+          <article class="panel-card tasks-panel">
+            <header>
+              <h2>Readiness timeline</h2>
+              <p>Stay ahead with maintenance rituals timed for this kit.</p>
+            </header>
+            <div class="timeline" id="timeline"></div>
+          </article>
+        </section>
+
+        <section class="right-column" aria-label="Kit builder">
+          <article class="panel-card kit-panel">
+            <header class="kit-header">
+              <div>
+                <h2>Kit blueprint</h2>
+                <p>Quantities tune live from your profile. Tick items off as you stage them.</p>
+              </div>
+              <button class="clear-packed" id="resetPacked">Reset packed state</button>
+            </header>
+            <div class="category-filter" id="categoryFilter"></div>
+            <div class="kit-list" id="kitList" aria-live="polite"></div>
+          </article>
+
+          <article class="panel-card">
+            <header>
+              <h2>Fill the gaps</h2>
+              <p id="gapSummary">All set for now—mark your kit as you go.</p>
+            </header>
+            <ul class="gap-list" id="gapList"></ul>
+          </article>
+
+          <article class="panel-card add-item-panel">
+            <header>
+              <h2>Personal add-ons</h2>
+              <p>Add commitments, heirlooms, or other specifics unique to your crew.</p>
+            </header>
+            <form id="customItemForm" class="custom-form">
+              <label class="field">
+                <span>Item name</span>
+                <input type="text" id="customName" required maxlength="80" />
+              </label>
+              <label class="field">
+                <span>Category</span>
+                <select id="customCategory">
+                  <option value="Water &amp; Nutrition">Water &amp; Nutrition</option>
+                  <option value="Safety &amp; Tools">Safety &amp; Tools</option>
+                  <option value="Health &amp; Comfort">Health &amp; Comfort</option>
+                  <option value="Documents &amp; Tech">Documents &amp; Tech</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Quantity</span>
+                <input type="number" min="1" value="1" id="customQuantity" required />
+              </label>
+              <label class="field">
+                <span>Unit</span>
+                <input type="text" id="customUnit" placeholder="pcs, sets, etc." maxlength="40" />
+              </label>
+              <label class="field">
+                <span>Note (optional)</span>
+                <input type="text" id="customNote" maxlength="120" />
+              </label>
+              <button type="submit" class="add-btn">Add to kit</button>
+            </form>
+          </article>
+        </section>
+      </main>
+    </div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
