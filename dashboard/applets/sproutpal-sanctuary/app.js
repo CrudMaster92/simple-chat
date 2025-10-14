@@ -14,6 +14,7 @@ const state = {
     storytime: 0,
     breezestretch: 0
   },
+  quests: [],
   lastTick: Date.now()
 };
 
@@ -82,6 +83,57 @@ const rituals = {
   }
 };
 
+const questBlueprints = [
+  {
+    id: "feast",
+    title: "Citrus Steward",
+    description: "Serve citrus feasts 3 times to fill nutrition stores.",
+    target: { type: "action", key: "feed" },
+    required: 3,
+    xp: 18
+  },
+  {
+    id: "playmaker",
+    title: "Ribbon Reveler",
+    description: "Spark ribbon chases twice to keep joy swirling.",
+    target: { type: "action", key: "play" },
+    required: 2,
+    xp: 20
+  },
+  {
+    id: "cleanse",
+    title: "Grove Polisher",
+    description: "Freshen Sprout two times so every leaf gleams.",
+    target: { type: "action", key: "clean" },
+    required: 2,
+    xp: 18
+  },
+  {
+    id: "dreamer",
+    title: "Lullaby Keeper",
+    description: "Guide Sprout into two restful naps for deep renewal.",
+    target: { type: "action", key: "rest" },
+    required: 2,
+    xp: 16
+  },
+  {
+    id: "voyager",
+    title: "Trailblazer",
+    description: "Send Sprout on forage voyages twice this cycle.",
+    target: { type: "action", key: "explore" },
+    required: 2,
+    xp: 24
+  },
+  {
+    id: "ritualist",
+    title: "Ritual Maestro",
+    description: "Complete any two rituals to keep sanctuary rhythms strong.",
+    target: { type: "ritual", key: "any" },
+    required: 2,
+    xp: 22
+  }
+];
+
 const milestones = [2, 4, 6, 8];
 
 const milestoneDescriptions = {
@@ -135,6 +187,10 @@ const logEl = document.getElementById("log");
 const exploreCooldownEl = document.getElementById("explore-cooldown");
 const sanctuaryApp = document.querySelector(".sanctuary-app");
 const environmentInsightEl = document.getElementById("environment-insight");
+const harmonyMeterEl = document.getElementById("harmony-meter");
+const harmonyFillEl = document.getElementById("harmony-fill");
+const harmonyPointerEl = document.getElementById("harmony-pointer");
+const harmonyTipEl = document.getElementById("harmony-tip");
 
 const ritualStatusEls = {
   sunsoak: document.getElementById("ritual-sunsoak-status"),
@@ -148,6 +204,8 @@ const renameBtn = document.getElementById("rename-btn");
 const envButtons = Array.from(document.querySelectorAll(".env-option"));
 const actionButtons = Array.from(document.querySelectorAll(".care-btn"));
 const ritualButtons = Array.from(document.querySelectorAll(".ritual-btn"));
+const questListEl = document.getElementById("quest-list");
+const questSummaryEl = document.getElementById("quest-summary");
 
 const milestoneProgressFill = document.getElementById("milestone-progress-fill");
 const milestoneProgressValue = document.getElementById("milestone-progress-value");
@@ -234,6 +292,7 @@ function updateStatsDisplay() {
     }
     statElements[key].fill.style.background = `linear-gradient(90deg, ${colorA}, ${colorB})`;
   });
+  updateHarmonyMeter();
 }
 
 function computeMood() {
@@ -334,6 +393,133 @@ function updateEnvironmentInsight() {
   }
 }
 
+function pickInitialQuests(count = 3) {
+  const pool = [...questBlueprints];
+  const quests = [];
+  for (let i = 0; i < count && pool.length > 0; i += 1) {
+    const index = Math.floor(Math.random() * pool.length);
+    const blueprint = pool.splice(index, 1)[0];
+    quests.push(createQuestInstance(blueprint));
+  }
+  if (quests.length < count) {
+    while (quests.length < count) {
+      quests.push(createQuestInstance(questBlueprints[quests.length % questBlueprints.length]));
+    }
+  }
+  return quests;
+}
+
+function createQuestInstance(blueprint) {
+  return {
+    blueprintId: blueprint.id,
+    title: blueprint.title,
+    description: blueprint.description,
+    target: blueprint.target,
+    required: blueprint.required,
+    xp: blueprint.xp,
+    progress: 0,
+    completed: false
+  };
+}
+
+function chooseQuestBlueprint(excludeId) {
+  const options = questBlueprints.filter((blueprint) => blueprint.id !== excludeId);
+  if (options.length === 0) {
+    return questBlueprints.find((blueprint) => blueprint.id === excludeId) || questBlueprints[0];
+  }
+  const index = Math.floor(Math.random() * options.length);
+  return options[index];
+}
+
+function renderQuests() {
+  if (!questListEl) return;
+  questListEl.innerHTML = "";
+  let readyCount = 0;
+  state.quests.forEach((quest, index) => {
+    if (quest.completed) {
+      readyCount += 1;
+    }
+    const li = document.createElement("li");
+    li.className = quest.completed ? "quest-item completed" : "quest-item";
+    const percent = Math.min(100, Math.round((quest.progress / quest.required) * 100));
+    const status = quest.completed ? "Reward ready" : `${quest.progress} / ${quest.required} steps`;
+    li.innerHTML = `
+      <div class="quest-header">
+        <h4>${quest.title}</h4>
+        <span class="quest-xp">+${quest.xp} xp</span>
+      </div>
+      <p class="quest-description">${quest.description}</p>
+      <div class="quest-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}">
+        <div class="quest-progress-fill" style="width: ${percent}%;"></div>
+      </div>
+      <div class="quest-status">${status}</div>
+      <button class="quest-claim-btn" ${quest.completed ? "" : "disabled"} data-quest-index="${index}">
+        ${quest.completed ? "Claim Reward" : "In progress"}
+      </button>
+    `;
+    questListEl.appendChild(li);
+  });
+  if (questSummaryEl) {
+    questSummaryEl.textContent =
+      readyCount > 0 ? `${readyCount} quest${readyCount > 1 ? "s" : ""} ready` : "No quests ready yet";
+  }
+}
+
+function claimQuestReward(index) {
+  const quest = state.quests[index];
+  if (!quest || !quest.completed) return;
+  grantXp(quest.xp);
+  logEvent(`🏅 Quest complete: ${quest.title}!`);
+  const newBlueprint = chooseQuestBlueprint(quest.blueprintId);
+  Object.assign(quest, createQuestInstance(newBlueprint));
+  logEvent(`🧭 New quest unlocked: ${quest.title}.`);
+  renderQuests();
+}
+
+function recordQuestProgress(type, key) {
+  let updated = false;
+  state.quests.forEach((quest) => {
+    if (quest.completed) return;
+    const matchesType = quest.target.type === type;
+    const matchesKey = quest.target.key === "any" || quest.target.key === key;
+    if (matchesType && matchesKey) {
+      quest.progress = Math.min(quest.required, quest.progress + 1);
+      updated = true;
+      if (quest.progress >= quest.required && !quest.completed) {
+        quest.completed = true;
+        logEvent(`🏆 Quest ready: ${quest.title}!`);
+      }
+    }
+  });
+  if (updated) {
+    renderQuests();
+  }
+}
+
+function describeHarmonyTip(average) {
+  if (average >= 80) {
+    return "Harmony is soaring — chain rituals to cash in on streak bonuses.";
+  }
+  if (average >= 60) {
+    return "Balanced and bright. A quick ritual could push Sprout to radiant.";
+  }
+  if (average >= 40) {
+    return "Mood is wobbling — rotate care actions to stabilize the vibe.";
+  }
+  return "Critical low! Stack nourishing actions to rescue Sprout.";
+}
+
+function updateHarmonyMeter() {
+  if (!harmonyMeterEl || !harmonyFillEl || !harmonyPointerEl || !harmonyTipEl) return;
+  const average = statKeys.reduce((sum, key) => sum + state[key], 0) / statKeys.length;
+  const percent = Math.max(0, Math.min(100, Math.round(average)));
+  const pointerPercent = Math.max(2, Math.min(98, percent));
+  harmonyFillEl.style.width = `${percent}%`;
+  harmonyPointerEl.style.left = `calc(${pointerPercent}% - 10px)`;
+  harmonyMeterEl.setAttribute("aria-valuenow", percent.toString());
+  harmonyTipEl.textContent = describeHarmonyTip(average);
+}
+
 function getRitualCooldown(key) {
   const ritual = rituals[key];
   if (!ritual) return 0;
@@ -382,6 +568,7 @@ function applyAction(actionKey) {
   updateStatsDisplay();
   updateMoodDisplay();
   logEvent(action.message());
+  recordQuestProgress("action", actionKey);
   checkCriticalStates();
 }
 
@@ -409,6 +596,7 @@ function handleExplore() {
       message += " Seasoned explorer bonus!";
     }
     logEvent(`🧭 ${message}`);
+    recordQuestProgress("action", "explore");
     checkCriticalStates();
     countdownExplore();
   }, 2800);
@@ -438,6 +626,7 @@ function handleRitual(key) {
     updateStatsDisplay();
     updateMoodDisplay();
     logEvent(`🌀 ${ritual.message()}`);
+    recordQuestProgress("ritual", key);
     checkCriticalStates();
     startRitualCountdown(key);
   }, ritual.delay);
@@ -537,6 +726,10 @@ function init() {
   updateEnvironmentInsight();
   updateStatsDisplay();
   updateMoodDisplay();
+  if (state.quests.length === 0) {
+    state.quests = pickInitialQuests();
+  }
+  renderQuests();
   petLevelEl.textContent = state.level;
   petXpEl.textContent = Math.round(state.xp);
   careStreakEl.textContent = state.careStreak;
@@ -573,6 +766,17 @@ function init() {
       renamePet();
     }
   });
+
+  if (questListEl) {
+    questListEl.addEventListener("click", (event) => {
+      const button = event.target.closest(".quest-claim-btn");
+      if (!button || button.disabled) return;
+      const index = Number.parseInt(button.dataset.questIndex, 10);
+      if (!Number.isNaN(index)) {
+        claimQuestReward(index);
+      }
+    });
+  }
 
   Object.keys(state.ritualCooldowns).forEach((key) => {
     if (state.ritualCooldowns[key] > Date.now()) {
