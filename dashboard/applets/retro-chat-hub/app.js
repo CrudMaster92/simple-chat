@@ -47,6 +47,8 @@
   };
 
   let summaryStatusTimer = 0;
+  let activePanel = null;
+  let lastPanelTrigger = null;
 
   const elements = {};
 
@@ -94,6 +96,12 @@
     elements.insightStats = document.getElementById('insightStats');
     elements.insightSummary = document.getElementById('insightSummary');
     elements.insightFooter = document.getElementById('insightFooter');
+    elements.panelTriggers = [...document.querySelectorAll('[data-panel-target]')];
+    elements.panels = {
+      chats: document.getElementById('panel-chats'),
+      settings: document.getElementById('panel-settings'),
+      insights: document.getElementById('panel-insights'),
+    };
   }
 
   function wireEvents() {
@@ -186,6 +194,78 @@
     }
     if (elements.renameChatButton) {
       elements.renameChatButton.addEventListener('click', renameActiveChat);
+    }
+
+    if (elements.panelTriggers && elements.panelTriggers.length) {
+      elements.panelTriggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => togglePanel(trigger.dataset.panelTarget, trigger));
+      });
+    }
+
+    Object.entries(elements.panels || {}).forEach(([name, panel]) => {
+      if (!panel) return;
+      const backdrop = panel.querySelector('.workspace-drawer__backdrop');
+      const closeButtons = [...panel.querySelectorAll('[data-close-panel]')];
+      if (backdrop) {
+        backdrop.addEventListener('click', () => closePanel(name));
+      }
+      closeButtons.forEach((button) => {
+        button.addEventListener('click', () => closePanel(name));
+      });
+      panel.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          event.stopPropagation();
+          closePanel(name);
+        }
+      });
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && activePanel) {
+        closePanel(activePanel);
+      }
+    });
+  }
+
+  function togglePanel(name, trigger) {
+    if (!name) return;
+    if (activePanel === name) {
+      closePanel(name);
+      return;
+    }
+    openPanel(name, trigger);
+  }
+
+  function openPanel(name, trigger) {
+    const panel = elements.panels ? elements.panels[name] : null;
+    if (!panel) return;
+    if (activePanel && activePanel !== name) {
+      closePanel(activePanel);
+    }
+    panel.classList.add('is-open');
+    panel.setAttribute('aria-hidden', 'false');
+    const surface = panel.querySelector('[data-panel-surface]');
+    if (surface && typeof surface.focus === 'function') {
+      surface.focus({ preventScroll: true });
+    }
+    document.body.classList.add('drawer-open');
+    activePanel = name;
+    lastPanelTrigger = trigger || null;
+  }
+
+  function closePanel(name) {
+    const panel = elements.panels ? elements.panels[name] : null;
+    if (!panel) return;
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+    if (activePanel === name) {
+      activePanel = null;
+      document.body.classList.remove('drawer-open');
+      if (lastPanelTrigger && typeof lastPanelTrigger.focus === 'function') {
+        window.requestAnimationFrame(() => {
+          lastPanelTrigger.focus();
+        });
+      }
     }
   }
 
