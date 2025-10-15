@@ -733,7 +733,7 @@
       role: message.role || 'user',
       content: [
         {
-          type: 'text',
+          type: 'input_text',
           text: typeof message.content === 'string' ? message.content : '',
         },
       ],
