@@ -1082,25 +1082,199 @@
     { provider:'openai', matcher:()=>true }
   ];
 
+  const RESPONSES_MODEL_PATTERNS = [
+    /^gpt-4\.1/i,
+    /^gpt-5/i,
+    /^o[0-9]/i,
+    /^o-mini/i
+  ];
+
   function resolveProviderForModel(modelId){
     const normalized = typeof modelId === 'string' ? modelId.trim() : '';
     const found = MODEL_PROVIDER_METADATA.find(entry=>entry.matcher(normalized));
     return (found && found.provider) || 'openai';
   }
 
-  async function callOpenAIChat({ key, model, messages, temperature }){
+  function shouldUseOpenAIResponses(modelId){
+    if(!modelId) return false;
+    const normalized = String(modelId).trim();
+    return RESPONSES_MODEL_PATTERNS.some(rx=>rx.test(normalized));
+  }
+
+  function extractOpenAIErrorMessage(raw, fallback){
+    if(raw){
+      try{
+        const parsed = JSON.parse(raw);
+        const msg = parsed?.error?.message || parsed?.message || parsed?.error;
+        if(typeof msg === 'string' && msg.trim()){
+          return msg.trim();
+        }
+      }catch(_){
+        const trimmed = raw.trim();
+        if(trimmed) return trimmed;
+      }
+    }
+    return fallback || 'OpenAI request failed';
+  }
+
+  function extractTextFromParts(parts){
+    if(!parts) return '';
+    const list = Array.isArray(parts) ? parts : [parts];
+    let buffer = '';
+    list.forEach(part=>{
+      if(!part) return;
+      if(typeof part === 'string'){
+        buffer += part;
+        return;
+      }
+      if(typeof part.text === 'string'){
+        buffer += part.text;
+        return;
+      }
+      if(typeof part.value === 'string'){
+        buffer += part.value;
+        return;
+      }
+      if(typeof part.content === 'string'){
+        buffer += part.content;
+        return;
+      }
+      if(Array.isArray(part.content)){
+        buffer += extractTextFromParts(part.content);
+      }
+    });
+    return buffer.trim();
+  }
+
+  function extractChatCompletionText(data){
+    if(!data) return '';
+    const choices = Array.isArray(data.choices) ? data.choices : [];
+    for(const choice of choices){
+      const message = choice && choice.message;
+      if(!message) continue;
+      if(typeof message.content === 'string' && message.content.trim()){
+        return message.content.trim();
+      }
+      if(Array.isArray(message.content)){
+        const text = extractTextFromParts(message.content);
+        if(text) return text;
+      }
+    }
+    if(typeof data.message === 'string' && data.message.trim()){
+      return data.message.trim();
+    }
+    return '';
+  }
+
+  function extractResponsesText(data){
+    if(!data) return '';
+    if(typeof data.output_text === 'string' && data.output_text.trim()){
+      return data.output_text.trim();
+    }
+    const collections = Array.isArray(data.output) ? data.output : Array.isArray(data.responses) ? data.responses : [];
+    for(const entry of collections){
+      if(!entry) continue;
+      const parts = entry.content || entry.outputs || entry.parts || entry.message?.content;
+      const text = extractTextFromParts(parts);
+      if(text) return text;
+    }
+    if(Array.isArray(data.messages)){
+      for(const message of data.messages){
+        if(message?.role === 'assistant'){
+          const text = typeof message.content === 'string' ? message.content.trim() : extractTextFromParts(message.content);
+          if(text) return text;
+        }
+      }
+    }
+    return '';
+  }
+
+  function buildResponsesInput(messages){
+    return messages.map(msg=>({
+      role: msg.role || 'user',
+      content: [
+        {
+          type:'text',
+          text: typeof msg.content === 'string' ? msg.content : ''
+        }
+      ]
+    }));
+  }
+
+  function shouldRetryWithResponses(error){
+    if(!error) return false;
+    const message = typeof error.message === 'string' ? error.message.toLowerCase() : '';
+    if(!message) return false;
+    if(message.includes('responses api') || message.includes('responses endpoint')) return true;
+    if(message.includes('unrecognized request argument') && message.includes('messages')) return true;
+    return false;
+  }
+
+  async function callOpenAIChatCompletions({ key, model, messages, temperature }){
     const res = await fetch('https://api.openai.com/v1/chat/completions',{
       method:'POST',
       headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+key },
       body: JSON.stringify({ model, messages, temperature })
     });
+    const raw = await res.text();
     if(!res.ok){
-      const t = await res.text();
-      throw new Error(t || res.statusText || 'OpenAI chat completion failed');
+      const err = new Error(extractOpenAIErrorMessage(raw, res.statusText || 'OpenAI chat completion failed'));
+      err.status = res.status;
+      err.responseText = raw;
+      throw err;
     }
-    const data = await res.json();
-    const reply = ((data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'').trim();
-    return reply;
+    let data = null;
+    try{
+      data = raw ? JSON.parse(raw) : {};
+    }catch(_){
+      throw new Error('Invalid JSON returned from OpenAI chat completions.');
+    }
+    const reply = extractChatCompletionText(data);
+    if(reply) return reply;
+    throw new Error('OpenAI response did not include any message content.');
+  }
+
+  async function callOpenAIResponses({ key, model, messages, temperature }){
+    const payload = {
+      model,
+      temperature,
+      input: buildResponsesInput(messages)
+    };
+    const res = await fetch('https://api.openai.com/v1/responses',{
+      method:'POST',
+      headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+key },
+      body: JSON.stringify(payload)
+    });
+    const raw = await res.text();
+    if(!res.ok){
+      const err = new Error(extractOpenAIErrorMessage(raw, res.statusText || 'OpenAI responses request failed'));
+      err.status = res.status;
+      err.responseText = raw;
+      throw err;
+    }
+    let data = null;
+    try{
+      data = raw ? JSON.parse(raw) : {};
+    }catch(_){
+      throw new Error('Invalid JSON returned from OpenAI responses endpoint.');
+    }
+    const reply = extractResponsesText(data) || extractChatCompletionText(data);
+    if(reply) return reply;
+    throw new Error('OpenAI response did not include any message content.');
+  }
+
+  async function callOpenAIChat({ key, model, messages, temperature }){
+    if(shouldUseOpenAIResponses(model)){
+      return callOpenAIResponses({ key, model, messages, temperature });
+    }
+    try{
+      return await callOpenAIChatCompletions({ key, model, messages, temperature });
+    }catch(err){
+      if(shouldRetryWithResponses(err)){
+        return callOpenAIResponses({ key, model, messages, temperature });
+      }
+      throw err;
+    }
   }
 
   function buildGeminiPayload(messages){

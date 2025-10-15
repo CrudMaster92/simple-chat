@@ -642,7 +642,114 @@
     }
   }
 
-  async function callOpenAIChat({ key, model, messages, temperature }) {
+  const RESPONSES_MODEL_PATTERNS = [/^gpt-4\.1/i, /^gpt-5/i, /^o[0-9]/i, /^o-mini/i];
+
+  function shouldUseOpenAIResponses(modelId) {
+    if (!modelId) return false;
+    return RESPONSES_MODEL_PATTERNS.some((pattern) => pattern.test(String(modelId).trim()));
+  }
+
+  function extractTextParts(parts) {
+    if (!parts) return '';
+    const list = Array.isArray(parts) ? parts : [parts];
+    let buffer = '';
+    list.forEach((part) => {
+      if (!part) return;
+      if (typeof part === 'string') {
+        buffer += part;
+        return;
+      }
+      if (typeof part.text === 'string') {
+        buffer += part.text;
+        return;
+      }
+      if (typeof part.value === 'string') {
+        buffer += part.value;
+        return;
+      }
+      if (typeof part.content === 'string') {
+        buffer += part.content;
+        return;
+      }
+      if (Array.isArray(part.content)) {
+        buffer += extractTextParts(part.content);
+      }
+    });
+    return buffer.trim();
+  }
+
+  function extractChatCompletionText(payload) {
+    if (!payload) return '';
+    const choices = Array.isArray(payload.choices) ? payload.choices : [];
+    for (const choice of choices) {
+      const message = choice && choice.message;
+      if (!message) continue;
+      if (typeof message.content === 'string' && message.content.trim()) {
+        return message.content.trim();
+      }
+      if (Array.isArray(message.content)) {
+        const text = extractTextParts(message.content);
+        if (text) return text;
+      }
+    }
+    if (typeof payload.message === 'string' && payload.message.trim()) {
+      return payload.message.trim();
+    }
+    return '';
+  }
+
+  function extractResponsesText(payload) {
+    if (!payload) return '';
+    if (typeof payload.output_text === 'string' && payload.output_text.trim()) {
+      return payload.output_text.trim();
+    }
+    const streams = Array.isArray(payload.output)
+      ? payload.output
+      : Array.isArray(payload.responses)
+      ? payload.responses
+      : [];
+    for (const entry of streams) {
+      if (!entry) continue;
+      const parts = entry.content || entry.outputs || entry.parts || entry.message?.content;
+      const text = extractTextParts(parts);
+      if (text) return text;
+    }
+    if (Array.isArray(payload.messages)) {
+      for (const message of payload.messages) {
+        if (message?.role === 'assistant') {
+          const text =
+            typeof message.content === 'string'
+              ? message.content.trim()
+              : extractTextParts(message.content);
+          if (text) return text;
+        }
+      }
+    }
+    return '';
+  }
+
+  function buildResponsesInput(messages) {
+    return messages.map((message) => ({
+      role: message.role || 'user',
+      content: [
+        {
+          type: 'text',
+          text: typeof message.content === 'string' ? message.content : '',
+        },
+      ],
+    }));
+  }
+
+  function shouldRetryWithResponses(error) {
+    if (!error) return false;
+    const message = typeof error.message === 'string' ? error.message.toLowerCase() : '';
+    if (!message) return false;
+    if (message.includes('responses api') || message.includes('responses endpoint')) return true;
+    if (message.includes('unrecognized request argument') && message.includes('messages')) return true;
+    return false;
+  }
+
+  async function callOpenAIChatCompletions({ key, model, messages, temperature }) {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -657,14 +764,65 @@
     });
     const text = await response.text();
     if (!response.ok) {
-      throw new Error(extractErrorMessage(text, response.statusText || 'Request failed.'));
+      const error = new Error(extractErrorMessage(text, response.statusText || 'Request failed.'));
+      error.status = response.status;
+      error.responseText = text;
+      throw error;
     }
     const payload = safeJsonParse(text);
-    if (!payload || !payload.choices || !payload.choices.length) {
-      throw new Error('Unexpected response from OpenAI.');
+    if (!payload) {
+      throw new Error('Invalid JSON returned from OpenAI.');
     }
-    const content = payload.choices[0]?.message?.content || '';
-    return content.trim();
+    const content = extractChatCompletionText(payload);
+    if (!content) {
+      throw new Error('OpenAI response did not include any message text.');
+    }
+    return content;
+  }
+
+  async function callOpenAIResponses({ key, model, messages, temperature }) {
+    const response = await fetch('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        temperature,
+        input: buildResponsesInput(messages),
+      }),
+    });
+    const text = await response.text();
+    if (!response.ok) {
+      const error = new Error(extractErrorMessage(text, response.statusText || 'Request failed.'));
+      error.status = response.status;
+      error.responseText = text;
+      throw error;
+    }
+    const payload = safeJsonParse(text);
+    if (!payload) {
+      throw new Error('Invalid JSON returned from OpenAI.');
+    }
+    const content = extractResponsesText(payload) || extractChatCompletionText(payload);
+    if (!content) {
+      throw new Error('OpenAI response did not include any message text.');
+    }
+    return content;
+  }
+
+  async function callOpenAIChat({ key, model, messages, temperature }) {
+    if (shouldUseOpenAIResponses(model)) {
+      return callOpenAIResponses({ key, model, messages, temperature });
+    }
+    try {
+      return await callOpenAIChatCompletions({ key, model, messages, temperature });
+    } catch (error) {
+      if (shouldRetryWithResponses(error)) {
+        return callOpenAIResponses({ key, model, messages, temperature });
+      }
+      throw error;
+    }
   }
 
   async function callGeminiChat({ key, model, payload, temperature }) {
