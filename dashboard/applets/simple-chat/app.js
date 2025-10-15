@@ -1353,15 +1353,20 @@
   }
 
   function buildResponsesInput(messages){
-    return messages.map(msg=>({
-      role: msg.role || 'user',
-      content: [
-        {
-          type:'input_text',
-          text: typeof msg.content === 'string' ? msg.content : ''
-        }
-      ]
-    }));
+    return messages.map(msg=>{
+      const role = msg.role || 'user';
+      const text = typeof msg.content === 'string' ? msg.content : '';
+      const type = role === 'assistant' ? 'output_text' : 'input_text';
+      return {
+        role,
+        content: [
+          {
+            type,
+            text
+          }
+        ]
+      };
+    });
   }
 
   function shouldRetryWithResponses(error){

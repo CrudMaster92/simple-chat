@@ -974,15 +974,20 @@ function extractOpenAIResponsesText(payload) {
 }
 
 function buildOpenAIResponsesInput(messages) {
-  return messages.map((message) => ({
-    role: message.role || 'user',
-    content: [
-      {
-        type: 'input_text',
-        text: typeof message.content === 'string' ? message.content : '',
-      },
-    ],
-  }));
+  return messages.map((message) => {
+    const role = message.role || 'user';
+    const text = typeof message.content === 'string' ? message.content : '';
+    const type = role === 'assistant' ? 'output_text' : 'input_text';
+    return {
+      role,
+      content: [
+        {
+          type,
+          text,
+        },
+      ],
+    };
+  });
 }
 
 function shouldRetryWithResponses(error) {
