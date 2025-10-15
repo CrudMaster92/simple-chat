@@ -229,7 +229,7 @@
   const modelSelects = [modelAEl, modelBEl].filter(Boolean);
   const firstModelSelect = modelSelects[0] || null;
   const builtinModelOptions = firstModelSelect ? Array.from(firstModelSelect.options).map(opt=>({ value: opt.value, label: opt.textContent })) : [];
-  const defaultModelId = builtinModelOptions.length ? builtinModelOptions[0].value : 'gpt-5';
+  const defaultModelId = builtinModelOptions.length ? builtinModelOptions[0].value : 'gpt-4o';
 
   // Audio feedback for new messages
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -502,13 +502,23 @@
   function setModelOptions(selectEl, options, preserveValue){
     if(!selectEl) return;
     const previous = preserveValue !== undefined ? preserveValue : selectEl.value;
-    selectEl.innerHTML = '';
-    options.forEach(optData=>{
-      const opt = document.createElement('option');
-      opt.value = optData.value;
-      opt.textContent = optData.label;
-      selectEl.appendChild(opt);
+    const existingOptions = Array.from(selectEl.options || []);
+    const isSameLength = existingOptions.length === options.length;
+    const isSameContent = isSameLength && existingOptions.every((opt, idx)=>{
+      const next = options[idx];
+      return opt.value === next.value && opt.textContent === next.label;
     });
+    if(!isSameContent){
+      selectEl.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+      options.forEach(optData=>{
+        const opt = document.createElement('option');
+        opt.value = optData.value;
+        opt.textContent = optData.label;
+        fragment.appendChild(opt);
+      });
+      selectEl.appendChild(fragment);
+    }
     const values = options.map(opt=>opt.value);
     if(previous && values.includes(previous)){
       selectEl.value = previous;
