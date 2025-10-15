@@ -1,6 +1,11 @@
 {
+  "slug": "orbital-mneme-spindle",
   "title": "Orbital Mneme Spindle",
+  "name": "Orbital Mneme Spindle",
   "description": "Mint kinetic memory shards, drag them around a rotating halo, and log the constellation you weave.",
+  "entry": "./index.html",
   "icon": "🧵",
-  "entry": "./index.html"
+  "tags": ["creative", "ambient", "story"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
 }
