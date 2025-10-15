@@ -232,6 +232,16 @@
   const defaultModelId = builtinModelOptions.length ? builtinModelOptions[0].value : 'gpt-4o';
   const MODEL_CACHE_STORAGE_KEY = 'personaChat.modelCache.v1';
   const MAX_CHAT_MODEL_OPTIONS = 200;
+  const MODEL_PROVIDER_METADATA = [
+    { provider:'gemini', matcher:modelId=>/^gemini[-:]/i.test(modelId) },
+    { provider:'openai', matcher:()=>true }
+  ];
+  const RESPONSES_MODEL_PATTERNS = [
+    /^gpt-4\.1/i,
+    /^gpt-5/i,
+    /^o[0-9]/i,
+    /^o-mini/i
+  ];
 
   // Audio feedback for new messages
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -1100,18 +1110,6 @@
     if(!isFinite(n)) return 1.0;
     return Math.min(2, Math.max(0, n));
   }
-
-  const MODEL_PROVIDER_METADATA = [
-    { provider:'gemini', matcher:modelId=>/^gemini[-:]/i.test(modelId) },
-    { provider:'openai', matcher:()=>true }
-  ];
-
-  const RESPONSES_MODEL_PATTERNS = [
-    /^gpt-4\.1/i,
-    /^gpt-5/i,
-    /^o[0-9]/i,
-    /^o-mini/i
-  ];
 
   function fingerprintModelCacheKey(key){
     if(!key) return 'anon';
