@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PowerPoint Slide Forge</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="title-block">
+          <h1>PowerPoint Slide Forge</h1>
+          <p class="subtitle">
+            Craft polished slide decks, refine layouts, and export a ready-to-present PPTX without leaving the dashboard.
+          </p>
+        </div>
+        <div class="presentation-meta">
+          <label class="field">
+            <span>Presentation title</span>
+            <input id="presentationTitle" type="text" placeholder="Q3 Strategy Review" />
+          </label>
+          <label class="field">
+            <span>Theme accent</span>
+            <div class="accent-picker" id="accentPicker"></div>
+          </label>
+          <button id="exportPptx" class="primary">Export PPTX</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel slides-panel">
+          <div class="panel-header">
+            <h2>Slides</h2>
+            <div class="panel-actions">
+              <button id="addSlide" class="ghost">Add slide</button>
+            </div>
+          </div>
+          <ul id="slidesList" class="slides-list"></ul>
+        </section>
+
+        <section class="panel editor-panel">
+          <div class="panel-header">
+            <h2>Slide designer</h2>
+            <div class="panel-actions" id="slideActions"></div>
+          </div>
+          <div class="editor-body" id="editorBody"></div>
+        </section>
+
+        <section class="panel preview-panel">
+          <div class="panel-header">
+            <h2>Live preview</h2>
+          </div>
+          <div class="preview-stage" id="previewStage"></div>
+          <div class="notes-area">
+            <label class="field">
+              <span>Presenter notes</span>
+              <textarea id="notesField" rows="4" placeholder="Call out revenue acceleration in slide 3..."></textarea>
+            </label>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.10.1/dist/pptxgen.bundle.js"></script>
+    <script src="./index.js" type="module"></script>
+  </body>
+</html>
