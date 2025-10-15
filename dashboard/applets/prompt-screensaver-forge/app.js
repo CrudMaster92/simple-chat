@@ -14,6 +14,11 @@ const previewFrame = document.getElementById("previewFrame");
 const generatorStatus = document.getElementById("generatorStatus");
 const saveProjectButton = document.getElementById("saveProjectButton");
 const loadProjectButton = document.getElementById("loadProjectButton");
+const apiKeyInput = document.getElementById("apiKeyInput");
+const rememberApiKeyToggle = document.getElementById("rememberApiKey");
+const modelSelect = document.getElementById("modelSelect");
+const refreshModelsButton = document.getElementById("refreshModelsButton");
+const modelStatus = document.getElementById("modelStatus");
 
 monaco.editor.defineTheme("forge-theme", {
   base: "vs-dark",
@@ -67,7 +72,21 @@ const state = {
   activeFile: null,
   sandboxFrame: null,
   sandboxId: null,
+  openAiKey: "",
+  activeModel: "",
+  modelCache: new Map(),
+  lastModelFingerprint: null,
 };
+
+const OPENAI_RESPONSES_MODEL_PATTERNS = [/^gpt-4\.1/i, /^gpt-5/i, /^o[0-9]/i, /^o-mini/i];
+
+const STORAGE_KEYS = {
+  rememberKey: "prompt-screensaver-forge:remember-openai",
+  storedKey: "prompt-screensaver-forge:openai-key",
+  modelCache: "prompt-screensaver-forge:model-cache",
+};
+
+await initializeOpenAIControls();
 
 const defaultJS = `// Prompt Screensaver Forge runtime entry
 // Use the \`runtime\` helpers to create full-viewport animations.
@@ -223,37 +242,82 @@ languageSelect.addEventListener("change", () => {
   logInfo(`Active language switched to ${language}.`);
 });
 
-generateButton.addEventListener("click", () => {
+generateButton.addEventListener("click", async () => {
   const theme = themeInput.value.trim();
   const language = languageSelect.value;
   if (!theme) {
-    generatorStatus.textContent = "Enter a theme prompt to generate a screensaver.";
-    generatorStatus.classList.remove("status-success");
-    generatorStatus.classList.add("status-warning");
+    setGeneratorStatus("Enter a theme prompt to generate a screensaver.", "warn");
     logWarn("Generation skipped – no theme provided.");
     return;
   }
 
+  const key = state.openAiKey?.trim();
+  if (!key) {
+    setGeneratorStatus("Provide an OpenAI API key to synthesize a screensaver.", "warn");
+    logWarn("Generation skipped – missing OpenAI API key.");
+    return;
+  }
+
+  const model = state.activeModel;
+  if (!model) {
+    setGeneratorStatus("Refresh the OpenAI model list before generating.", "warn");
+    logWarn("Generation skipped – no OpenAI model selected.");
+    return;
+  }
+
+  setGeneratorStatus(`Contacting ${model} for a ${language} screensaver…`, "info");
+  generateButton.disabled = true;
+
   try {
-    const code = language === "python" ? buildPythonScreensaver(theme) : buildJavaScriptScreensaver(theme);
+    const openAiCode = await generateScreensaverWithOpenAI({
+      key,
+      model,
+      theme,
+      language,
+    });
+    const code = extractCodeSnippet(openAiCode, language);
+    if (!code.trim()) {
+      throw new Error("OpenAI response did not include runnable code.");
+    }
     const fileName = language === "python" ? "main.py" : "main.js";
     const file = state.files.get(fileName);
     if (file) {
       file.content = code;
-      const model = ensureModel(fileName, language);
-      model.setValue(code);
-      editor.setModel(model);
+      const modelRef = ensureModel(fileName, language);
+      modelRef.setValue(code);
+      editor.setModel(modelRef);
     }
-    generatorStatus.textContent = `Generated a ${language} loop inspired by "${theme}".`;
-    generatorStatus.classList.remove("status-warning");
-    generatorStatus.classList.add("status-success");
-    logInfo(`Generated ${language} screensaver for theme: ${theme}`);
+    setGeneratorStatus(`Generated a ${language} loop with ${model}.`, "success");
+    logInfo(`OpenAI generated ${language} screensaver using ${model} for theme: ${theme}`);
   } catch (error) {
     console.error(error);
-    generatorStatus.textContent = "Generation failed. Check console for details.";
-    generatorStatus.classList.remove("status-success");
-    generatorStatus.classList.add("status-warning");
-    logError(`Generator error: ${error.message}`);
+    let fallbackApplied = false;
+    const message = error?.message || "Check console for details.";
+    try {
+      const fallbackCode = language === "python" ? buildPythonScreensaver(theme) : buildJavaScriptScreensaver(theme);
+      const fileName = language === "python" ? "main.py" : "main.js";
+      const file = state.files.get(fileName);
+      if (file) {
+        file.content = fallbackCode;
+        const modelRef = ensureModel(fileName, language);
+        modelRef.setValue(fallbackCode);
+        editor.setModel(modelRef);
+      }
+      fallbackApplied = true;
+      logWarn("OpenAI generation failed – loaded offline fallback template instead.");
+    } catch (fallbackError) {
+      console.error(fallbackError);
+      logError(`Fallback generator failed: ${fallbackError.message || fallbackError}`);
+    }
+
+    if (fallbackApplied) {
+      setGeneratorStatus(`OpenAI generation failed. ${message} Loaded a fallback template instead.`, "warn");
+    } else {
+      setGeneratorStatus(`OpenAI generation failed. ${message}`, "warn");
+    }
+    logError(`OpenAI generation error: ${message}`);
+  } finally {
+    generateButton.disabled = false;
   }
 });
 
@@ -297,9 +361,7 @@ runProjectButton.addEventListener("click", () => {
 
 resetButton.addEventListener("click", () => {
   themeInput.value = "";
-  generatorStatus.textContent = "Environment reset.";
-  generatorStatus.classList.remove("status-warning");
-  generatorStatus.classList.add("status-success");
+  setGeneratorStatus("Environment reset.", "success");
   destroySandbox();
   for (const [name, file] of state.files.entries()) {
     if (name === "main.py") {
@@ -431,6 +493,49 @@ loadProjectButton.addEventListener("click", async () => {
   }
 });
 
+apiKeyInput.addEventListener("input", (event) => {
+  const value = event.target.value.trim();
+  state.openAiKey = value;
+  if (rememberApiKeyToggle.checked) {
+    safeStorageSet(STORAGE_KEYS.storedKey, value);
+  }
+  if (!value) {
+    clearModelSelect();
+    state.lastModelFingerprint = null;
+    setModelStatus("Add an OpenAI API key to refresh models.", "warn");
+    return;
+  }
+  applyCachedModelsForKey(value).catch((error) => {
+    console.error("Failed to apply cached OpenAI models", error);
+  });
+});
+
+rememberApiKeyToggle.addEventListener("change", () => {
+  if (rememberApiKeyToggle.checked) {
+    if (state.openAiKey) {
+      safeStorageSet(STORAGE_KEYS.storedKey, state.openAiKey);
+    }
+    safeStorageSet(STORAGE_KEYS.rememberKey, "1");
+  } else {
+    safeStorageRemove(STORAGE_KEYS.storedKey);
+    safeStorageRemove(STORAGE_KEYS.rememberKey);
+  }
+});
+
+refreshModelsButton.addEventListener("click", () => {
+  refreshOpenAIModels().catch((error) => {
+    console.error("Failed to refresh OpenAI models", error);
+  });
+});
+
+modelSelect.addEventListener("change", () => {
+  state.activeModel = modelSelect.value;
+  persistModelSelection();
+  if (state.activeModel) {
+    logInfo(`Active OpenAI model set to ${state.activeModel}.`);
+  }
+});
+
 window.addEventListener("message", (event) => {
   const { data } = event;
   if (!data || typeof data !== "object") return;
@@ -453,6 +558,566 @@ window.addEventListener("message", (event) => {
       break;
   }
 });
+
+function safeStorageGet(key) {
+  try {
+    if (!window.localStorage) return null;
+    return localStorage.getItem(key);
+  } catch (error) {
+    console.error("Failed to read storage", error);
+    return null;
+  }
+}
+
+function safeStorageSet(key, value) {
+  try {
+    if (!window.localStorage) return;
+    if (value === undefined || value === null || value === "") {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, value);
+    }
+  } catch (error) {
+    console.error("Failed to persist value", error);
+  }
+}
+
+function safeStorageRemove(key) {
+  try {
+    if (!window.localStorage) return;
+    localStorage.removeItem(key);
+  } catch (error) {
+    console.error("Failed to remove storage key", error);
+  }
+}
+
+function loadModelCacheFromStorage() {
+  try {
+    const raw = safeStorageGet(STORAGE_KEYS.modelCache);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return;
+    state.modelCache = new Map(Object.entries(parsed));
+  } catch (error) {
+    console.error("Failed to load OpenAI model cache", error);
+    state.modelCache = new Map();
+  }
+}
+
+function persistModelCache() {
+  try {
+    const serializable = Object.fromEntries(state.modelCache.entries());
+    safeStorageSet(STORAGE_KEYS.modelCache, JSON.stringify(serializable));
+  } catch (error) {
+    console.error("Failed to persist OpenAI model cache", error);
+  }
+}
+
+function persistModelSelection() {
+  if (!state.lastModelFingerprint) return;
+  const entry = state.modelCache.get(state.lastModelFingerprint);
+  if (!entry) return;
+  entry.selectedModel = state.activeModel;
+  state.modelCache.set(state.lastModelFingerprint, entry);
+  persistModelCache();
+}
+
+function clearModelSelect() {
+  modelSelect.innerHTML = "";
+  modelSelect.disabled = true;
+  state.activeModel = "";
+}
+
+function defaultModelBuckets() {
+  return {
+    chat: [],
+    vision: [],
+    images: [],
+    audio: [],
+    embeddings: [],
+    other: [],
+  };
+}
+
+function renderModelOptions(buckets) {
+  modelSelect.innerHTML = "";
+  const labels = {
+    chat: "Chat",
+    vision: "Vision",
+    images: "Images",
+    audio: "Audio",
+    embeddings: "Embeddings",
+    other: "Other",
+  };
+  let added = false;
+  Object.entries(buckets || {}).forEach(([bucket, list]) => {
+    if (!Array.isArray(list) || !list.length) return;
+    const group = document.createElement("optgroup");
+    group.label = labels[bucket] || bucket;
+    list.forEach((id) => {
+      const option = document.createElement("option");
+      option.value = id;
+      option.textContent = id;
+      group.appendChild(option);
+    });
+    modelSelect.appendChild(group);
+    added = true;
+  });
+  if (!added) {
+    modelSelect.disabled = true;
+  }
+}
+
+function determineDefaultModel(buckets, preferred) {
+  if (!buckets) return "";
+  const lists = Object.values(buckets);
+  const containsPreferred = preferred && lists.some((list) => Array.isArray(list) && list.includes(preferred));
+  if (containsPreferred) {
+    return preferred;
+  }
+  const chatList = buckets.chat || [];
+  const preferredOrder = [
+    "gpt-4o-mini",
+    "gpt-4o-mini-2024-07-18",
+    "gpt-4o",
+    "gpt-4.1",
+    "o3-mini",
+    "o1-mini",
+    "gpt-3.5-turbo",
+  ];
+  for (const candidate of preferredOrder) {
+    if (chatList.includes(candidate)) return candidate;
+  }
+  if (chatList.length) return chatList[0];
+  const fallbackOrder = ["vision", "images", "audio", "embeddings", "other"];
+  for (const bucket of fallbackOrder) {
+    const list = buckets[bucket] || [];
+    if (list.length) return list[0];
+  }
+  return "";
+}
+
+function applyModelBuckets(buckets, preferredModel) {
+  if (!buckets) {
+    clearModelSelect();
+    return;
+  }
+  renderModelOptions(buckets);
+  const chosen = determineDefaultModel(buckets, preferredModel);
+  if (chosen) {
+    state.activeModel = chosen;
+    modelSelect.value = chosen;
+    modelSelect.disabled = false;
+  } else {
+    state.activeModel = "";
+    modelSelect.disabled = true;
+  }
+  persistModelSelection();
+}
+
+function countTotalModels(groups) {
+  return Object.values(groups || {}).reduce((total, list) => total + (Array.isArray(list) ? list.length : 0), 0);
+}
+
+function categorizeOpenAIModels(models) {
+  const buckets = defaultModelBuckets();
+  (models || []).forEach((model) => {
+    const id = typeof model === "string" ? model : model?.id;
+    if (!id || typeof id !== "string") return;
+    const bucket = inferModelBucket(id);
+    buckets[bucket] = buckets[bucket] || [];
+    buckets[bucket].push(id);
+  });
+  Object.keys(buckets).forEach((key) => {
+    buckets[key] = Array.from(new Set(buckets[key])).sort();
+  });
+  return buckets;
+}
+
+function inferModelBucket(id) {
+  if (/embedding/i.test(id)) return "embeddings";
+  if (/whisper|tts|audio/i.test(id)) return "audio";
+  if (/image-\d|dall-e|image-edit/i.test(id)) return "images";
+  if (/vision|omni-moderation|gpt-4o-mini-vision/i.test(id)) return "vision";
+  if (/gpt-|chat|o-mini|omni|^o[0-9]/i.test(id)) return "chat";
+  if (/edit/i.test(id)) return "other";
+  return "other";
+}
+
+async function fingerprintKey(key) {
+  const trimmed = key.trim();
+  if (!trimmed) return "";
+  if (!crypto?.subtle) {
+    try {
+      const base = btoa(unescape(encodeURIComponent(trimmed)));
+      return base.replace(/[^a-z0-9]/gi, "").slice(0, 32);
+    } catch (error) {
+      console.error("Failed to fingerprint key without SubtleCrypto", error);
+      return trimmed.slice(-32);
+    }
+  }
+  const encoder = new TextEncoder();
+  const data = encoder.encode(trimmed);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("")
+    .slice(0, 32);
+}
+
+async function applyCachedModelsForKey(key) {
+  const trimmed = key.trim();
+  if (!trimmed) return;
+  const fingerprint = await fingerprintKey(trimmed);
+  if (state.openAiKey.trim() !== trimmed) return;
+  state.lastModelFingerprint = fingerprint;
+  const cached = state.modelCache.get(fingerprint);
+  if (cached) {
+    applyModelBuckets(cached.buckets, cached.selectedModel);
+    setModelStatus("Loaded cached models for this key. Refresh to sync with OpenAI.", "info");
+    if (!modelSelect.disabled) {
+      modelSelect.disabled = false;
+    }
+  } else {
+    clearModelSelect();
+    setModelStatus("Refresh models to sync with OpenAI.", "warn");
+  }
+}
+
+async function initializeOpenAIControls() {
+  loadModelCacheFromStorage();
+  const rememberFlag = safeStorageGet(STORAGE_KEYS.rememberKey) === "1";
+  if (rememberFlag) {
+    rememberApiKeyToggle.checked = true;
+  } else {
+    safeStorageRemove(STORAGE_KEYS.storedKey);
+  }
+  const storedKey = rememberFlag ? safeStorageGet(STORAGE_KEYS.storedKey) : "";
+  if (storedKey) {
+    state.openAiKey = storedKey.trim();
+    apiKeyInput.value = storedKey;
+    await applyCachedModelsForKey(state.openAiKey);
+  }
+  if (!state.openAiKey) {
+    clearModelSelect();
+    setModelStatus("Add an OpenAI API key to refresh models.", "warn");
+  }
+}
+
+async function refreshOpenAIModels() {
+  const key = state.openAiKey?.trim();
+  if (!key) {
+    setModelStatus("Add an OpenAI API key to refresh models.", "warn");
+    clearModelSelect();
+    return;
+  }
+  const fingerprint = await fingerprintKey(key);
+  state.lastModelFingerprint = fingerprint;
+  const cached = state.modelCache.get(fingerprint);
+  setModelStatus("Fetching models from OpenAI…", "info");
+  refreshModelsButton.disabled = true;
+  modelSelect.disabled = true;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/models", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${key}`,
+      },
+    });
+    const raw = await response.text();
+    if (response.status === 401 || response.status === 403) {
+      if (cached) {
+        applyModelBuckets(cached.buckets, cached.selectedModel);
+        setModelStatus("OpenAI rejected the API key. Using cached catalog.", "warn");
+      } else {
+        clearModelSelect();
+        setModelStatus("OpenAI rejected the API key. Update it and try again.", "warn");
+      }
+      throw new Error("OpenAI rejected the API key.");
+    }
+    if (!response.ok) {
+      throw new Error(parseOpenAIError(raw, `OpenAI model refresh failed (${response.status})`));
+    }
+    let payload = {};
+    try {
+      payload = raw ? JSON.parse(raw) : {};
+    } catch (error) {
+      console.error("Failed to parse OpenAI model payload", error);
+    }
+    const buckets = categorizeOpenAIModels(payload?.data || []);
+    const chosen = determineDefaultModel(buckets, cached?.selectedModel);
+    state.activeModel = chosen;
+    applyModelBuckets(buckets, chosen);
+    state.modelCache.set(fingerprint, {
+      buckets,
+      fetchedAt: Date.now(),
+      selectedModel: state.activeModel,
+    });
+    persistModelCache();
+    setModelStatus(`Loaded ${countTotalModels(buckets)} models from OpenAI.`, "success");
+    if (state.activeModel) {
+      logInfo(`OpenAI models synced. Active model: ${state.activeModel}.`);
+    } else {
+      logWarn("OpenAI models synced but no compatible chat model found.");
+    }
+  } catch (error) {
+    if (error && error.message) {
+      console.error("OpenAI model refresh error", error);
+    }
+    if (cached) {
+      applyModelBuckets(cached.buckets, cached.selectedModel);
+      setModelStatus("Could not reach OpenAI – using cached catalog.", "warn");
+      logWarn("Using cached OpenAI model list due to refresh failure.");
+    } else {
+      clearModelSelect();
+      setModelStatus(error?.message || "Could not reach OpenAI. Check console for details.", "warn");
+    }
+  } finally {
+    refreshModelsButton.disabled = false;
+    if (state.activeModel) {
+      modelSelect.disabled = false;
+    }
+  }
+}
+
+function shouldUseOpenAIResponses(modelId) {
+  if (!modelId) return false;
+  return OPENAI_RESPONSES_MODEL_PATTERNS.some((pattern) => pattern.test(String(modelId).trim()));
+}
+
+function parseOpenAIError(raw, fallback) {
+  if (raw) {
+    try {
+      const data = JSON.parse(raw);
+      const message = data?.error?.message || data?.message || data?.error;
+      if (typeof message === "string" && message.trim()) {
+        return message.trim();
+      }
+    } catch (error) {
+      const trimmed = raw.trim();
+      if (trimmed) return trimmed;
+    }
+  }
+  return fallback || "OpenAI request failed";
+}
+
+function extractOpenAITextParts(parts) {
+  if (!parts) return "";
+  const list = Array.isArray(parts) ? parts : [parts];
+  let buffer = "";
+  list.forEach((part) => {
+    if (!part) return;
+    if (typeof part === "string") {
+      buffer += part;
+      return;
+    }
+    if (typeof part.text === "string") {
+      buffer += part.text;
+      return;
+    }
+    if (typeof part.value === "string") {
+      buffer += part.value;
+      return;
+    }
+    if (typeof part.content === "string") {
+      buffer += part.content;
+      return;
+    }
+    if (Array.isArray(part.content)) {
+      buffer += extractOpenAITextParts(part.content);
+    }
+  });
+  return buffer.trim();
+}
+
+function extractOpenAIChatText(payload) {
+  if (!payload) return "";
+  const choices = Array.isArray(payload?.choices) ? payload.choices : [];
+  for (const choice of choices) {
+    const message = choice?.message;
+    if (!message) continue;
+    if (typeof message.content === "string" && message.content.trim()) {
+      return message.content.trim();
+    }
+    if (Array.isArray(message.content)) {
+      const text = extractOpenAITextParts(message.content);
+      if (text) return text;
+    }
+  }
+  if (typeof payload?.message === "string" && payload.message.trim()) {
+    return payload.message.trim();
+  }
+  return "";
+}
+
+function extractOpenAIResponsesText(payload) {
+  if (!payload) return "";
+  if (typeof payload.output_text === "string" && payload.output_text.trim()) {
+    return payload.output_text.trim();
+  }
+  const streams = Array.isArray(payload.output)
+    ? payload.output
+    : Array.isArray(payload.responses)
+    ? payload.responses
+    : [];
+  for (const entry of streams) {
+    if (!entry) continue;
+    const parts = entry.content || entry.outputs || entry.parts || entry.message?.content;
+    const text = extractOpenAITextParts(parts);
+    if (text) return text;
+  }
+  if (Array.isArray(payload.messages)) {
+    for (const message of payload.messages) {
+      if (message?.role === "assistant") {
+        const text =
+          typeof message.content === "string" ? message.content.trim() : extractOpenAITextParts(message.content);
+        if (text) return text;
+      }
+    }
+  }
+  return "";
+}
+
+function buildOpenAIResponsesInput(messages) {
+  return messages.map((message) => {
+    const role = message.role || "user";
+    const text = typeof message.content === "string" ? message.content : "";
+    const type = role === "assistant" ? "output_text" : "input_text";
+    return {
+      role,
+      content: [
+        {
+          type,
+          text,
+        },
+      ],
+    };
+  });
+}
+
+async function generateScreensaverWithOpenAI({ key, model, theme, language }) {
+  const trimmedTheme = theme.trim();
+  const targetLanguage = language === "python" ? "Python" : "JavaScript";
+  const systemPrompt = `You are a veteran creative coder who builds mesmerizing fullscreen canvas screensavers. Produce high-quality ${targetLanguage} code that runs in a browser without additional libraries.`;
+  const userPrompt = [
+    `Theme: ${trimmedTheme}`,
+    language === "python"
+      ? "Write Pyodide-compatible Python that manipulates the DOM canvas. Handle resize events and animation loops with requestAnimationFrame."
+      : "Use the provided runtime helpers (runtime.startLoop, runtime.fade, runtime.gradientBackground, runtime.setBackground, runtime.randomRange).",
+    "Return only the source code without explanations or markdown fences.",
+  ].join("\n");
+
+  const messages = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
+  ];
+
+  if (shouldUseOpenAIResponses(model)) {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({
+        model,
+        temperature: 0.65,
+        input: buildOpenAIResponsesInput(messages),
+        max_output_tokens: 2048,
+      }),
+    });
+    const raw = await response.text();
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("OpenAI rejected the API key.");
+    }
+    if (!response.ok) {
+      throw new Error(parseOpenAIError(raw, `OpenAI request failed (${response.status})`));
+    }
+    let payload = {};
+    try {
+      payload = raw ? JSON.parse(raw) : {};
+    } catch (error) {
+      throw new Error("Invalid JSON returned from OpenAI.");
+    }
+    const text = extractOpenAIResponsesText(payload) || extractOpenAIChatText(payload);
+    if (!text) {
+      throw new Error("OpenAI returned an empty response.");
+    }
+    return text;
+  }
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature: 0.65,
+    }),
+  });
+  const raw = await response.text();
+  if (response.status === 401 || response.status === 403) {
+    throw new Error("OpenAI rejected the API key.");
+  }
+  if (!response.ok) {
+    throw new Error(parseOpenAIError(raw, `OpenAI request failed (${response.status})`));
+  }
+  let payload = {};
+  try {
+    payload = raw ? JSON.parse(raw) : {};
+  } catch (error) {
+    throw new Error("Invalid JSON returned from OpenAI.");
+  }
+  const text = extractOpenAIChatText(payload);
+  if (!text) {
+    throw new Error("OpenAI returned an empty response.");
+  }
+  return text;
+}
+
+function extractCodeSnippet(text, language) {
+  if (!text) return "";
+  const normalized = text.replace(/\r\n/g, "\n");
+  const patterns = language === "python"
+    ? [/```python\s*\n([\s\S]*?)```/i, /```py\s*\n([\s\S]*?)```/i]
+    : [/```javascript\s*\n([\s\S]*?)```/i, /```js\s*\n([\s\S]*?)```/i];
+  patterns.push(/```\s*\n([\s\S]*?)```/i);
+  for (const pattern of patterns) {
+    const match = normalized.match(pattern);
+    if (match && match[1]) {
+      return match[1].trim();
+    }
+  }
+  return normalized.trim();
+}
+
+function setGeneratorStatus(message, tone = "info") {
+  generatorStatus.textContent = message;
+  generatorStatus.classList.remove("status-success", "status-warning", "status-info");
+  if (tone === "success") {
+    generatorStatus.classList.add("status-success");
+  } else if (tone === "warn") {
+    generatorStatus.classList.add("status-warning");
+  } else {
+    generatorStatus.classList.add("status-info");
+  }
+}
+
+function setModelStatus(message, tone = "info") {
+  modelStatus.textContent = message;
+  modelStatus.classList.remove("status-success", "status-warning", "status-info");
+  if (tone === "success") {
+    modelStatus.classList.add("status-success");
+  } else if (tone === "warn") {
+    modelStatus.classList.add("status-warning");
+  } else {
+    modelStatus.classList.add("status-info");
+  }
+}
 
 function createFile(name, language, content) {
   state.files.set(name, { name, language, content });

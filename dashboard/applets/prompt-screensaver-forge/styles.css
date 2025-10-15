@@ -98,6 +98,71 @@ body {
   box-shadow: var(--shadow-md);
 }
 
+.model-panel {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(44, 177, 165, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.model-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: flex-end;
+}
+
+.model-key-group {
+  flex: 1 1 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.remember-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-toggle input {
+  accent-color: var(--accent);
+}
+
+.model-select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 240px;
+}
+
+.model-select {
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(44, 177, 165, 0.4);
+  background: rgba(1, 16, 17, 0.85);
+  color: var(--text-primary);
+  padding: 12px 14px;
+  font-size: 0.95rem;
+}
+
+.model-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.model-status {
+  min-height: 18px;
+  font-size: 0.88rem;
+  color: var(--accent-soft);
+  letter-spacing: 0.01em;
+}
+
 .input-group {
   display: block;
 }
@@ -156,6 +221,10 @@ body {
 
 .status-warning {
   color: var(--accent);
+}
+
+.status-info {
+  color: var(--text-muted);
 }
 
 .workspace {
@@ -403,6 +472,16 @@ button:focus-visible {
 
   .input-row select,
   .input-row button {
+    width: 100%;
+  }
+
+  .model-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .model-select-group {
     width: 100%;
   }
 
