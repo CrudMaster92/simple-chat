@@ -60,6 +60,34 @@
             <button id="generateButton" class="primary-button" type="button">Generate Screensaver</button>
           </div>
         </label>
+        <div class="model-panel" aria-label="OpenAI access controls">
+          <div class="model-controls">
+            <div class="model-key-group">
+              <span class="input-label">OpenAI API Key</span>
+              <div class="input-row">
+                <input
+                  id="apiKeyInput"
+                  type="password"
+                  placeholder="sk-..."
+                  autocomplete="off"
+                  aria-describedby="modelStatus"
+                />
+                <button id="refreshModelsButton" class="ghost-button" type="button">
+                  Refresh Models
+                </button>
+              </div>
+              <label class="remember-toggle" for="rememberApiKey">
+                <input id="rememberApiKey" type="checkbox" />
+                <span>Remember locally (stored in this browser)</span>
+              </label>
+            </div>
+            <div class="model-select-group">
+              <span class="input-label">OpenAI Model</span>
+              <select id="modelSelect" class="model-select" disabled aria-describedby="modelStatus"></select>
+            </div>
+          </div>
+          <div id="modelStatus" class="model-status" role="status"></div>
+        </div>
         <div class="info-row" id="generatorStatus" role="status"></div>
       </section>
       <section class="workspace">
