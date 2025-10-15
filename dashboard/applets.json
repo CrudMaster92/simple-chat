@@ -80,5 +80,6 @@
   "omni-camera-studio": "./applets/omni-camera-studio/applet.json",
   "prompt-screensaver-forge": "./applets/prompt-screensaver-forge/applet.json",
   "powerpoint-slide-forge": "./applets/powerpoint-slide-forge/applet.json",
-  "groundtrace-navigator": "./applets/groundtrace-navigator/applet.json"
+  "groundtrace-navigator": "./applets/groundtrace-navigator/applet.json",
+  "parallax-budget-compass": "./applets/parallax-budget-compass/applet.json"
 }
