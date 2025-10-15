@@ -76,6 +76,12 @@ let audioMasterGain = null;
 const audioThrottleMarks = new Map();
 
 const SOUND_THEMES = {
+  bootChime: [
+    { frequency: 360, duration: 0.18, volume: 0.32 },
+    { frequency: 540, duration: 0.16, volume: 0.28, gap: 0.04 },
+    { frequency: 760, duration: 0.14, volume: 0.24 },
+    { frequency: 920, duration: 0.22, volume: 0.2 },
+  ],
   menuOpen: [
     { frequency: 520, duration: 0.12, volume: 0.35 },
     { frequency: 740, duration: 0.1, volume: 0.25, gap: 0.04 },
@@ -269,14 +275,14 @@ if (bootScreen) {
 }
 
 if (bootHint) {
-  bootHint.textContent = bootState.reduceMotion ? 'Reduced motion mode' : 'Click to replay';
+  bootHint.textContent = bootState.reduceMotion ? 'Reduced motion mode' : '';
 }
 
 if (reduceMotionQuery) {
   const handleReduceMotionChange = (event) => {
     bootState.reduceMotion = event.matches;
     if (bootHint) {
-      bootHint.textContent = event.matches ? 'Reduced motion mode' : 'Click to replay';
+      bootHint.textContent = event.matches ? 'Reduced motion mode' : '';
     }
   };
   if (typeof reduceMotionQuery.addEventListener === 'function') {
@@ -1513,8 +1519,9 @@ function playBootAnimation() {
   clearBootTimers();
   showBootScreen();
   bootState.isPlaying = true;
+  playSound('bootChime');
   if (bootHint) {
-    bootHint.textContent = bootState.reduceMotion ? 'Reduced motion mode' : 'Click to replay';
+    bootHint.textContent = bootState.reduceMotion ? 'Reduced motion mode' : '';
   }
   setBootStage(0);
   void bootScreen.offsetWidth;
