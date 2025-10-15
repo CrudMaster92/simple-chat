@@ -97,6 +97,10 @@ button:hover {
   box-shadow: 0 10px 20px rgba(255, 111, 76, 0.45);
 }
 
+#overlay[hidden] {
+  display: none !important;
+}
+
 #overlay {
   position: absolute;
   inset: 0;
