@@ -871,7 +871,130 @@ async function refreshBuddyModels() {
   }
 }
 
-async function callBuddyOpenAI({ key, model, messages }) {
+const OPENAI_RESPONSES_MODEL_PATTERNS = [/^gpt-4\.1/i, /^gpt-5/i, /^o[0-9]/i, /^o-mini/i];
+
+function shouldUseOpenAIResponses(modelId) {
+  if (!modelId) return false;
+  return OPENAI_RESPONSES_MODEL_PATTERNS.some((pattern) => pattern.test(String(modelId).trim()));
+}
+
+function parseOpenAIError(raw, fallback) {
+  if (raw) {
+    try {
+      const data = JSON.parse(raw);
+      const message = data?.error?.message || data?.message || data?.error;
+      if (typeof message === 'string' && message.trim()) {
+        return message.trim();
+      }
+    } catch (error) {
+      const trimmed = raw.trim();
+      if (trimmed) return trimmed;
+    }
+  }
+  return fallback || 'OpenAI request failed';
+}
+
+function extractOpenAITextParts(parts) {
+  if (!parts) return '';
+  const list = Array.isArray(parts) ? parts : [parts];
+  let buffer = '';
+  list.forEach((part) => {
+    if (!part) return;
+    if (typeof part === 'string') {
+      buffer += part;
+      return;
+    }
+    if (typeof part.text === 'string') {
+      buffer += part.text;
+      return;
+    }
+    if (typeof part.value === 'string') {
+      buffer += part.value;
+      return;
+    }
+    if (typeof part.content === 'string') {
+      buffer += part.content;
+      return;
+    }
+    if (Array.isArray(part.content)) {
+      buffer += extractOpenAITextParts(part.content);
+    }
+  });
+  return buffer.trim();
+}
+
+function extractOpenAIChatText(payload) {
+  if (!payload) return '';
+  const choices = Array.isArray(payload.choices) ? payload.choices : [];
+  for (const choice of choices) {
+    const message = choice && choice.message;
+    if (!message) continue;
+    if (typeof message.content === 'string' && message.content.trim()) {
+      return message.content.trim();
+    }
+    if (Array.isArray(message.content)) {
+      const text = extractOpenAITextParts(message.content);
+      if (text) return text;
+    }
+  }
+  if (typeof payload.message === 'string' && payload.message.trim()) {
+    return payload.message.trim();
+  }
+  return '';
+}
+
+function extractOpenAIResponsesText(payload) {
+  if (!payload) return '';
+  if (typeof payload.output_text === 'string' && payload.output_text.trim()) {
+    return payload.output_text.trim();
+  }
+  const streams = Array.isArray(payload.output)
+    ? payload.output
+    : Array.isArray(payload.responses)
+    ? payload.responses
+    : [];
+  for (const entry of streams) {
+    if (!entry) continue;
+    const parts = entry.content || entry.outputs || entry.parts || entry.message?.content;
+    const text = extractOpenAITextParts(parts);
+    if (text) return text;
+  }
+  if (Array.isArray(payload.messages)) {
+    for (const message of payload.messages) {
+      if (message?.role === 'assistant') {
+        const text =
+          typeof message.content === 'string'
+            ? message.content.trim()
+            : extractOpenAITextParts(message.content);
+        if (text) return text;
+      }
+    }
+  }
+  return '';
+}
+
+function buildOpenAIResponsesInput(messages) {
+  return messages.map((message) => ({
+    role: message.role || 'user',
+    content: [
+      {
+        type: 'text',
+        text: typeof message.content === 'string' ? message.content : '',
+      },
+    ],
+  }));
+}
+
+function shouldRetryWithResponses(error) {
+  if (!error) return false;
+  const message = typeof error.message === 'string' ? error.message.toLowerCase() : '';
+  if (!message) return false;
+  if (message.includes('responses api') || message.includes('responses endpoint')) return true;
+  if (message.includes('unrecognized request argument') && message.includes('messages')) return true;
+  return false;
+}
+
+async function callBuddyOpenAICompletions({ key, model, messages }) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -884,19 +1007,81 @@ async function callBuddyOpenAI({ key, model, messages }) {
       temperature: 0.7,
     }),
   });
+  const raw = await response.text();
   if (response.status === 401) {
-    throw new Error('unauthorized');
+    const error = new Error('unauthorized');
+    error.status = response.status;
+    throw error;
   }
   if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `OpenAI chat failed (${response.status})`);
+    const error = new Error(parseOpenAIError(raw, `OpenAI chat failed (${response.status})`));
+    error.status = response.status;
+    error.responseText = raw;
+    throw error;
   }
-  const data = await response.json();
-  const reply = data?.choices?.[0]?.message?.content;
-  if (typeof reply !== 'string' || !reply.trim()) {
+  let payload = {};
+  try {
+    payload = raw ? JSON.parse(raw) : {};
+  } catch (error) {
+    throw new Error('Invalid JSON returned from OpenAI.');
+  }
+  const reply = extractOpenAIChatText(payload);
+  if (!reply) {
     throw new Error('Empty response from OpenAI');
   }
-  return reply.trim();
+  return reply;
+}
+
+async function callBuddyOpenAIResponses({ key, model, messages }) {
+  const response = await fetch('https://api.openai.com/v1/responses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify({
+      model,
+      temperature: 0.7,
+      input: buildOpenAIResponsesInput(messages),
+    }),
+  });
+  const raw = await response.text();
+  if (response.status === 401) {
+    const error = new Error('unauthorized');
+    error.status = response.status;
+    throw error;
+  }
+  if (!response.ok) {
+    const error = new Error(parseOpenAIError(raw, `OpenAI chat failed (${response.status})`));
+    error.status = response.status;
+    error.responseText = raw;
+    throw error;
+  }
+  let payload = {};
+  try {
+    payload = raw ? JSON.parse(raw) : {};
+  } catch (error) {
+    throw new Error('Invalid JSON returned from OpenAI.');
+  }
+  const reply = extractOpenAIResponsesText(payload) || extractOpenAIChatText(payload);
+  if (!reply) {
+    throw new Error('Empty response from OpenAI');
+  }
+  return reply;
+}
+
+async function callBuddyOpenAI({ key, model, messages }) {
+  if (shouldUseOpenAIResponses(model)) {
+    return callBuddyOpenAIResponses({ key, model, messages });
+  }
+  try {
+    return await callBuddyOpenAICompletions({ key, model, messages });
+  } catch (error) {
+    if (shouldRetryWithResponses(error)) {
+      return callBuddyOpenAIResponses({ key, model, messages });
+    }
+    throw error;
+  }
 }
 
 function maybeHandleAppletQuestion(text) {
