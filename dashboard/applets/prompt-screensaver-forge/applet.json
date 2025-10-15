@@ -1,0 +1,12 @@
+{
+  "slug": "prompt-screensaver-forge",
+  "name": "Prompt Screensaver Forge",
+  "description": "Canvas-style generator that turns written themes into looping screensaver animations with sandboxed previews.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-07-19",
+  "tags": ["creative", "screensaver", "generator"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

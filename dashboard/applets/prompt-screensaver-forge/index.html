@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Screensaver Forge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <script>
+      window.loadMonaco = () =>
+        new Promise((resolve) => {
+          require.config({
+            paths: {
+              vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs",
+            },
+          });
+          require(["vs/editor/editor.main"], () => {
+            resolve(window.monaco);
+          });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+  </head>
+  <body>
+    <div id="app" class="applet" aria-live="polite">
+      <header class="applet__header">
+        <div class="title-block">
+          <img src="./assets/icon.svg" alt="Screensaver icon" class="title-icon" />
+          <div>
+            <h1>Prompt Screensaver Forge</h1>
+            <p class="subtitle">Turn any vibe into a looping canvas right here in the dashboard.</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="resetEnvironment" class="ghost-button" type="button">Reset Environment</button>
+          <button id="killSwitch" class="ghost-button ghost-button--alert" type="button">Kill Switch</button>
+        </div>
+      </header>
+      <section class="prompt-panel">
+        <label class="input-group" for="themeInput">
+          <span class="input-label">Theme Prompt</span>
+          <div class="input-row">
+            <input
+              id="themeInput"
+              type="text"
+              placeholder="e.g. retro Tokyo alley, neon tidepool, matrix terminal rain"
+              autocomplete="off"
+            />
+            <select id="languageSelect" aria-label="Generated language">
+              <option value="javascript">JavaScript</option>
+              <option value="python">Python (Pyodide)</option>
+            </select>
+            <button id="generateButton" class="primary-button" type="button">Generate Screensaver</button>
+          </div>
+        </label>
+        <div class="info-row" id="generatorStatus" role="status"></div>
+      </section>
+      <section class="workspace">
+        <aside class="sidebar" aria-label="Project tools">
+          <div class="sidebar-card">
+            <div class="card-heading">Project Files</div>
+            <ul id="fileList" class="file-list"></ul>
+            <div class="file-actions">
+              <button id="newFileButton" class="ghost-button" type="button">New File</button>
+              <button id="deleteFileButton" class="ghost-button" type="button">Delete File</button>
+            </div>
+          </div>
+          <div class="sidebar-card">
+            <div class="card-heading">Execution</div>
+            <button id="runFileButton" class="secondary-button" type="button">Run Active File</button>
+            <button id="runProjectButton" class="secondary-button" type="button">Run Project</button>
+          </div>
+          <div class="sidebar-card">
+            <div class="card-heading">OPFS Project Storage</div>
+            <button id="saveProjectButton" class="ghost-button" type="button">Save to OPFS</button>
+            <button id="loadProjectButton" class="ghost-button" type="button">Load from OPFS</button>
+          </div>
+          <div class="sidebar-card sidebar-card--terminal">
+            <div class="card-heading">Console</div>
+            <div id="terminal" class="terminal"></div>
+          </div>
+        </aside>
+        <div class="main-pane">
+          <div id="editor" class="editor" role="region" aria-label="Code editor"></div>
+          <div class="preview">
+            <div class="preview-header">
+              <span>Live Screensaver Preview</span>
+            </div>
+            <div id="previewFrame" class="preview-frame"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
