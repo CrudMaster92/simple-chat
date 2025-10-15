@@ -80,12 +80,18 @@
     <script>
       window.EJS_player = "#emulatorViewport";
       window.EJS_core = "snes";
-      window.EJS_pathtodata = "https://cdn.emulatorjs.com/latest/data/";
+      window.EJS_pathtodata = "https://cdn.jsdelivr.net/npm/emulatorjs@1.7.3/dist/data/";
       window.EJS_backgroundColor = "#0a1c2b";
       window.EJS_gameName = "Custom Upload";
       window.EJS_startOnLoaded = false;
     </script>
-    <script src="https://cdn.emulatorjs.com/latest/loader.js"></script>
+    <script
+      id="emulatorScript"
+      data-emulatorjs
+      src="https://cdn.jsdelivr.net/npm/emulatorjs@1.7.3/dist/emulator.min.js"
+      defer
+      crossorigin="anonymous"
+    ></script>
     <script type="module" src="./app.js"></script>
   </body>
 </html>

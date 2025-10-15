@@ -6,6 +6,7 @@ const fullscreenBtn = document.getElementById("fullscreenBtn");
 const resetBtn = document.getElementById("resetBtn");
 const muteBtn = document.getElementById("muteBtn");
 const viewport = document.getElementById("emulatorViewport");
+const emulatorScript = document.getElementById("emulatorScript");
 
 let lastRom = null;
 let isMuted = false;
@@ -18,6 +19,37 @@ function setStatus(message, tone = "info") {
   } else if (tone === "warning") {
     statusMessage.classList.add("status--warning");
   }
+}
+
+if (emulatorScript) {
+  const watchdog = window.setTimeout(() => {
+    const runtimeLoaded =
+      window.EJS_loadFile ||
+      (window.EJS && typeof window.EJS.loadRom === "function") ||
+      window.EJS_Emulator ||
+      window.EJS_emulator ||
+      window.emulator;
+
+    if (!runtimeLoaded && emulatorScript.dataset.failed !== "true") {
+      emulatorScript.dataset.failed = "timeout";
+      setStatus(
+        "The emulator runtime is taking unusually long to load. Ensure jsDelivr isn't blocked and reload the page.",
+        "warning",
+      );
+    }
+  }, 15000);
+
+  emulatorScript.addEventListener("error", () => {
+    emulatorScript.dataset.failed = "true";
+    setStatus(
+      "Failed to download the SNES runtime. Check your connection or unblock jsDelivr, then reload the page.",
+      "warning",
+    );
+  });
+
+  emulatorScript.addEventListener("load", () => {
+    window.clearTimeout(watchdog);
+  });
 }
 
 function clearFileInput() {
@@ -175,10 +207,26 @@ async function bootRom(source) {
   setStatus(`Preparing ${name}…`);
 
   try {
+    if (emulatorScript?.dataset.failed) {
+      throw new Error(emulatorScript.dataset.failed === "true" ? "download-failed" : "download-timeout");
+    }
+
     await waitForEmulator();
   } catch (error) {
     console.error(error);
-    setStatus("Emulator core is still downloading. Try again in a moment.", "warning");
+    if (error?.message === "download-failed") {
+      setStatus(
+        "The emulator core could not be downloaded. Please verify your network connection and reload the studio.",
+        "warning",
+      );
+    } else if (error?.message === "download-timeout") {
+      setStatus(
+        "The emulator runtime never finished loading. Confirm the CDN is reachable before trying again.",
+        "warning",
+      );
+    } else {
+      setStatus("Emulator core is still downloading. Try again in a moment.", "warning");
+    }
     return;
   }
 
