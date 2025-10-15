@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Groundtrace Navigator</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC0="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="title-block">
+          <h1>Groundtrace Navigator</h1>
+          <p>
+            Explore OpenStreetMap anywhere on Earth, search for places, and
+            quickly jump to your current position when you need to orient
+            yourself.
+          </p>
+        </div>
+      </header>
+      <section class="control-panel">
+        <form id="search-form" class="search-form" autocomplete="off">
+          <label for="search-input">Search for a place</label>
+          <div class="search-row">
+            <input
+              id="search-input"
+              name="query"
+              type="text"
+              placeholder="City, address, landmark..."
+              required
+              aria-describedby="status"
+            />
+            <button type="submit" class="primary">Search</button>
+          </div>
+        </form>
+        <div class="actions">
+          <button id="locate-btn" type="button" class="secondary">
+            Find My Location
+          </button>
+          <span class="status" id="status" role="status" aria-live="polite"></span>
+        </div>
+      </section>
+      <div class="map-and-results">
+        <div id="map" class="map" role="region" aria-label="Interactive map"></div>
+        <aside class="results" id="results" aria-live="polite"></aside>
+      </div>
+    </div>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-SmHgwlHG0ZHgAtvA3vC6bZ8pF0Q7bzsNf3pru2Uw3Ks="
+      crossorigin=""
+    ></script>
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>
