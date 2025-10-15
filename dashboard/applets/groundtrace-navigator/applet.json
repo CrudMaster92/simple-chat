@@ -1,0 +1,12 @@
+{
+  "slug": "groundtrace-navigator",
+  "name": "Groundtrace Navigator",
+  "description": "Search global places, explore OpenStreetMap, and center the view on your current location.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-05",
+  "tags": ["maps", "navigation", "utility"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
