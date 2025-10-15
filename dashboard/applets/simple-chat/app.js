@@ -230,6 +230,8 @@
   const firstModelSelect = modelSelects[0] || null;
   const builtinModelOptions = firstModelSelect ? Array.from(firstModelSelect.options).map(opt=>({ value: opt.value, label: opt.textContent })) : [];
   const defaultModelId = builtinModelOptions.length ? builtinModelOptions[0].value : 'gpt-4o';
+  const MODEL_CACHE_STORAGE_KEY = 'personaChat.modelCache.v1';
+  const MAX_CHAT_MODEL_OPTIONS = 200;
 
   // Audio feedback for new messages
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -568,43 +570,64 @@
       return;
     }
     refreshModelsBtn.disabled = true;
-    if(modelStatusEl) modelStatusEl.textContent = 'Fetching models…';
     const previousValues = modelSelects.map(sel=>sel.value);
-    const selectedModelIds = ['A','B'].map(resolveModelForSide);
-    const openAICandidate = selectedModelIds.find(id=>resolveProviderForModel(id) === 'openai');
-    if(!openAICandidate){
-      if(modelStatusEl) modelStatusEl.textContent = 'Model refresh is only available for OpenAI models.';
-      refreshModelsBtn.disabled = false;
-      return;
+    const fingerprint = fingerprintModelCacheKey(openaiKey);
+    const cachedEntry = readCachedModelEntry(fingerprint);
+    let cachedApplied = null;
+    if(cachedEntry){
+      cachedApplied = applyChatModelsFromBuckets(cachedEntry.buckets, previousValues);
+      if(modelStatusEl && cachedApplied){
+        const summary = summarizeModelBuckets(cachedEntry.buckets);
+        const truncatedNote = cachedApplied.truncated ? ` Showing first ${MAX_CHAT_MODEL_OPTIONS} models.` : '';
+        const base = `Loaded ${cachedApplied.total} cached chat-capable models.` + truncatedNote;
+        modelStatusEl.textContent = summary ? `${base} (${summary})` : base;
+      }else if(modelStatusEl){
+        modelStatusEl.textContent = 'Fetching models…';
+      }
+    }else if(modelStatusEl){
+      modelStatusEl.textContent = 'Fetching models…';
     }
     try{
       const res = await fetch('https://api.openai.com/v1/models',{
         headers:{ 'Authorization':'Bearer '+openaiKey }
       });
+      if(res.status === 401){
+        if(modelStatusEl){
+          modelStatusEl.textContent = cachedApplied ? 'OpenAI rejected the API key. Using cached models.' : 'OpenAI rejected the API key. Using defaults.';
+        }
+        if(!cachedApplied){
+          modelSelects.forEach((sel, idx)=>setModelOptions(sel, builtinModelOptions, previousValues[idx]));
+        }
+        return;
+      }
       if(!res.ok){
         const text = await res.text();
         throw new Error(text || res.statusText || 'Failed to fetch models');
       }
       const data = await res.json();
-      const ids = Array.isArray(data.data) ? data.data.map(item=>item.id).filter(Boolean) : [];
-      const uniqueIds = Array.from(new Set(ids)).filter(id=>typeof id==='string');
-      uniqueIds.sort();
-      if(uniqueIds.length){
-        const options = uniqueIds.map(id=>({ value:id, label:id }));
-        if(!options.some(opt=>opt.value==='custom')){
-          options.push({ value:'custom', label:'Custom…' });
+      const buckets = bucketizeModelCatalog(data && data.data);
+      const applied = applyChatModelsFromBuckets(buckets, previousValues);
+      if(applied){
+        persistModelCacheEntry(fingerprint, buckets);
+        if(modelStatusEl){
+          const summary = summarizeModelBuckets(buckets);
+          const truncatedNote = applied.truncated ? ` Showing first ${MAX_CHAT_MODEL_OPTIONS} models.` : '';
+          const base = `Loaded ${applied.total} chat-capable models.` + truncatedNote;
+          modelStatusEl.textContent = summary ? `${base} (${summary})` : base;
         }
-        modelSelects.forEach((sel, idx)=>setModelOptions(sel, options, previousValues[idx]));
-        if(modelStatusEl) modelStatusEl.textContent = `Loaded ${uniqueIds.length} models.`;
       }else{
         modelSelects.forEach((sel, idx)=>setModelOptions(sel, builtinModelOptions, previousValues[idx]));
-        if(modelStatusEl) modelStatusEl.textContent = 'No models returned; showing defaults.';
+        if(modelStatusEl) modelStatusEl.textContent = 'No chat-capable models returned; showing defaults.';
       }
     }catch(err){
       console.error(err);
-      if(modelStatusEl) modelStatusEl.textContent = 'Model refresh failed.';
+      if(modelStatusEl){
+        modelStatusEl.textContent = cachedApplied ? 'Using cached models because refresh failed.' : 'Model refresh failed. Using defaults.';
+      }
+      if(!cachedApplied){
+        modelSelects.forEach((sel, idx)=>setModelOptions(sel, builtinModelOptions, previousValues[idx]));
+      }
       alert('Model refresh failed: '+err.message);
-      modelSelects.forEach((sel, idx)=>setModelOptions(sel, builtinModelOptions, previousValues[idx]));
     }finally{
       refreshModelsBtn.disabled = false;
       updateSummary();
@@ -1089,6 +1112,145 @@
     /^o-mini/i
   ];
 
+  function fingerprintModelCacheKey(key){
+    if(!key) return 'anon';
+    return 'openai-'+String(key).slice(0,8);
+  }
+
+  function loadModelCacheMap(){
+    try{
+      const raw = localStorage.getItem(MODEL_CACHE_STORAGE_KEY);
+      if(!raw) return {};
+      const parsed = JSON.parse(raw);
+      if(parsed && typeof parsed === 'object') return parsed;
+    }catch(err){
+      console.warn('Unable to read cached model list', err);
+    }
+    return {};
+  }
+
+  function persistModelCacheEntry(fingerprint, buckets){
+    if(!fingerprint || !buckets) return;
+    try{
+      const cache = loadModelCacheMap();
+      cache[fingerprint] = { buckets, timestamp: Date.now() };
+      localStorage.setItem(MODEL_CACHE_STORAGE_KEY, JSON.stringify(cache));
+    }catch(err){
+      console.warn('Unable to persist model cache', err);
+    }
+  }
+
+  function readCachedModelEntry(fingerprint){
+    if(!fingerprint) return null;
+    const cache = loadModelCacheMap();
+    const entry = cache[fingerprint];
+    if(entry && entry.buckets && typeof entry.buckets === 'object'){
+      return entry;
+    }
+    return null;
+  }
+
+  function resolveModelBucket(id){
+    const key = String(id).toLowerCase();
+    if(key.includes('embedding')) return 'embeddings';
+    if(key.includes('moderation')) return 'other';
+    if(key.includes('audio') || key.includes('voice') || key.includes('speech') || key.includes('whisper') || key.includes('tts')) return 'audio';
+    if(key.includes('image') || key.includes('dall')) return 'images';
+    if(key.includes('vision')) return 'vision';
+    return 'chat';
+  }
+
+  function bucketizeModelCatalog(list){
+    const buckets = {
+      chat:[],
+      vision:[],
+      images:[],
+      audio:[],
+      embeddings:[],
+      other:[]
+    };
+    const seen = {
+      chat:new Set(),
+      vision:new Set(),
+      images:new Set(),
+      audio:new Set(),
+      embeddings:new Set(),
+      other:new Set()
+    };
+    const models = Array.isArray(list) ? list : [];
+    models.forEach(entry=>{
+      const id = typeof entry === 'string' ? entry : entry?.id;
+      if(!id) return;
+      const trimmed = String(id).trim();
+      if(!trimmed) return;
+      const bucket = resolveModelBucket(trimmed);
+      if(!seen[bucket]) return;
+      if(!seen[bucket].has(trimmed)){
+        seen[bucket].add(trimmed);
+        buckets[bucket].push(trimmed);
+      }
+    });
+    Object.keys(buckets).forEach(key=>buckets[key].sort());
+    return buckets;
+  }
+
+  function summarizeModelBuckets(buckets){
+    if(!buckets) return '';
+    const mapping = [
+      ['chat','chat'],
+      ['vision','vision'],
+      ['images','images'],
+      ['audio','audio'],
+      ['embeddings','embeddings']
+    ];
+    const parts = mapping.map(([label,key])=>{
+      const count = Array.isArray(buckets[key]) ? buckets[key].length : 0;
+      return count ? `${label}: ${count}` : '';
+    }).filter(Boolean);
+    return parts.join(', ');
+  }
+
+  function pickChatCapableModels(buckets){
+    if(!buckets) return [];
+    const chat = Array.isArray(buckets.chat) ? buckets.chat : [];
+    if(chat.length) return chat;
+    const vision = Array.isArray(buckets.vision) ? buckets.vision : [];
+    if(vision.length) return vision;
+    return [];
+  }
+
+  function buildChatOptionsFromBuckets(buckets){
+    const candidates = pickChatCapableModels(buckets);
+    if(!candidates.length) return null;
+    const seen = new Set();
+    const normalized = [];
+    candidates.forEach(id=>{
+      const trimmed = String(id).trim();
+      if(!trimmed || seen.has(trimmed)) return;
+      seen.add(trimmed);
+      normalized.push(trimmed);
+    });
+    const total = normalized.length;
+    let truncated = false;
+    let list = normalized;
+    if(normalized.length > MAX_CHAT_MODEL_OPTIONS){
+      list = normalized.slice(0, MAX_CHAT_MODEL_OPTIONS);
+      truncated = true;
+    }
+    const options = list.map(value=>({ value, label:value }));
+    if(!options.some(opt=>opt.value==='custom')){
+      options.push({ value:'custom', label:'Custom…' });
+    }
+    return { options, total, truncated };
+  }
+
+  function applyChatModelsFromBuckets(buckets, previousValues){
+    const built = buildChatOptionsFromBuckets(buckets);
+    if(!built) return null;
+    modelSelects.forEach((sel, idx)=>setModelOptions(sel, built.options, previousValues[idx]));
+    return built;
+  }
+
   function resolveProviderForModel(modelId){
     const normalized = typeof modelId === 'string' ? modelId.trim() : '';
     const found = MODEL_PROVIDER_METADATA.find(entry=>entry.matcher(normalized));
@@ -1194,7 +1356,7 @@
       role: msg.role || 'user',
       content: [
         {
-          type:'text',
+          type:'input_text',
           text: typeof msg.content === 'string' ? msg.content : ''
         }
       ]
