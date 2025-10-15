@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parallax Budget Compass</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="parallax-scene" aria-hidden="true">
+      <div class="parallax-layer layer-back" data-depth="0.1"></div>
+      <div class="parallax-layer layer-mid" data-depth="0.3"></div>
+      <div class="parallax-layer layer-front" data-depth="0.5"></div>
+    </div>
+    <div class="app-shell">
+      <header class="hero">
+        <div class="hero-content">
+          <h1>Parallax Budget Compass</h1>
+          <p>
+            Map out your monthly plan, track actual spending, and let the compass
+            surface smart adjustments while the layered horizon keeps the flow
+            grounded and in motion.
+          </p>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric-card">
+            <span class="metric-label">Planned</span>
+            <span id="plannedTotal" class="metric-value">$0</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Spent</span>
+            <span id="spentTotal" class="metric-value">$0</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Balance</span>
+            <span id="balanceTotal" class="metric-value">$0</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel panel-form" aria-labelledby="plan-heading">
+          <div class="panel-header">
+            <h2 id="plan-heading">Build your budget map</h2>
+            <p class="panel-subtitle">
+              Add categories, adjust planned allocations, and log real spending
+              as it happens.
+            </p>
+          </div>
+          <form id="categoryForm" class="category-form">
+            <label class="field">
+              <span>Name</span>
+              <input
+                type="text"
+                id="categoryName"
+                name="categoryName"
+                required
+                maxlength="40"
+                placeholder="e.g. Transit"
+              />
+            </label>
+            <label class="field">
+              <span>Planned</span>
+              <input
+                type="number"
+                id="categoryPlanned"
+                name="categoryPlanned"
+                min="0"
+                step="1"
+                required
+                placeholder="250"
+              />
+            </label>
+            <label class="field">
+              <span>Spent so far</span>
+              <input
+                type="number"
+                id="categorySpent"
+                name="categorySpent"
+                min="0"
+                step="1"
+                placeholder="100"
+              />
+            </label>
+            <button type="submit" class="action-button">Add category</button>
+          </form>
+          <section class="insights" aria-live="polite" aria-atomic="true">
+            <h3>Compass insights</h3>
+            <ul id="insightList"></ul>
+          </section>
+        </section>
+
+        <section class="panel panel-categories" aria-labelledby="categories-heading">
+          <div class="panel-header">
+            <h2 id="categories-heading">Category tracker</h2>
+            <p class="panel-subtitle">
+              Tune planned vs. actual numbers and watch the parallax progress
+              recalibrate in real time.
+            </p>
+          </div>
+          <div id="categoryList" class="category-list"></div>
+        </section>
+      </main>
+
+      <footer class="footer-note">
+        <p>
+          Tip: hover around to feel the layered drift and spot trends before
+          they become budget squalls.
+        </p>
+      </footer>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

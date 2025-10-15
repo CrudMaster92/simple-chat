@@ -1,0 +1,12 @@
+{
+  "slug": "parallax-budget-compass",
+  "name": "Parallax Budget Compass",
+  "description": "Layered horizon budget planner with live parallax feedback, dynamic insights, and category-level controls.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-01",
+  "tags": ["finance", "productivity", "parallax"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}
