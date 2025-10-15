@@ -1625,7 +1625,11 @@
       removeTyping(typingRow);
       appendMessage(current, name, emoji, reply);
       messages.push({ who: current, text: reply });
-      persistSession();
+      try{
+        persistSession();
+      }catch(err){
+        console.warn('Unable to persist session', err);
+      }
       return true;
     }catch(err){
       console.error(err);
@@ -1639,15 +1643,16 @@
     if(!promptAEl.value || !promptBEl.value){ alert('Both personas need prompts.'); return; }
     if(running) return;
     running = true;
-
-    let current = (messages.length % 2 === 0) ? 'A' : 'B'; // alternate; start with A on fresh chat
-    for(let i=0;i<pairs*2;i++){
-      const ok = await personaTurn(current, moderatorNote);
-      if(!ok) break;
-      current = (current==='A' ? 'B' : 'A');
+    try{
+      let current = (messages.length % 2 === 0) ? 'A' : 'B'; // alternate; start with A on fresh chat
+      for(let i=0;i<pairs*2;i++){
+        const ok = await personaTurn(current, moderatorNote);
+        if(!ok) break;
+        current = (current==='A' ? 'B' : 'A');
+      }
+    }finally{
+      running = false;
     }
-
-    running = false;
   }
 
   // Start Chat (new session)
@@ -1683,7 +1688,12 @@
     try{ return JSON.parse(localStorage.getItem('personaChat.sessions')||'[]'); }catch{ return []; }
   }
   function setMemory(arr){
-    localStorage.setItem('personaChat.sessions', JSON.stringify(arr));
+    try{
+      localStorage.setItem('personaChat.sessions', JSON.stringify(arr));
+    }catch(err){
+      console.warn('Unable to save conversation history', err);
+      throw err;
+    }
   }
   function ensureSessionId(){
     if(!currentSessionId) currentSessionId = 'sess_'+Date.now();
@@ -1839,8 +1849,13 @@
         btnDel.addEventListener('click', ()=>{
           if(!confirm('Delete this conversation?')) return;
           const arr = getMemory().filter(x=>x.id!==rec.id);
-          setMemory(arr);
-          renderHistory();
+          try{
+            setMemory(arr);
+            renderHistory();
+          }catch(err){
+            console.warn('Unable to delete conversation from history', err);
+            alert('Could not update saved conversations. Try clearing browser storage and retry.');
+          }
         });
         right.appendChild(btnLoad); right.appendChild(btnDel);
         item.appendChild(left); item.appendChild(right);
@@ -1891,8 +1906,13 @@
   refreshHistoryBtn.addEventListener('click', renderHistory);
   clearHistoryBtn.addEventListener('click', ()=>{
     if(!confirm('Clear ALL saved conversations?')) return;
-    localStorage.removeItem('personaChat.sessions');
-    renderHistory();
+    try{
+      localStorage.removeItem('personaChat.sessions');
+      renderHistory();
+    }catch(err){
+      console.warn('Unable to clear saved conversations', err);
+      alert('Could not clear saved conversations. Try clearing browser storage manually and retry.');
+    }
   });
   // initial history render
   renderHistory();
