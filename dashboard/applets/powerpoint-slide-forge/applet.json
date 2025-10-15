@@ -1,0 +1,12 @@
+{
+  "slug": "powerpoint-slide-forge",
+  "name": "PowerPoint Slide Forge",
+  "description": "Design crisp slide layouts, organize story beats, and export a polished PPTX in minutes.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "0.1.0",
+  "lastUpdated": "2024-06-11",
+  "tags": ["productivity", "design", "presentations"],
+  "author": "Simple Chat Contributors",
+  "permissions": []
+}

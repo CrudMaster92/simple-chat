@@ -78,5 +78,6 @@
   "everseam-world-forge": "./applets/everseam-world-forge/applet.json",
   "elemental-sand-atrium": "./applets/elemental-sand-atrium/applet.json",
   "omni-camera-studio": "./applets/omni-camera-studio/applet.json",
-  "prompt-screensaver-forge": "./applets/prompt-screensaver-forge/applet.json"
+  "prompt-screensaver-forge": "./applets/prompt-screensaver-forge/applet.json",
+  "powerpoint-slide-forge": "./applets/powerpoint-slide-forge/applet.json"
 }
