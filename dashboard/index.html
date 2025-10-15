@@ -499,95 +499,132 @@
         box-shadow: inset 0 0 0 1px rgba(246, 138, 60, 0.3);
       }
 
-      .desktop-buddy__model-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        align-items: flex-end;
-      }
-
-      .desktop-buddy__model-row label {
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-        font-size: 0.85rem;
-        color: #0f4144;
-        flex: 1 1 160px;
-      }
-
-      .desktop-buddy__model-row select {
-        padding: 0.45rem 0.65rem;
-        border-radius: 10px;
-        border: 1px solid rgba(26, 155, 160, 0.35);
-        background: rgba(255, 255, 255, 0.88);
-        font: inherit;
-        color: inherit;
-      }
-
-      .desktop-buddy__refresh {
-        border: none;
-        border-radius: 999px;
-        background: linear-gradient(135deg, #ffd26a, #f68a3c);
-        color: #0f2d32;
-        padding: 0.45rem 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 10px 20px rgba(246, 138, 60, 0.32);
-        transition: transform 120ms ease, box-shadow 120ms ease;
-      }
-
-      .desktop-buddy__refresh:hover:not(:disabled) {
-        transform: translateY(-1px);
-        box-shadow: 0 14px 24px rgba(246, 138, 60, 0.36);
-      }
-
-      .desktop-buddy__refresh:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        box-shadow: none;
-      }
-
       .desktop-buddy__model-status {
         margin: 0;
         font-size: 0.8rem;
         color: rgba(15, 65, 68, 0.7);
       }
 
-      .desktop-buddy__key-row {
+      .desktop-buddy__panel-note {
+        margin: 0;
+        font-size: 0.85rem;
+        color: rgba(15, 65, 68, 0.9);
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+        padding: 0.75rem 0.85rem;
+        box-shadow: inset 0 0 0 1px rgba(26, 155, 160, 0.18);
+      }
+
+      .desktop-buddy__panel-note strong {
+        font-weight: 700;
+        color: #0f4144;
+      }
+
+      .desktop-buddy__settings-button {
+        margin-top: 0.75rem;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #ffd26a, #f68a3c);
+        color: #0f2d32;
+        padding: 0.45rem 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(246, 138, 60, 0.28);
+        transition: transform 120ms ease, box-shadow 120ms ease;
+        align-self: flex-start;
+      }
+
+      .desktop-buddy__settings-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 24px rgba(246, 138, 60, 0.34);
+      }
+
+      .settings__buddy-config {
+        margin-top: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+      }
+
+      .settings__field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+      }
+
+      .settings__field-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .settings__field-row {
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem;
-        align-items: flex-end;
+        align-items: center;
       }
 
-      .desktop-buddy__key-label {
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-        font-size: 0.85rem;
-        color: #0f4144;
+      .settings__field-row input[type='password'],
+      .settings__field-row select {
         flex: 1 1 220px;
-      }
-
-      .desktop-buddy__key-label input {
         padding: 0.45rem 0.65rem;
         border-radius: 10px;
-        border: 1px solid rgba(26, 155, 160, 0.35);
-        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(26, 34, 60, 0.22);
+        background: rgba(255, 255, 255, 0.92);
         font: inherit;
         color: inherit;
       }
 
-      .desktop-buddy__remember {
+      .settings__field-row select:disabled {
+        opacity: 0.6;
+      }
+
+      .settings__field-row--compact {
+        align-items: stretch;
+      }
+
+      .settings__remember {
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
         font-size: 0.8rem;
-        color: rgba(15, 65, 68, 0.75);
+        color: rgba(16, 34, 60, 0.72);
+        white-space: nowrap;
       }
 
-      .desktop-buddy__remember input {
+      .settings__remember input {
         accent-color: #f6c343;
+      }
+
+      .settings__refresh {
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #ffd26a, #f68a3c);
+        color: #0f2d32;
+        padding: 0.45rem 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(246, 138, 60, 0.28);
+        transition: transform 120ms ease, box-shadow 120ms ease;
+        flex: 0 0 auto;
+      }
+
+      .settings__refresh:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 24px rgba(246, 138, 60, 0.34);
+      }
+
+      .settings__refresh:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      .settings__field-hint {
+        margin: 0;
+        font-size: 0.8rem;
+        color: rgba(16, 34, 60, 0.65);
       }
 
       .desktop-buddy__form {
@@ -1729,24 +1766,14 @@
           </header>
           <div class="desktop-buddy__panel-body">
             <div class="desktop-buddy__log" data-role="buddy-log" aria-live="polite"></div>
-            <div class="desktop-buddy__model-row">
-              <label>
-                <span>Model</span>
-                <select data-role="buddy-model-select" disabled></select>
-              </label>
-              <button type="button" data-role="buddy-refresh-models" class="desktop-buddy__refresh">Refresh</button>
-            </div>
+            <p class="desktop-buddy__panel-note">
+              Manage Cirrus’s OpenAI access from Desktop Settings. Adjust the API key and default model under
+              <strong>Cirrus Companion</strong>.
+            </p>
             <p class="desktop-buddy__model-status" data-role="buddy-model-status">Add an API key to fetch models.</p>
-            <div class="desktop-buddy__key-row">
-              <label class="desktop-buddy__key-label">
-                <span>OpenAI API key</span>
-                <input type="password" autocomplete="off" data-role="buddy-key" placeholder="sk-..." />
-              </label>
-              <label class="desktop-buddy__remember">
-                <input type="checkbox" data-role="buddy-remember-key" />
-                <span>Remember on this device</span>
-              </label>
-            </div>
+            <button type="button" class="desktop-buddy__settings-button" data-role="buddy-open-settings">
+              Open Cirrus settings
+            </button>
           </div>
           <form class="desktop-buddy__form" data-role="buddy-form">
             <textarea
@@ -1895,6 +1922,32 @@
               <button type="button" class="settings__buddy-reset" data-role="buddy-reset-position">Reset Cirrus position</button>
             </div>
             <div class="settings__buddy-skins" data-role="buddy-skins" aria-label="Choose a Cirrus style"></div>
+            <div class="settings__buddy-config">
+              <div class="settings__field">
+                <label class="settings__field-label" for="cirrusApiKey">OpenAI API key</label>
+                <div class="settings__field-row">
+                  <input
+                    id="cirrusApiKey"
+                    type="password"
+                    autocomplete="off"
+                    placeholder="sk-..."
+                    data-role="buddy-key"
+                  />
+                  <label class="settings__remember">
+                    <input type="checkbox" data-role="buddy-remember-key" />
+                    <span>Remember on this device</span>
+                  </label>
+                </div>
+              </div>
+              <div class="settings__field">
+                <label class="settings__field-label" for="cirrusModel">Default model</label>
+                <div class="settings__field-row settings__field-row--compact">
+                  <select id="cirrusModel" data-role="buddy-model-select" disabled></select>
+                  <button type="button" data-role="buddy-refresh-models" class="settings__refresh">Refresh</button>
+                </div>
+                <p class="settings__field-hint" data-role="buddy-model-status">Add an API key to fetch models.</p>
+              </div>
+            </div>
             <p class="settings__buddy-note">
               Cirrus hides whenever an applet window is open and returns once the desktop is clear. Pick a style whenever you
               want their look to match your mood.

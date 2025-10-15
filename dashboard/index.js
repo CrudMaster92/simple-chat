@@ -30,7 +30,7 @@ const buddyPanel = document.querySelector('[data-role="buddy-panel"]');
 const buddyLog = document.querySelector('[data-role="buddy-log"]');
 const buddyStatus = document.querySelector('[data-role="buddy-status"]');
 const buddyModelSelect = document.querySelector('[data-role="buddy-model-select"]');
-const buddyModelStatus = document.querySelector('[data-role="buddy-model-status"]');
+const buddyModelStatusElements = document.querySelectorAll('[data-role="buddy-model-status"]');
 const buddyRefreshButton = document.querySelector('[data-role="buddy-refresh-models"]');
 const buddyKeyInput = document.querySelector('[data-role="buddy-key"]');
 const buddyRememberKey = document.querySelector('[data-role="buddy-remember-key"]');
@@ -38,6 +38,7 @@ const buddyForm = document.querySelector('[data-role="buddy-form"]');
 const buddyInput = document.querySelector('[data-role="buddy-input"]');
 const buddySendButton = document.querySelector('[data-role="buddy-send"]');
 const buddyCloseButton = document.querySelector('[data-role="buddy-close"]');
+const buddyOpenSettingsButton = document.querySelector('[data-role="buddy-open-settings"]');
 const buddyEnabledToggle = document.querySelector('[data-role="buddy-enabled"]');
 const buddyIdleToggle = document.querySelector('[data-role="buddy-idle-toggle"]');
 const buddySoundToggle = document.querySelector('[data-role="buddy-sound-toggle"]');
@@ -360,9 +361,9 @@ function setBuddyStatus(message) {
 function setBuddyModelStatus(message) {
   if (typeof message !== 'string') return;
   buddyState.modelStatus = message;
-  if (buddyModelStatus) {
-    buddyModelStatus.textContent = message;
-  }
+  buddyModelStatusElements.forEach((node) => {
+    node.textContent = message;
+  });
 }
 
 function persistBuddySettings() {
@@ -1116,6 +1117,15 @@ function initDesktopBuddy() {
   });
 
   buddyCloseButton?.addEventListener('click', () => closeBuddyPanel());
+  buddyOpenSettingsButton?.addEventListener('click', () => {
+    toggleSettings(true);
+    toggleStartMenu(false);
+    requestAnimationFrame(() => {
+      if (buddyKeyInput instanceof HTMLElement) {
+        buddyKeyInput.focus();
+      }
+    });
+  });
   buddyForm?.addEventListener('submit', handleBuddySubmit);
   buddyRefreshButton?.addEventListener('click', () => refreshBuddyModels());
   buddyModelSelect?.addEventListener('change', (event) => {
