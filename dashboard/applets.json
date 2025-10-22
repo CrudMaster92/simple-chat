@@ -1,4 +1,5 @@
 {
+  "design-critiquer": "./applets/design-critiquer/applet.json",
   "razor-cracktro": "./applets/razor-cracktro/applet.json",
   "razor-hello-cracktro": "./applets/razor-hello-cracktro/applet.json",
   "simple-chat": "./applets/simple-chat/applet.json",

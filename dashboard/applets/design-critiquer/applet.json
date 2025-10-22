@@ -1,0 +1,12 @@
+{
+  "slug": "design-critiquer",
+  "name": "Web Design Critiquer",
+  "description": "Analyzes the design of a website and provides feedback.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2024-10-22",
+  "tags": ["design", "critique", "web"],
+  "author": "Jules",
+  "permissions": []
+}
