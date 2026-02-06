@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>GPT-5 Personas Chat — Vanilla v2</title>
+    <title>Persona Signal Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Unbounded:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body data-theme="light">
@@ -27,7 +27,7 @@
                   <span class="icon">☰</span>
                 </button>
                 <div class="chat-header-meta">
-                  <div class="chat-title">Dialogue Studio</div>
+                  <div class="chat-title">Persona Signal Studio</div>
                   <div class="chip-row">
                     <span id="chipA" class="chip a"><span id="chipAEmoji">🅰️</span> <span id="chipAName">Persona A</span></span>
                     <span class="chip-sep" aria-hidden="true">vs</span>
@@ -35,7 +35,7 @@
                   </div>
                 </div>
                 <div class="chat-header-actions">
-                  <button id="openSettings" class="btn light" type="button">Session Settings</button>
+                  <button id="openSettings" class="btn light" type="button">Session Console</button>
                   <label class="theme-toggle">
                     <input id="themeToggle" type="checkbox" role="switch" aria-checked="false" aria-label="Toggle light or dark theme">
                     <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
@@ -64,8 +64,8 @@
               <div class="pad">
                 <div class="row">
                   <div class="col">
-                    <div class="label">Moderator message (optional)</div>
-                    <input id="moderatorMsg" type="text" placeholder="Add direction for the next segment…">
+                  <div class="label">Moderator message (optional)</div>
+                    <input id="moderatorMsg" type="text" placeholder="Drop a directive for the next segment…">
                   </div>
                   <div style="width:150px">
                     <div class="label">Add exchanges</div>
@@ -74,7 +74,7 @@
                 </div>
                 <div class="row" style="margin-top:8px">
                   <button id="extendBtn" class="btn primary">Extend Discussion</button>
-                  <button id="newBtn" class="btn light">New Chat</button>
+                  <button id="newBtn" class="btn light">Reset Session</button>
                 </div>
               </div>
             </div>
@@ -88,8 +88,8 @@
       <div class="settings-panel card" role="document" tabindex="-1">
         <div class="settings-head">
           <div>
-            <div class="settings-title">Session Settings</div>
-            <div class="settings-subtitle">Fine-tune personas, prompts, and API access before starting a run.</div>
+            <div class="settings-title">Session Console</div>
+            <div class="settings-subtitle">Tune personas, prompts, and API access before launching a run.</div>
           </div>
           <button id="closeSettings" class="icon-btn" type="button" aria-label="Close session settings">×</button>
         </div>
