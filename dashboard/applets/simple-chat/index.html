@@ -60,6 +60,23 @@
                   <div class="summary-detail" id="summaryBDetail">No persona prompt provided yet.</div>
                 </div>
               </div>
+              <div class="session-pulse">
+                <div class="pulse-card">
+                  <div class="pulse-label">Turn balance</div>
+                  <div class="pulse-value"><span id="pulseCountA">0</span> / <span id="pulseCountB">0</span></div>
+                  <div class="pulse-sub" id="pulseLead">No exchanges yet.</div>
+                </div>
+                <div class="pulse-card">
+                  <div class="pulse-label">Total lines</div>
+                  <div class="pulse-value" id="pulseTotal">0</div>
+                  <div class="pulse-sub" id="pulseWords">0 words</div>
+                </div>
+                <div class="pulse-card">
+                  <div class="pulse-label">Last speaker</div>
+                  <div class="pulse-value" id="pulseLast">—</div>
+                  <div class="pulse-sub" id="pulseTime">Session idle</div>
+                </div>
+              </div>
               <div id="conv" class="conv"></div>
               <div class="pad">
                 <div class="row">
@@ -72,9 +89,20 @@
                     <input id="extendCount" type="number" min="1" value="2">
                   </div>
                 </div>
+                <div class="cue-row">
+                  <div class="cue-label">Quick cues</div>
+                  <div class="cue-buttons">
+                    <button class="btn ghost cue-btn" type="button" data-cue="Ask for a concrete example tied to real-world impact.">Examples</button>
+                    <button class="btn ghost cue-btn" type="button" data-cue="Challenge each other with one risky counterproposal.">Counterproposal</button>
+                    <button class="btn ghost cue-btn" type="button" data-cue="Summarize your position in one bold sentence, then expand.">Bold take</button>
+                    <button class="btn ghost cue-btn" type="button" data-cue="Offer a compromise plan with clear next steps.">Compromise</button>
+                  </div>
+                </div>
                 <div class="row" style="margin-top:8px">
                   <button id="extendBtn" class="btn primary">Extend Discussion</button>
                   <button id="newBtn" class="btn light">Reset Session</button>
+                  <button id="copyTranscript" class="btn light" type="button">Copy Transcript</button>
+                  <button id="downloadTranscript" class="btn light" type="button">Download .txt</button>
                 </div>
               </div>
             </div>

@@ -342,6 +342,16 @@
   const presetScenarioEl = el('presetScenario');
   const applyScenarioBtn = el('applyScenario');
   const newBtn = el('newBtn');
+  const cueButtons = Array.from(document.querySelectorAll('[data-cue]'));
+  const copyTranscriptBtn = el('copyTranscript');
+  const downloadTranscriptBtn = el('downloadTranscript');
+  const pulseCountAEl = el('pulseCountA');
+  const pulseCountBEl = el('pulseCountB');
+  const pulseTotalEl = el('pulseTotal');
+  const pulseWordsEl = el('pulseWords');
+  const pulseLastEl = el('pulseLast');
+  const pulseTimeEl = el('pulseTime');
+  const pulseLeadEl = el('pulseLead');
 
   const presetAEl = el('presetA');
   const presetBEl = el('presetB');
@@ -721,6 +731,7 @@
     chipAEmoji.textContent = (emojiAEl.value && emojiAEl.value.trim()) ? emojiAEl.value : '🅰️';
     chipBEmoji.textContent = (emojiBEl.value && emojiBEl.value.trim()) ? emojiBEl.value : '🅱️';
     updateSummary();
+    updatePulse();
   }
   nameAEl.addEventListener('input', syncChips);
   nameBEl.addEventListener('input', syncChips);
@@ -733,6 +744,7 @@
   if(customModelAEl) customModelAEl.addEventListener('input', updateSummary);
   if(customModelBEl) customModelBEl.addEventListener('input', updateSummary);
   updateSummary();
+  updatePulse();
 
   const samplePersonas = Array.isArray(window.samplePersonas) ? window.samplePersonas : [];
   const sampleScenarios = Array.isArray(window.sampleScenarios) ? window.sampleScenarios : [];
@@ -1100,9 +1112,10 @@
 
   // Conversation state
   let running = false;
-  let messages = []; // { who:'A'|'B', text:string }
+  let messages = []; // { who:'A'|'B', text:string, ts?:number }
   let currentSessionId = null;
   let storageWarningMessage = '';
+  let lastMessageAt = null;
 
   // Helpers
   function clampTemp(v){
@@ -1526,6 +1539,70 @@
       return label + ': ' + m.text;
     }).join('\n');
   }
+
+  function countWords(text){
+    if(!text) return 0;
+    const trimmed = String(text).trim();
+    if(!trimmed) return 0;
+    return trimmed.split(/\s+/).length;
+  }
+
+  function formatRelativeTime(ts){
+    const diff = Date.now() - ts;
+    if(!isFinite(diff) || diff < 0) return 'just now';
+    if(diff < 60000) return 'just now';
+    const minutes = Math.floor(diff / 60000);
+    if(minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if(hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  }
+
+  function updatePulse(){
+    if(!pulseTotalEl && !pulseCountAEl && !pulseCountBEl) return;
+    const total = messages.length;
+    const countA = messages.filter(m=>m.who==='A').length;
+    const countB = total - countA;
+    const wordCount = messages.reduce((sum, m)=>sum + countWords(m.text), 0);
+    if(pulseCountAEl) pulseCountAEl.textContent = countA;
+    if(pulseCountBEl) pulseCountBEl.textContent = countB;
+    if(pulseTotalEl) pulseTotalEl.textContent = total;
+    if(pulseWordsEl) pulseWordsEl.textContent = `${wordCount} words`;
+    if(pulseLeadEl){
+      if(total === 0){
+        pulseLeadEl.textContent = 'No exchanges yet.';
+      }else if(countA === countB){
+        pulseLeadEl.textContent = 'Even split so far.';
+      }else if(countA > countB){
+        const name = nameAEl.value || 'Persona A';
+        pulseLeadEl.textContent = `${name} leads by ${countA - countB}.`;
+      }else{
+        const name = nameBEl.value || 'Persona B';
+        pulseLeadEl.textContent = `${name} leads by ${countB - countA}.`;
+      }
+    }
+    const last = total ? messages[total - 1] : null;
+    if(last && pulseLastEl){
+      const isA = last.who === 'A';
+      const name = isA ? (nameAEl.value || 'Persona A') : (nameBEl.value || 'Persona B');
+      const emoji = isA ? (emojiAEl.value && emojiAEl.value.trim() ? emojiAEl.value.trim() : '🅰️')
+        : (emojiBEl.value && emojiBEl.value.trim() ? emojiBEl.value.trim() : '🅱️');
+      pulseLastEl.textContent = `${emoji} ${name}`;
+      lastMessageAt = last.ts || lastMessageAt;
+    }else if(pulseLastEl){
+      pulseLastEl.textContent = '—';
+    }
+    if(pulseTimeEl){
+      pulseTimeEl.textContent = lastMessageAt ? `Last reply ${formatRelativeTime(lastMessageAt)}` : 'Session idle';
+    }
+  }
+
+  window.setInterval(()=>{
+    if(lastMessageAt && pulseTimeEl){
+      pulseTimeEl.textContent = `Last reply ${formatRelativeTime(lastMessageAt)}`;
+    }
+  }, 30000);
   // UI builders
   function makeAvatar(side, emoji){
     const av = document.createElement('div');
@@ -1628,8 +1705,10 @@
       ], temp);
       removeTyping(typingRow);
       appendMessage(current, name, emoji, reply);
-      messages.push({ who: current, text: reply });
+      messages.push({ who: current, text: reply, ts: Date.now() });
+      lastMessageAt = Date.now();
       persistSession();
+      updatePulse();
       return true;
     }catch(err){
       console.error(err);
@@ -1661,8 +1740,10 @@
     messages = [];
     convEl.innerHTML = '';
     currentSessionId = 'sess_'+Date.now();
+    lastMessageAt = null;
     renderHistory();
     closeSettingsPanel();
+    updatePulse();
     const pairs = Math.max(1, parseInt(exchangesEl.value)||1);
     runSegment(pairs, '');
   });
@@ -1680,7 +1761,9 @@
     messages = [];
     convEl.innerHTML = '';
     currentSessionId = 'sess_'+Date.now();
+    lastMessageAt = null;
     renderHistory();
+    updatePulse();
   });
 
   // Save conversation to memory
@@ -1935,13 +2018,21 @@
     // Load messages
     currentSessionId = rec.id;
     messages = rec.messages || [];
+    lastMessageAt = null;
     convEl.innerHTML='';
     messages.forEach(m=>{
       const name = m.who==='A'? nameAEl.value : nameBEl.value;
       const emoji = m.who==='A'? emojiAEl.value : emojiBEl.value;
+      if(m.ts && (!lastMessageAt || m.ts > lastMessageAt)){
+        lastMessageAt = m.ts;
+      }
       appendMessage(m.who, name, emoji, m.text, { silent:true });
     });
+    if(!lastMessageAt && rec.ts){
+      lastMessageAt = rec.ts;
+    }
     renderHistory();
+    updatePulse();
     closeSettingsPanel();
   }
 
@@ -1954,6 +2045,57 @@
       alert('Could not clear saved conversations. Try clearing browser storage manually and retry.');
     }
   });
+
+  if(cueButtons.length){
+    cueButtons.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        if(!moderatorMsgEl) return;
+        const cue = btn.dataset.cue || '';
+        moderatorMsgEl.value = cue;
+        moderatorMsgEl.focus();
+      });
+    });
+  }
+
+  async function copyTranscript(){
+    const text = transcript() || 'No messages yet.';
+    try{
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(text);
+        alert('Transcript copied to clipboard.');
+        return;
+      }
+    }catch(_){ }
+    const helper = document.createElement('textarea');
+    helper.value = text;
+    helper.style.position = 'fixed';
+    helper.style.opacity = '0';
+    document.body.appendChild(helper);
+    helper.select();
+    try{
+      document.execCommand('copy');
+      alert('Transcript copied to clipboard.');
+    }catch(err){
+      alert('Unable to copy transcript automatically.');
+    }
+    document.body.removeChild(helper);
+  }
+
+  function downloadTranscript(){
+    const text = transcript() || 'No messages yet.';
+    const blob = new Blob([text], { type:'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `persona-signal-${currentSessionId || 'session'}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  if(copyTranscriptBtn) copyTranscriptBtn.addEventListener('click', copyTranscript);
+  if(downloadTranscriptBtn) downloadTranscriptBtn.addEventListener('click', downloadTranscript);
   // initial history render
   renderHistory();
 })();
