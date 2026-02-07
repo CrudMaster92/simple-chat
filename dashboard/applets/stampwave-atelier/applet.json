@@ -1,0 +1,12 @@
+{
+  "slug": "stampwave-atelier",
+  "name": "Stampwave Atelier",
+  "description": "Compose passport stamps with bespoke inks, borders, and emblems, then log them in a travel ledger.",
+  "entry": "./index.html",
+  "icon": "./assets/icon.svg",
+  "version": "1.0.0",
+  "lastUpdated": "2025-02-20",
+  "tags": ["creativity", "design"],
+  "author": "Stampwave Atelier Team",
+  "permissions": []
+}
