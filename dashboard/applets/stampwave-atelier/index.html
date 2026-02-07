@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stampwave Atelier</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div>
+          <p class="eyebrow">Passport craft desk</p>
+          <h1>Stampwave Atelier</h1>
+          <p class="subtitle">
+            Blend ink, borders, and emblem lore to mint a signature passport stamp.
+          </p>
+        </div>
+        <button class="primary" id="shuffle">Imprint new route</button>
+      </header>
+
+      <main class="content">
+        <section class="controls">
+          <div class="control-block">
+            <h2>Ink palette</h2>
+            <p class="helper">Choose a signature ink tone for the current stamp.</p>
+            <div class="swatches" id="inkSwatches"></div>
+          </div>
+
+          <div class="control-block">
+            <h2>Destination</h2>
+            <label>
+              Region label
+              <select id="regionSelect"></select>
+            </label>
+          </div>
+
+          <div class="control-block">
+            <h2>Border &amp; emblem</h2>
+            <label>
+              Border style
+              <select id="borderSelect"></select>
+            </label>
+            <label>
+              Emblem
+              <select id="emblemSelect"></select>
+            </label>
+          </div>
+
+          <div class="control-block">
+            <h2>Datestamp</h2>
+            <label>
+              Arrival date
+              <input type="date" id="dateInput" />
+            </label>
+          </div>
+
+          <div class="control-block">
+            <h2>Passport note</h2>
+            <label>
+              Motto
+              <input type="text" id="mottoInput" maxlength="42" placeholder="Gentle winds, bright harbors" />
+            </label>
+            <button class="secondary" id="addLedger">Add to ledger</button>
+          </div>
+        </section>
+
+        <section class="preview">
+          <div class="stamp-card">
+            <div class="stamp" id="stampPreview">
+              <div class="stamp-grid"></div>
+              <div class="stamp-ring"></div>
+              <div class="stamp-inner">
+                <p class="stamp-region" id="stampRegion">Harbor &amp; Haven</p>
+                <div class="stamp-emblem" id="stampEmblem"></div>
+                <p class="stamp-date" id="stampDate">02 · 20 · 2025</p>
+                <p class="stamp-motto" id="stampMotto">Gentle winds, bright harbors</p>
+              </div>
+            </div>
+            <div class="stamp-meta">
+              <div>
+                <p class="meta-label">Ink blend</p>
+                <p class="meta-value" id="metaInk">Rust Saffron</p>
+              </div>
+              <div>
+                <p class="meta-label">Border cut</p>
+                <p class="meta-value" id="metaBorder">Roped edge</p>
+              </div>
+              <div>
+                <p class="meta-label">Emblem lore</p>
+                <p class="meta-value" id="metaEmblem">Harbor compass</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ledger">
+            <div class="ledger-header">
+              <h2>Travel ledger</h2>
+              <p class="helper">Saved stamps stay pinned here for reference.</p>
+            </div>
+            <div class="ledger-list" id="ledgerList"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,351 @@
+:root {
+  color-scheme: light;
+  font-family: "DM Sans", system-ui, sans-serif;
+  --ink: #c4552f;
+  --ink-soft: #e7c2b1;
+  --paper: #f8f1e4;
+  --paper-dark: #e5d6be;
+  --forest: #3f5d50;
+  --stone: #2b2a26;
+  --accent: #d99a4c;
+  --shadow: rgba(27, 23, 18, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: radial-gradient(circle at top, #fff8ef 0%, #f5e8d4 55%, #e9dac3 100%);
+  color: var(--stone);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 32px 64px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+  color: var(--forest);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-family: "DM Serif Display", serif;
+  font-size: 2.8rem;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  max-width: 520px;
+  color: #5c5146;
+  line-height: 1.5;
+}
+
+.primary,
+.secondary {
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 14px 22px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primary {
+  background: var(--stone);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(43, 42, 38, 0.2);
+}
+
+.secondary {
+  background: transparent;
+  color: var(--stone);
+  border: 1px solid #b8a58b;
+  margin-top: 14px;
+}
+
+.primary:hover,
+.secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(43, 42, 38, 0.2);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.control-block {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 18px 35px rgba(35, 29, 20, 0.08);
+  border: 1px solid rgba(155, 130, 96, 0.25);
+}
+
+.control-block h2 {
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.helper {
+  font-size: 0.9rem;
+  color: #6b5d50;
+  margin-bottom: 14px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  gap: 8px;
+  color: #594b40;
+  margin-bottom: 12px;
+}
+
+select,
+input[type="text"],
+input[type="date"] {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #c5b39a;
+  background: #fffdf9;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  gap: 10px;
+}
+
+.swatch {
+  border-radius: 16px;
+  border: 2px solid transparent;
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.8rem;
+  background: #fff;
+  position: relative;
+  min-height: 60px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.swatch::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 26px;
+  border-radius: 10px;
+  background: var(--swatch-color);
+  margin-bottom: 8px;
+}
+
+.swatch.active {
+  border-color: var(--stone);
+  transform: translateY(-2px);
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.stamp-card {
+  background: var(--paper);
+  border-radius: 28px;
+  padding: 28px;
+  border: 1px solid #d7c4aa;
+  box-shadow: 0 30px 50px var(--shadow);
+}
+
+.stamp {
+  position: relative;
+  width: min(360px, 100%);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  background: var(--paper);
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 2px solid var(--ink-soft);
+}
+
+.stamp-grid {
+  position: absolute;
+  inset: 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(197, 170, 139, 0.4);
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(197, 170, 139, 0.12) 0,
+    rgba(197, 170, 139, 0.12) 12px,
+    transparent 12px,
+    transparent 22px
+  );
+}
+
+.stamp-ring {
+  position: absolute;
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  border: 2px dashed var(--ink);
+  filter: drop-shadow(0 0 4px rgba(196, 85, 47, 0.35));
+}
+
+.stamp-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stamp-region {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.stamp-emblem {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.stamp-emblem svg {
+  width: 100px;
+  height: 100px;
+}
+
+.stamp-date {
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+}
+
+.stamp-motto {
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: 0 16px;
+  color: #6a4735;
+}
+
+.stamp-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+  text-align: left;
+}
+
+.meta-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #826d57;
+  margin-bottom: 6px;
+}
+
+.meta-value {
+  font-weight: 600;
+  color: #3f352c;
+}
+
+.ledger {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  padding: 24px;
+  border: 1px solid rgba(155, 130, 96, 0.2);
+  box-shadow: 0 18px 35px rgba(35, 29, 20, 0.08);
+}
+
+.ledger-header {
+  margin-bottom: 18px;
+}
+
+.ledger-list {
+  display: grid;
+  gap: 14px;
+}
+
+.ledger-item {
+  background: #fff9f1;
+  border-radius: 16px;
+  padding: 14px 16px;
+  border: 1px solid #e3d2bc;
+  display: grid;
+  gap: 6px;
+}
+
+.ledger-item span {
+  font-size: 0.85rem;
+  color: #5f5144;
+}
+
+.ledger-item strong {
+  color: var(--stone);
+}
+
+.border-rope .stamp-ring {
+  border-style: dashed;
+}
+
+.border-cut .stamp-ring {
+  border-style: dotted;
+  border-width: 3px;
+}
+
+.border-vintage .stamp-ring {
+  border-style: double;
+  border-width: 4px;
+}
+
+.border-wave .stamp-ring {
+  border-style: solid;
+  border-width: 3px;
+  box-shadow: 0 0 0 6px rgba(196, 85, 47, 0.12) inset;
+}
+
+@media (max-width: 900px) {
+  .app {
+    padding: 32px 20px 48px;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+}
